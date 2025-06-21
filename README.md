@@ -3,7 +3,7 @@
 [![npm version](https://badge.fury.io/js/fluentui-plus.svg)](https://badge.fury.io/js/fluentui-plus)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-基于 Fluent UI 的企业级组件库，专为中后台项目设计。
+基于 Fluent UI 的企业级组件库，专为中后台项目设计 **（不要使用在项目中！！！我闲的做来玩的！！！）**。
 
 ## ✨ 特性
 
