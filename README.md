@@ -44,6 +44,14 @@ function App() {
 
 ## 🌍 按需加载
 
+你可以直接从主包按需引入组件（推荐方式，支持 tree-shaking）：
+
+```jsx
+import { Button, Input } from 'fluentui-plus'
+```
+
+如果需要兼容某些工具链或自定义打包方式，也可以使用子路径导入：
+
 ```jsx
 import Button from 'fluentui-plus/lib/Button'
 import Input from 'fluentui-plus/lib/Input'
@@ -52,7 +60,7 @@ import Input from 'fluentui-plus/lib/Input'
 ## 🔗 链接
 
 - [📖 文档地址](https://your-docs-site.com)
-- [🐛 问题反馈](https://github.com/your-username/fluentui-plus/issues)
+- [🐛 问题反馈](https://github.com/HuiruDong/fluentui-plus/issues)
 - [📦 NPM 包](https://www.npmjs.com/package/fluentui-plus)
 
 ## 🤝 参与贡献
