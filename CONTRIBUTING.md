@@ -70,7 +70,7 @@
 
 ```bash
 # 克隆仓库
-git clone https://github.com/<your-username>/fluentui-plus.git
+git clone git@github.com:HuiruDong/fluentui-plus.git
 
 # 进入项目目录
 cd fluentui-plus
@@ -94,7 +94,7 @@ npm run dev
 如果你有任何问题或建议，可以通过以下方式联系我们:
 
 - [GitHub Issues](https://github.com/HuiruDong/fluentui-plus/issues)
-- 电子邮件: [example@email.com](mailto:example@email.com)
+- 电子邮件: [bonnie_wenry@outlook.com](mailto:bonnie_wenry@outlook.com)
 
 ## 📝 版权协议
 

@@ -43,7 +43,7 @@ export default defineConfig({
       ]
     },
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/your-username/fluentui-plus' }
+      { icon: 'github', link: 'https://github.com/HuiruDong/fluentui-plus' }
     ]
   }
 })

@@ -75,7 +75,7 @@ import Input from 'fluentui-plus/lib/Input'
 
 ```bash
 # 克隆项目
-git clone https://github.com/your-username/fluentui-plus.git
+git clone https://github.com/HuiruDong/fluentui-plus.git
 
 # 安装依赖
 npm install

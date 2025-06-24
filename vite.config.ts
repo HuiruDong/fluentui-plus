@@ -55,9 +55,5 @@ export default defineConfig({
     sourcemap: true,
     minify: isProduction,
   },
-  server: {
-    port: 3000,
-    open: true,
-  },
   root: '.', // 确保根目录正确
 })
