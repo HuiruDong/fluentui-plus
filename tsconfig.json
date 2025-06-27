@@ -15,6 +15,8 @@
     "jsx": "react-jsx",
     "declaration": true,
     "declarationMap": true,
+    "sourceMap": true,
+    "inlineSources": false,
     "outDir": "./dist",
     "baseUrl": "./",
     "paths": {

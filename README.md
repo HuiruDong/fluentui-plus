@@ -89,6 +89,12 @@ npm run test
 # 构建组件库
 npm run build
 
+# 开发环境构建（包含详细 source map）
+npm run build:lib:dev
+
+# 生产环境构建（包含优化 source map）
+npm run build:lib:prod
+
 # 启动文档站点
 npm run docs:dev
 ```
@@ -102,6 +108,7 @@ fluentui-plus/
 │   ├── styles/          # 样式和主题
 │   └── utils/           # 工具函数
 ├── docs/                # 文档源码
-├── dist/                # 构建产物
+├── dist/                # 构建产物（包含 source map）
+├── BUILD.md             # 构建配置说明
 └── tests/               # 测试文件
 ```

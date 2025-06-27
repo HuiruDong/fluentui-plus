@@ -52,7 +52,7 @@ export default defineConfig({
         },
       },
     },
-    sourcemap: true,
+    sourcemap: true, // 始终生成 source map 以提供更好的开发体验
     minify: isProduction,
   },
   root: '.', // 确保根目录正确
