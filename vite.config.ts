@@ -14,6 +14,20 @@ export default defineConfig({
     ...(isProduction ? [dts({
       insertTypesEntry: true,
       copyDtsFiles: true,
+      exclude: [
+        '**/*.test.ts',
+        '**/*.test.tsx',
+        '**/*.spec.ts', 
+        '**/*.spec.tsx',
+        '**/setupTests.ts',
+        '**/test/**',
+        '**/tests/**',
+        '**/__tests__/**',
+        '**/demo/**',
+        '**/stories/**',
+        '**/utils/**',  // 排除 utils 目录
+        'src/utils/**', // 明确排除 src/utils
+      ],
     })] : []),
   ],
   resolve: {

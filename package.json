@@ -24,9 +24,9 @@
   "scripts": {
     "dev": "vite",
     "build": "npm run clean && npm run build:lib",
-    "build:lib": "vite build && npm run build:types",
-    "build:lib:dev": "cross-env NODE_ENV=development vite build && npm run build:types",
-    "build:lib:prod": "cross-env NODE_ENV=production vite build && npm run build:types",
+    "build:lib": "vite build",
+    "build:lib:dev": "cross-env NODE_ENV=development vite build",
+    "build:lib:prod": "cross-env NODE_ENV=production vite build",
     "build:types": "tsc --emitDeclarationOnly --outDir dist",
     "build:es": "cross-env BUILD_FORMAT=es vite build",
     "build:cjs": "cross-env BUILD_FORMAT=cjs vite build",

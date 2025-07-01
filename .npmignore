@@ -1,3 +1,39 @@
-dist
+# 开发和构建文件
+src/
+demo/
+docs/
+scripts/
+coverage/
+node_modules/
+
+# 配置文件
+.eslintrc*
+eslint.config.js
+jest.config.js
+vite.config.ts
+tsconfig.json
+*.config.js
+*.config.ts
+
+# 测试文件
+**/*.test.ts
+**/*.test.tsx
+**/*.spec.ts
+**/*.spec.tsx
+**/setupTests.ts
+**/test/**
+**/tests/**
+**/__tests__/**
+
+# 开发工具文件
 .DS_Store
 *.log
+.git/
+.gitignore
+.npmignore
+
+# 其他
+index.html
+CONTRIBUTING.md
+yarn.lock
+package-lock.json
