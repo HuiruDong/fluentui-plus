@@ -14,9 +14,9 @@
 ## 安装
 
 ```bash
-npm install fluentui-plus @fluentui/react @fluentui/react-components
+npm install fluentui-plus @fluentui/react-components
 # 或
-yarn add fluentui-plus @fluentui/react @fluentui/react-components
+yarn add fluentui-plus @fluentui/react-components
 ```
 
 ## 快速开始

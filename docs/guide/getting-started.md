@@ -7,13 +7,13 @@
 首先，安装 FluentUI Plus 及其依赖：
 
 ```bash
-npm install fluentui-plus @fluentui/react @fluentui/react-components react react-dom
+npm install fluentui-plus @fluentui/react-components react react-dom
 ```
 
 或使用 yarn：
 
 ```bash
-yarn add fluentui-plus @fluentui/react @fluentui/react-components react react-dom
+yarn add fluentui-plus @fluentui/react-components react react-dom
 ```
 
 ## 引入组件

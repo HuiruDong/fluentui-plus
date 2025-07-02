@@ -50,7 +50,6 @@ export default defineConfig({
       external: [
         'react',
         'react-dom',
-        '@fluentui/react',
         '@fluentui/react-components',
         '@emotion/react',
         '@emotion/styled',
@@ -59,7 +58,6 @@ export default defineConfig({
         globals: {
           react: 'React',
           'react-dom': 'ReactDOM',
-          '@fluentui/react': 'FluentUIReact',
           '@fluentui/react-components': 'FluentUIReactComponents',
           '@emotion/react': 'EmotionReact',
           '@emotion/styled': 'EmotionStyled',
