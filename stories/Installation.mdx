@@ -1,0 +1,144 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="使用指南/安装使用" />
+
+# 安装使用指南
+
+## 📦 安装
+
+### NPM
+
+```bash
+npm install fluentui-plus
+```
+
+### Yarn
+
+```bash
+yarn add fluentui-plus
+```
+
+### PNPM
+
+```bash
+pnpm add fluentui-plus
+```
+
+## 🎯 基础使用
+
+### 全量引入
+
+```tsx
+import React from 'react';
+import { Button, Tag } from 'fluentui-plus';
+import 'fluentui-plus/dist/index.css'; // 引入样式
+
+function App() {
+  return (
+    <div>
+      <Button variant="primary">主要按钮</Button>
+      <Tag color="blue">蓝色标签</Tag>
+    </div>
+  );
+}
+
+export default App;
+```
+
+### 按需引入
+
+为了减少打包体积，推荐使用按需引入：
+
+```tsx
+import React from 'react';
+import Button from 'fluentui-plus/es/Button';
+import Tag from 'fluentui-plus/es/Tag';
+import 'fluentui-plus/es/Button/style/css';
+import 'fluentui-plus/es/Tag/style/css';
+
+function App() {
+  return (
+    <div>
+      <Button variant="primary">主要按钮</Button>
+      <Tag color="blue">蓝色标签</Tag>
+    </div>
+  );
+}
+```
+
+### 使用 babel-plugin-import（推荐）
+
+1. 安装插件：
+
+```bash
+npm install babel-plugin-import --save-dev
+```
+
+2. 配置 `.babelrc` 或 `babel.config.js`：
+
+```json
+{
+  "plugins": [
+    [
+      "import",
+      {
+        "libraryName": "fluentui-plus",
+        "libraryDirectory": "es",
+        "style": "css"
+      }
+    ]
+  ]
+}
+```
+
+3. 直接使用：
+
+```tsx
+import { Button, Tag } from 'fluentui-plus';
+// 插件会自动转换为按需引入
+```
+
+## 🔧 配置
+
+### 自定义主题
+
+```tsx
+import React from 'react';
+import { ConfigProvider } from 'fluentui-plus';
+
+const theme = {
+  primaryColor: '#0078d4',
+  borderRadius: '4px',
+  // 更多主题配置...
+};
+
+function App() {
+  return (
+    <ConfigProvider theme={theme}>
+      {/* 你的应用组件 */}
+    </ConfigProvider>
+  );
+}
+```
+
+### 国际化配置
+
+```tsx
+import React from 'react';
+import { ConfigProvider } from 'fluentui-plus';
+import zhCN from 'fluentui-plus/es/locale/zh_CN';
+
+function App() {
+  return (
+    <ConfigProvider locale={zhCN}>
+      {/* 你的应用组件 */}
+    </ConfigProvider>
+  );
+}
+```
+
+## 📝 注意事项
+
+1. **样式引入**：确保正确引入组件样式文件
+2. **React 版本**：需要 React >= 16.8.0
+3. **TypeScript**：建议使用 TypeScript >= 4.0.0

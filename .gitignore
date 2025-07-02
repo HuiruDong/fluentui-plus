@@ -52,12 +52,6 @@ jspm_packages/
 .out
 .storybook-out
 
-# VitePress build output
-docs/.vitepress/dist
-
-# VitePress cache
-.docs/.vitepress/cache/
-
 # IDE files
 .vscode/
 .idea/
@@ -73,3 +67,6 @@ docs/.vitepress/dist
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+*storybook.log
+storybook-static

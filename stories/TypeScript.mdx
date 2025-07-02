@@ -1,0 +1,225 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="使用指南/TypeScript 支持" />
+
+# TypeScript 支持
+
+Fluent UI Plus 使用 TypeScript 开发，提供完整的类型定义支持。
+
+## 📖 类型定义
+
+所有组件都包含完整的 TypeScript 类型定义，无需额外安装 `@types` 包。
+
+### 组件 Props 类型
+
+```tsx
+import React from 'react';
+import { Button, ButtonProps, Tag, TagProps } from 'fluentui-plus';
+
+// 使用组件 Props 类型
+const CustomButton: React.FC<ButtonProps> = (props) => {
+  return <Button {...props} />;
+};
+
+// 扩展组件 Props
+interface ExtendedButtonProps extends ButtonProps {
+  customProp?: string;
+}
+
+const ExtendedButton: React.FC<ExtendedButtonProps> = ({
+  customProp,
+  ...buttonProps
+}) => {
+  return (
+    <div>
+      {customProp && <span>{customProp}</span>}
+      <Button {...buttonProps} />
+    </div>
+  );
+};
+```
+
+### 组件 Ref 类型
+
+```tsx
+import React, { useRef } from 'react';
+import { Button } from 'fluentui-plus';
+
+function App() {
+  const buttonRef = useRef<HTMLButtonElement>(null);
+
+  const handleClick = () => {
+    if (buttonRef.current) {
+      buttonRef.current.focus();
+    }
+  };
+
+  return (
+    <div>
+      <Button ref={buttonRef} onClick={handleClick}>
+        点击我
+      </Button>
+    </div>
+  );
+}
+```
+
+## 🎯 常用类型
+
+### Button 组件类型
+
+```tsx
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: 'primary' | 'default' | 'secondary' | 'outline' | 'text' | 'link';
+  size?: 'small' | 'medium' | 'large';
+  block?: boolean;
+  loading?: boolean;
+  icon?: React.ReactNode;
+  iconPosition?: 'start' | 'end';
+  disabled?: boolean;
+  children?: React.ReactNode;
+}
+```
+
+### Tag 组件类型
+
+```tsx
+interface TagProps {
+  closeIcon?: boolean | React.ReactNode;
+  color?: string;
+  bordered?: boolean;
+  className?: string;
+  style?: React.CSSProperties;
+  onClose?: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void;
+  onClick?: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void;
+  children?: React.ReactNode;
+}
+
+interface CheckableTagProps {
+  checked?: boolean;
+  onChange?: (checked: boolean) => void;
+  className?: string;
+  style?: React.CSSProperties;
+  children?: React.ReactNode;
+}
+```
+
+## 🔧 TypeScript 配置
+
+### tsconfig.json 推荐配置
+
+```json
+{
+  "compilerOptions": {
+    "target": "es5",
+    "lib": ["dom", "dom.iterable", "es6"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx"
+  },
+  "include": [
+    "src"
+  ]
+}
+```
+
+## 🎨 主题类型
+
+```tsx
+interface Theme {
+  primaryColor?: string;
+  borderRadius?: string;
+  fontFamily?: string;
+  fontSize?: {
+    small?: string;
+    medium?: string;
+    large?: string;
+  };
+  spacing?: {
+    small?: string;
+    medium?: string;
+    large?: string;
+  };
+}
+
+// 使用主题类型
+const customTheme: Theme = {
+  primaryColor: '#0078d4',
+  borderRadius: '6px',
+  fontFamily: '"Segoe UI", sans-serif',
+};
+```
+
+## 📚 高级用法
+
+### 泛型组件
+
+```tsx
+interface SelectOption<T = any> {
+  label: string;
+  value: T;
+}
+
+interface SelectProps<T = any> {
+  options: SelectOption<T>[];
+  value?: T;
+  onChange?: (value: T) => void;
+}
+
+// 使用泛型
+const stringOptions: SelectOption<string>[] = [
+  { label: '选项1', value: 'option1' },
+  { label: '选项2', value: 'option2' },
+];
+
+const numberOptions: SelectOption<number>[] = [
+  { label: '选项1', value: 1 },
+  { label: '选项2', value: 2 },
+];
+```
+
+### 条件类型
+
+```tsx
+type ButtonVariant = 'primary' | 'default' | 'secondary';
+
+interface ConditionalButtonProps {
+  variant: ButtonVariant;
+  // 根据 variant 条件性地要求不同的 props
+  customProp: ButtonVariant extends 'primary' ? string : never;
+}
+```
+
+## 🛠️ 开发工具
+
+### VS Code 配置
+
+推荐安装以下 VS Code 扩展：
+
+- TypeScript Importer
+- Auto Rename Tag
+- Bracket Pair Colorizer
+- ES7+ React/Redux/React-Native snippets
+
+### ESLint TypeScript 规则
+
+```json
+{
+  "extends": [
+    "@typescript-eslint/recommended",
+    "@typescript-eslint/recommended-requiring-type-checking"
+  ],
+  "rules": {
+    "@typescript-eslint/no-unused-vars": "error",
+    "@typescript-eslint/explicit-function-return-type": "warn"
+  }
+}
+```
