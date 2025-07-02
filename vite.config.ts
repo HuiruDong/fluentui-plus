@@ -28,6 +28,8 @@ export default defineConfig({
         '**/utils/**',  // 排除 utils 目录
         'src/utils/**', // 明确排除 src/utils
       ],
+      outDir: 'dist',
+      tsconfigPath: './tsconfig.json',
     })] : []),
   ],
   resolve: {

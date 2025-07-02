@@ -57,11 +57,11 @@ const Tag: React.FC<TagProps> & { CheckableTag?: typeof CheckableTag } = ({
   );
 };
 
-interface TagComponent extends React.FC<TagProps> {
+interface TagComponentType extends React.FC<TagProps> {
   CheckableTag: React.FC<CheckableTagProps>;
 }
 
-const TagComponent: TagComponent = Tag as TagComponent;
+const TagComponent: TagComponentType = Tag as TagComponentType;
 TagComponent.CheckableTag = CheckableTag;
 
 export default TagComponent;

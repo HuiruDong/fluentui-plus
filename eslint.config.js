@@ -66,9 +66,7 @@ export default [
   {
     files: ["**/*.{spec,test}.{js,ts,jsx,tsx}", "**/setupTests.ts"],
     languageOptions: {
-      globals: {
-        ...globals.jest
-      }
+      globals: globals.jest
     },
     rules: {
       "no-undef": "off" // 测试文件中允许使用jest全局变量
