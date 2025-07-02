@@ -6,8 +6,8 @@ export { Tag } from './Tag'
 export type { TagProps, CheckableTagProps } from './Tag'
 
 // Button 组件
-export { Button } from './Button'
-export type { ButtonProps } from './Button'
+// export { Button } from './Button'
+// export type { ButtonProps } from './Button'
 
 // Input 组件 (未来添加时取消注释)
 // export { Input } from './Input'

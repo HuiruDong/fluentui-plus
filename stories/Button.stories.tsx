@@ -1,5 +1,77 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { Button } from '../src/components';
+import React from 'react';
+
+// 创建一个占位 Button 组件，因为真实组件尚未实现
+const Button: React.FC<{
+  variant?: 'primary' | 'default' | 'secondary' | 'outline' | 'text' | 'link';
+  size?: 'small' | 'medium' | 'large';
+  block?: boolean;
+  loading?: boolean;
+  disabled?: boolean;
+  children?: React.ReactNode;
+  icon?: React.ReactNode;
+  onClick?: () => void;
+}> = ({
+  variant = 'default',
+  size = 'medium',
+  block = false,
+  loading = false,
+  disabled = false,
+  children,
+  icon,
+}) => {
+  // 基于不同的变体设置不同的样式
+  const getVariantStyles = () => {
+    switch (variant) {
+      case 'primary':
+        return { background: '#0078d4', color: 'white' };
+      case 'secondary':
+        return { background: '#f0f0f0', color: '#333' };
+      case 'outline':
+        return { background: 'transparent', color: '#0078d4', border: '1px solid #0078d4' };
+      case 'text':
+        return { background: 'transparent', color: '#0078d4', border: 'none' };
+      case 'link':
+        return { background: 'transparent', color: '#0078d4', border: 'none', textDecoration: 'underline' };
+      default:
+        return { background: '#fff', color: '#333', border: '1px solid #d9d9d9' };
+    }
+  };
+
+  // 基于不同的尺寸设置不同的样式
+  const getSizeStyles = () => {
+    switch (size) {
+      case 'small':
+        return { padding: '4px 12px', fontSize: '12px' };
+      case 'large':
+        return { padding: '10px 24px', fontSize: '16px' };
+      default:
+        return { padding: '6px 16px', fontSize: '14px' };
+    }
+  };
+
+  const baseStyles = {
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: '2px',
+    cursor: disabled ? 'not-allowed' : 'pointer',
+    opacity: disabled ? 0.6 : 1,
+    transition: 'all 0.2s',
+    fontWeight: 500,
+    width: block ? '100%' : 'auto',
+    ...getVariantStyles(),
+    ...getSizeStyles(),
+  };
+
+  return (
+    <button style={baseStyles} disabled={disabled || loading}>
+      {loading && <span style={{ marginRight: '8px' }}>⟳</span>}
+      {icon && <span style={{ marginRight: '8px' }}>{icon}</span>}
+      {children}
+    </button>
+  );
+};
 
 const meta: Meta<typeof Button> = {
   title: '基础组件/Button 按钮',

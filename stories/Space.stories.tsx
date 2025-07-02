@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import React from 'react';
-import { Button } from '../src/components';
 
 // 占位组件，用于展示布局间距概念
 const Space: React.FC<{ 
@@ -81,9 +80,9 @@ export const Basic: Story = {
   },
   render: (args) => (
     <Space {...args}>
-      <Button>按钮1</Button>
-      <Button>按钮2</Button>
-      <Button>按钮3</Button>
+      <button>按钮1</button>
+      <button>按钮2</button>
+      <button>按钮3</button>
     </Space>
   )
 };
@@ -95,25 +94,25 @@ export const Sizes: Story = {
       <div>
         <h4>Small (8px)</h4>
         <Space size="small">
-          <Button>按钮1</Button>
-          <Button>按钮2</Button>
-          <Button>按钮3</Button>
+          <button>按钮1</button>
+          <button>按钮2</button>
+          <button>按钮3</button>
         </Space>
       </div>
       <div>
         <h4>Medium (16px)</h4>
         <Space size="medium">
-          <Button>按钮1</Button>
-          <Button>按钮2</Button>
-          <Button>按钮3</Button>
+          <button>按钮1</button>
+          <button>按钮2</button>
+          <button>按钮3</button>
         </Space>
       </div>
       <div>
         <h4>Large (24px)</h4>
         <Space size="large">
-          <Button>按钮1</Button>
-          <Button>按钮2</Button>
-          <Button>按钮3</Button>
+          <button>按钮1</button>
+          <button>按钮2</button>
+          <button>按钮3</button>
         </Space>
       </div>
     </div>
@@ -128,9 +127,9 @@ export const Vertical: Story = {
   },
   render: (args) => (
     <Space {...args}>
-      <Button>按钮1</Button>
-      <Button>按钮2</Button>
-      <Button>按钮3</Button>
+      <button>按钮1</button>
+      <button>按钮2</button>
+      <button>按钮3</button>
     </Space>
   )
 };

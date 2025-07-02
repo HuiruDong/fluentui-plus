@@ -1,8 +1,10 @@
-import React, { PropsWithChildren, useCallback } from 'react';
+import React, { PropsWithChildren, useCallback, useMemo } from 'react';
+import { mergeClasses } from '@fluentui/react-components';
 import { DismissFilled } from '@fluentui/react-icons';
 import CheckableTag, { CheckableTagProps } from './CheckableTag';
-import { StyledTag, TagContent, TagClose } from './Tag.styles';
-import clsx from 'clsx';
+import './index.less';
+
+const prefixCls = 'mm-tag';
 
 export interface TagProps extends PropsWithChildren {
   closeIcon?: boolean | React.ReactNode;
@@ -20,17 +22,28 @@ const Tag: React.FC<TagProps> & { CheckableTag?: typeof CheckableTag } = ({
 }) => {
   const { closeIcon = false, color, bordered = true, className, style, onClick, onClose } = props;
 
+  const cs = useMemo(
+    () =>
+      mergeClasses(
+        prefixCls,
+        bordered ? `${prefixCls}--bordered` : `${prefixCls}--borderless`,
+        className
+      ),
+    [bordered, className]
+  );
+
   const renderCloseIcon = useCallback(() => {
     if (closeIcon) {
       return (
-        <TagClose
+        <span
+          className={`${prefixCls}__close`}
           onClick={(evt) => {
             evt.stopPropagation();
             onClose?.(evt);
           }}
         >
           {typeof closeIcon === 'boolean' ? <DismissFilled /> : closeIcon}
-        </TagClose>
+        </span>
       );
     }
 
@@ -38,22 +51,22 @@ const Tag: React.FC<TagProps> & { CheckableTag?: typeof CheckableTag } = ({
   }, [closeIcon, onClose]);
 
   return (
-    <StyledTag
-      className={clsx('fluentui-plus-tag', className)}
+    <span
+      className={cs}
       style={{
         ...style,
         backgroundColor: color ?? style?.backgroundColor,
         color: color ? '#fff' : '',
+        border: bordered ? '' : 'none',
       }}
-      bordered={bordered}
       onClick={(evt) => {
         evt.stopPropagation();
         onClick?.(evt);
       }}
     >
-      <TagContent>{children}</TagContent>
+      <span className={`${prefixCls}__content`}>{children}</span>
       {renderCloseIcon()}
-    </StyledTag>
+    </span>
   );
 };
 

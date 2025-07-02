@@ -1,0 +1,53 @@
+.mm-tag {
+  box-sizing: border-box;
+  margin: 0;
+  color: @color-neutral-foreground-1;
+  font-size: @font-size-200;
+  line-height: calc(@line-height-200 * @font-size-200);
+  list-style: none;
+  font-family: @font-family-base;
+  height: auto;
+  padding: 0 @spacing-horizontal-s;
+  white-space: nowrap;
+  background: @color-neutral-background-2;
+  border: @stroke-width-thin solid @color-neutral-background-2-hover;
+  border-radius: @border-radius-medium;
+  opacity: 1;
+  text-align: start;
+  position: relative;
+  overflow: hidden;
+  display: inline-flex;
+  flex-wrap: nowrap;
+  gap: @spacing-horizontal-s;
+  align-items: center;
+
+  &__content {
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__close {
+    cursor: pointer;
+    height: 100%;
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &--borderless {
+    border: none;
+  }
+}
+
+
+.mm-checkable-tag {
+  cursor: pointer !important;
+
+  &--checked {
+    background-color: @color-brand-background !important;
+    color: #fff !important;
+  }
+}

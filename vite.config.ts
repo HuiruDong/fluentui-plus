@@ -8,9 +8,7 @@ const buildFormat = process.env.BUILD_FORMAT || 'es'
 
 export default defineConfig({
   plugins: [
-    react({
-      jsxImportSource: '@emotion/react',
-    }),
+    react(),
     ...(isProduction ? [dts({
       insertTypesEntry: true,
       copyDtsFiles: true,
@@ -37,6 +35,20 @@ export default defineConfig({
       '@': resolve(__dirname, 'src'),
     },
   },
+  css: {
+    preprocessorOptions: {
+      less: {
+        javascriptEnabled: true,
+        additionalData: `@import "${resolve(__dirname, 'src/styles/variables.less')}";`,
+        modifyVars: {
+          // 可以在这里添加全局 Less 变量
+        },
+      },
+    },
+    modules: {
+      generateScopedName: '[name]__[local]__[hash:base64:5]',
+    },
+  },
   build: {
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),
@@ -53,16 +65,12 @@ export default defineConfig({
         'react',
         'react-dom',
         '@fluentui/react-components',
-        '@emotion/react',
-        '@emotion/styled',
       ],
       output: {
         globals: {
           react: 'React',
           'react-dom': 'ReactDOM',
           '@fluentui/react-components': 'FluentUIReactComponents',
-          '@emotion/react': 'EmotionReact',
-          '@emotion/styled': 'EmotionStyled',
         },
       },
     },

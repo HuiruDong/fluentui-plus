@@ -1,7 +1,10 @@
-import React from 'react';
-import type { TagProps } from './Tag';
-import { StyledCheckableTag, TagContent } from './Tag.styles';
-import clsx from 'clsx';
+import React, { useMemo } from 'react';
+import type { TagProps } from '..';
+import Tag from './Tag';
+import { mergeClasses } from '@fluentui/react-components';
+import './index.less';
+
+const prefixCls = 'mm-checkable-tag';
 
 export interface CheckableTagProps extends Omit<TagProps, 'onClick'> {
   checked?: boolean;
@@ -15,15 +18,15 @@ const CheckableTag: React.FC<CheckableTagProps> = ({
   className,
   ...props
 }) => {
+  const cs = useMemo(
+    () => mergeClasses(prefixCls, checked && `${prefixCls}--checked`, className),
+    [checked, className]
+  );
+
   return (
-    <StyledCheckableTag 
-      {...props} 
-      className={clsx('fluentui-plus-checkable-tag', className)} 
-      checked={checked}
-      onClick={() => onChange?.(!checked)}
-    >
-      <TagContent>{children}</TagContent>
-    </StyledCheckableTag>
+    <Tag {...props} className={cs} onClick={() => onChange?.(!checked)}>
+      {children}
+    </Tag>
   );
 };
 

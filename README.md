@@ -11,7 +11,7 @@
 - 📦 **开箱即用**: 高质量的 React 组件，满足企业级产品需求
 - 🛡 **TypeScript**: 使用 TypeScript 开发，提供完整的类型定义
 - 🎯 **按需加载**: 支持 tree-shaking，优化包体积
-- 🌈 **主题定制**: 支持通过 CSS 变量和 className 进行深度定制
+- � **样式系统**: 使用 Less 预处理器，支持主题定制和变量覆盖
 - 📱 **现代浏览器**: 支持现代浏览器及 IE11+
 
 ## 📦 安装
@@ -30,16 +30,30 @@ yarn add fluentui-plus @fluentui/react-components
 
 ```jsx
 import React from 'react'
-import { Button, Input, Table, DatePicker } from 'fluentui-plus'
+import { Button, Tag } from 'fluentui-plus'
+// 样式会自动导入，无需手动引入
 
 function App() {
   return (
     <div>
-      <Button type="primary">主要按钮</Button>
-      <Input placeholder="请输入内容" />
+      <Button variant="primary">主要按钮</Button>
+      <Tag color="primary">标签</Tag>
     </div>
   )
 }
+```
+
+### 样式定制
+
+如果需要定制主题，可以覆盖 Less 变量：
+
+```less
+// your-theme.less
+@import '~fluentui-plus/lib/styles/variables.less';
+
+// 覆盖品牌色
+@brand-primary: #your-brand-color;
+@neutral-background-1: #your-background-color;
 ```
 
 ## 🌍 按需加载
