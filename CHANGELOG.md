@@ -5,6 +5,33 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，项目遵循
 [语义化版本](https://semver.org/lang/zh-CN/) 规范。
 
+### 0.1.1 (2025-07-03)
+
+### Added
+
+- Add demo page
+  ([66e84c4](https://github.com/HuiruDong/fluentui-plus/commit/66e84c49ce28556dde21c01ee32a7389f04bfc22))
+- Update Tag component export
+  ([09420aa](https://github.com/HuiruDong/fluentui-plus/commit/09420aab96c6daf0a7edc7a5dbc89061b6de5e0b))
+
+### Fixed
+
+- Remove fluent UI v8
+  ([3edb164](https://github.com/HuiruDong/fluentui-plus/commit/3edb164bc0de5cad6c03a6934cce5bc189e732f3))
+- Unit test
+  ([3c6a668](https://github.com/HuiruDong/fluentui-plus/commit/3c6a66864b4a63fe450e89d04a641381887bb409))
+
+### Changed
+
+- Add storybook
+  ([ddd08b5](https://github.com/HuiruDong/fluentui-plus/commit/ddd08b578740878fda5cb75911d7df4386ffe735))
+- Remove css-in-js, add less
+  ([d1d0c86](https://github.com/HuiruDong/fluentui-plus/commit/d1d0c8637e6e4214cdd56bcdf6e2e2e419f721eb))
+- Update md location
+  ([4020bf4](https://github.com/HuiruDong/fluentui-plus/commit/4020bf49da088084c14d23b632055c205b0f8d38))
+- Update RELEASE_GUIDE
+  ([b46d58b](https://github.com/HuiruDong/fluentui-plus/commit/b46d58b8b362e036b79603a9d0ba8475ad8383ea))
+
 ## [0.1.0](https://github.com/HuiruDong/fluentui-plus/compare/v0.0.0...v0.1.0) (2024-01-01)
 
 ### Added
