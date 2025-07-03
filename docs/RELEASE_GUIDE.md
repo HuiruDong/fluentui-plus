@@ -8,7 +8,7 @@
 
 1. 登录 [npmjs.com](https://www.npmjs.com/)
 2. 点击头像 → Access Tokens → Generate New Token
-3. 选择 "Automation" 类型的 token
+3. 选择 "Granular" 类型的 token
 4. 复制生成的 token
 
 ### 2. 在 GitHub 中添加 secrets
