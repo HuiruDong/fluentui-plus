@@ -5,6 +5,13 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，项目遵循
 [语义化版本](https://semver.org/lang/zh-CN/) 规范。
 
+### [0.1.2](https://github.com/HuiruDong/fluentui-plus/compare/v0.1.1...v0.1.2) (2025-07-03)
+
+### Fixed
+
+- Add realease.yml
+  ([63d6b2e](https://github.com/HuiruDong/fluentui-plus/commit/63d6b2e0a4bb817eadf922ae43e18e4ac7237030))
+
 ### 0.1.1 (2025-07-03)
 
 ### Added
