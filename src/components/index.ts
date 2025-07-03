@@ -2,8 +2,8 @@
 // 当添加新组件时，在这里添加导出语句
 
 // Tag 组件
-export { Tag } from './Tag'
-export type { TagProps, CheckableTagProps } from './Tag'
+export { Tag } from './Tag';
+export type { TagProps, CheckableTagProps } from './Tag';
 
 // Button 组件
 // export { Button } from './Button'

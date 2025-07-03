@@ -11,13 +11,7 @@ export interface CheckableTagProps extends Omit<TagProps, 'onClick'> {
   onChange?: (checked: boolean) => void;
 }
 
-const CheckableTag: React.FC<CheckableTagProps> = ({
-  checked,
-  onChange,
-  children,
-  className,
-  ...props
-}) => {
+const CheckableTag: React.FC<CheckableTagProps> = ({ checked, onChange, children, className, ...props }) => {
   const cs = useMemo(
     () => mergeClasses(prefixCls, checked && `${prefixCls}--checked`, className),
     [checked, className]
