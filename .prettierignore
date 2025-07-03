@@ -1,20 +1,67 @@
 # Dependencies
 node_modules/
+.pnp
+.pnp.js
+
+# Production builds
 dist/
+build/
+lib/
+es/
+
+# Coverage directory used by tools like istanbul
 coverage/
 
-# Build outputs
+# Logs
 *.log
-*.tmp
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-# IDE files
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE
 .vscode/
 .idea/
+*.swp
+*.swo
 
-# OS files
-.DS_Store
-Thumbs.db
+# Temporary folders
+tmp/
+temp/
+
+# Generated files
+*.d.ts.map
+*.js.map
 
 # Package files
 *.tgz
 *.tar.gz
+
+# Storybook build outputs
+storybook-static/
+
+# Documentation
+docs/
+
+# Legacy files
+*.min.js
+*.min.css
+
+# Lock files (optional, uncomment if you want to format them)
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
