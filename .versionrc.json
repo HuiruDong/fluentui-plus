@@ -1,0 +1,36 @@
+{
+  "types": [
+    { "type": "feat", "section": "Added" },
+    { "type": "fix", "section": "Fixed" },
+    { "type": "docs", "section": "Changed" },
+    { "type": "style", "section": "Changed" },
+    { "type": "refactor", "section": "Changed" },
+    { "type": "perf", "section": "Changed" },
+    { "type": "test", "hidden": true },
+    { "type": "chore", "hidden": true },
+    { "type": "build", "hidden": true },
+    { "type": "ci", "hidden": true }
+  ],
+  "header": "# Changelog\n\n本文档记录了项目的所有重要变更。\n\n格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，项目遵循 [语义化版本](https://semver.org/lang/zh-CN/) 规范。\n\n",
+  "commitUrlFormat": "https://github.com/HuiruDong/fluentui-plus/commit/{{hash}}",
+  "compareUrlFormat": "https://github.com/HuiruDong/fluentui-plus/compare/{{previousTag}}...{{currentTag}}",
+  "releaseCommitMessageFormat": "chore: release {{currentTag}}",
+  "skip": {
+    "bump": false,
+    "changelog": false,
+    "commit": false,
+    "tag": false
+  },
+  "packageFiles": [
+    {
+      "filename": "package.json",
+      "type": "json"
+    }
+  ],
+  "bumpFiles": [
+    {
+      "filename": "package.json",
+      "type": "json"
+    }
+  ]
+}
