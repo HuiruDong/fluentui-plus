@@ -1,0 +1,20 @@
+# Dependencies
+node_modules/
+dist/
+coverage/
+
+# Build outputs
+*.log
+*.tmp
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Package files
+*.tgz
+*.tar.gz

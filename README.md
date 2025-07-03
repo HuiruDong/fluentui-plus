@@ -29,8 +29,8 @@ yarn add fluentui-plus @fluentui/react-components
 ## 🔨 使用
 
 ```jsx
-import React from 'react'
-import { Button, Tag } from 'fluentui-plus'
+import React from 'react';
+import { Button, Tag } from 'fluentui-plus';
 // 样式会自动导入，无需手动引入
 
 function App() {
@@ -39,7 +39,7 @@ function App() {
       <Button variant="primary">主要按钮</Button>
       <Tag color="primary">标签</Tag>
     </div>
-  )
+  );
 }
 ```
 
@@ -61,15 +61,48 @@ function App() {
 你可以直接从主包按需引入组件（推荐方式，支持 tree-shaking）：
 
 ```jsx
-import { Button, Input } from 'fluentui-plus'
+import { Button, Input } from 'fluentui-plus';
 ```
 
 如果需要兼容某些工具链或自定义打包方式，也可以使用子路径导入：
 
 ```jsx
-import Button from 'fluentui-plus/lib/Button'
-import Input from 'fluentui-plus/lib/Input'
+import Button from 'fluentui-plus/lib/Button';
+import Input from 'fluentui-plus/lib/Input';
 ```
+
+## 👥 开发指南
+
+如果你是团队成员或想要为项目贡献代码，请参考以下文档：
+
+- **[开发规范与工作流指南](./DEVELOPMENT_GUIDE.md)** - 详细的开发规范、提交规范和工作流说明
+- **[快速参考](./QUICK_REFERENCE.md)** - 常用命令和规范的快速参考卡片
+- **[贡献指南](./CONTRIBUTING.md)** - 如何参与项目贡献
+
+### 快速开始开发
+
+```bash
+# 安装依赖
+yarn install
+
+# 启动开发服务器
+yarn dev
+
+# 启动 Storybook
+yarn storybook
+```
+
+### 提交规范
+
+本项目使用 [Conventional Commits](https://www.conventionalcommits.org/) 规范：
+
+```bash
+# 示例
+git commit -m "feat(Tag): add CheckableTag component"
+git commit -m "fix(Button): resolve click event issue"
+```
+
+详细信息请查看 [开发指南](./DEVELOPMENT_GUIDE.md)。
 
 ## 🔗 链接
 
