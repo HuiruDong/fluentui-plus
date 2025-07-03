@@ -3,7 +3,8 @@
 [![npm version](https://badge.fury.io/js/fluentui-plus.svg)](https://badge.fury.io/js/fluentui-plus)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-基于 Fluent UI 的企业级组件库，专为中后台项目设计 **（不要使用在项目中！！！我闲的做来玩的！！！）**。
+基于 Fluent UI 的企业级组件库，专为中后台项目设计
+**（不要使用在项目中！！！我闲的做来玩的！！！）**。
 
 ## ✨ 特性
 
@@ -36,8 +37,8 @@ import { Button, Tag } from 'fluentui-plus';
 function App() {
   return (
     <div>
-      <Button variant="primary">主要按钮</Button>
-      <Tag color="primary">标签</Tag>
+      <Button variant='primary'>主要按钮</Button>
+      <Tag color='primary'>标签</Tag>
     </div>
   );
 }
@@ -75,9 +76,9 @@ import Input from 'fluentui-plus/lib/Input';
 
 如果你是团队成员或想要为项目贡献代码，请参考以下文档：
 
-- **[开发规范与工作流指南](./DEVELOPMENT_GUIDE.md)** - 详细的开发规范、提交规范和工作流说明
-- **[快速参考](./QUICK_REFERENCE.md)** - 常用命令和规范的快速参考卡片
-- **[贡献指南](./CONTRIBUTING.md)** - 如何参与项目贡献
+- **[开发规范与工作流指南](./docs/DEVELOPMENT_GUIDE.md)** - 详细的开发规范、提交规范和工作流说明
+- **[快速参考](./docs/QUICK_REFERENCE.md)** - 常用命令和规范的快速参考卡片
+- **[贡献指南](./docs/CONTRIBUTING.md)** - 如何参与项目贡献
 
 ### 快速开始开发
 
@@ -102,7 +103,7 @@ git commit -m "feat(Tag): add CheckableTag component"
 git commit -m "fix(Button): resolve click event issue"
 ```
 
-详细信息请查看 [开发指南](./DEVELOPMENT_GUIDE.md)。
+详细信息请查看 [开发指南](./docs/DEVELOPMENT_GUIDE.md)。
 
 ## 🔗 链接
 
@@ -112,7 +113,7 @@ git commit -m "fix(Button): resolve click event issue"
 
 ## 🤝 参与贡献
 
-我们欢迎所有的贡献，请参考 [贡献指南](./CONTRIBUTING.md)。
+我们欢迎所有的贡献，请参考 [贡献指南](./docs/CONTRIBUTING.md)。
 
 ## 📄 开源协议
 
