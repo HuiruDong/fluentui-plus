@@ -1,6 +1,6 @@
 # FluentUI Plus
 
-[![npm version](https://badge.fury.io/js/fluentui-plus.svg)](https://badge.fury.io/js/fluentui-plus)
+[![npm version](https://badge.fury.io/js/@luoluoyu%2Ffluentui-plus.svg)](https://badge.fury.io/js/@luoluoyu%2Ffluentui-plus)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 基于 Fluent UI 的企业级组件库，专为中后台项目设计
@@ -18,20 +18,20 @@
 ## 📦 安装
 
 ```bash
-npm install fluentui-plus @fluentui/react-components
+npm install @luoluoyu/fluentui-plus @fluentui/react-components
 ```
 
 或者使用 yarn:
 
 ```bash
-yarn add fluentui-plus @fluentui/react-components
+yarn add @luoluoyu/fluentui-plus @fluentui/react-components
 ```
 
 ## 🔨 使用
 
 ```jsx
 import React from 'react';
-import { Button, Tag } from 'fluentui-plus';
+import { Button, Tag } from '@luoluoyu/fluentui-plus';
 // 样式会自动导入，无需手动引入
 
 function App() {
