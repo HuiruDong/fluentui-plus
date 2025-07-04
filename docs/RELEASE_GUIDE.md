@@ -73,7 +73,7 @@ git push origin v0.1.1
 
 - 触发条件：推送到 main/develop 分支或创建 PR
 - 执行内容：
-  - 多版本 Node.js 测试 (20.x)
+  - 多版本 Node.js 测试 (18.x, 20.x)
   - 代码检查 (lint、format、type-check)
   - 运行测试
   - 构建验证
