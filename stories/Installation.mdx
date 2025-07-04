@@ -1,6 +1,6 @@
-import { Meta } from "@storybook/addon-docs/blocks";
+import { Meta } from '@storybook/addon-docs/blocks';
 
-<Meta title="使用指南/安装使用" />
+<Meta title='使用指南/安装使用' />
 
 # 安装使用指南
 
@@ -9,19 +9,19 @@ import { Meta } from "@storybook/addon-docs/blocks";
 ### NPM
 
 ```bash
-npm install fluentui-plus
+npm install @luoluoyu/fluentui-plus
 ```
 
 ### Yarn
 
 ```bash
-yarn add fluentui-plus
+yarn add @luoluoyu/fluentui-plus
 ```
 
 ### PNPM
 
 ```bash
-pnpm add fluentui-plus
+pnpm add @luoluoyu/fluentui-plus
 ```
 
 ## 🎯 基础使用
@@ -30,14 +30,14 @@ pnpm add fluentui-plus
 
 ```tsx
 import React from 'react';
-import { Button, Tag } from 'fluentui-plus';
-import 'fluentui-plus/dist/index.css'; // 引入样式
+import { Button, Tag } from '@luoluoyu/fluentui-plus';
+import '@luoluoyu/fluentui-plus/dist/index.css'; // 引入样式
 
 function App() {
   return (
     <div>
-      <Button variant="primary">主要按钮</Button>
-      <Tag color="blue">蓝色标签</Tag>
+      <Button variant='primary'>主要按钮</Button>
+      <Tag color='blue'>蓝色标签</Tag>
     </div>
   );
 }
@@ -51,16 +51,16 @@ export default App;
 
 ```tsx
 import React from 'react';
-import Button from 'fluentui-plus/es/Button';
-import Tag from 'fluentui-plus/es/Tag';
-import 'fluentui-plus/es/Button/style/css';
-import 'fluentui-plus/es/Tag/style/css';
+import Button from '@luoluoyu/fluentui-plus/es/Button';
+import Tag from '@luoluoyu/fluentui-plus/es/Tag';
+import '@luoluoyu/fluentui-plus/es/Button/style/css';
+import '@luoluoyu/fluentui-plus/es/Tag/style/css';
 
 function App() {
   return (
     <div>
-      <Button variant="primary">主要按钮</Button>
-      <Tag color="blue">蓝色标签</Tag>
+      <Button variant='primary'>主要按钮</Button>
+      <Tag color='blue'>蓝色标签</Tag>
     </div>
   );
 }
@@ -113,11 +113,7 @@ const theme = {
 };
 
 function App() {
-  return (
-    <ConfigProvider theme={theme}>
-      {/* 你的应用组件 */}
-    </ConfigProvider>
-  );
+  return <ConfigProvider theme={theme}>{/* 你的应用组件 */}</ConfigProvider>;
 }
 ```
 
@@ -129,11 +125,7 @@ import { ConfigProvider } from 'fluentui-plus';
 import zhCN from 'fluentui-plus/es/locale/zh_CN';
 
 function App() {
-  return (
-    <ConfigProvider locale={zhCN}>
-      {/* 你的应用组件 */}
-    </ConfigProvider>
-  );
+  return <ConfigProvider locale={zhCN}>{/* 你的应用组件 */}</ConfigProvider>;
 }
 ```
 

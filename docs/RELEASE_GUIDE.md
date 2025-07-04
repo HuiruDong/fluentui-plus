@@ -25,7 +25,7 @@
 确保 `package.json` 中的包名在 npm 上是可用的：
 
 ```bash
-npm view fluentui-plus
+npm view @luoluoyu/fluentui-plus
 ```
 
 如果返回 404，说明包名可用。
@@ -133,7 +133,7 @@ npm unpublish package-name@version
 发布成功后，用户可以通过以下方式安装：
 
 ```bash
-npm install fluentui-plus
+npm install @luoluoyu/fluentui-plus
 # 或
-yarn add fluentui-plus
+yarn add @luoluoyu/fluentui-plus
 ```
