@@ -2,8 +2,7 @@
 
 本文档记录了项目的所有重要变更。
 
-格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，项目遵循
-[语义化版本](https://semver.org/lang/zh-CN/) 规范。
+格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，项目遵循 [语义化版本](https://semver.org/lang/zh-CN/) 规范。
 
 ### [0.1.4](https://github.com/HuiruDong/fluentui-plus/compare/v0.1.3...v0.1.4) (2025-07-03)
 
