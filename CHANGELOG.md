@@ -4,6 +4,14 @@
 
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，项目遵循 [语义化版本](https://semver.org/lang/zh-CN/) 规范。
 
+### [0.1.5](https://github.com/HuiruDong/fluentui-plus/compare/v0.1.4...v0.1.5) (2025-07-04)
+
+### Changed
+
+- Update package name example ([3995d28](https://github.com/HuiruDong/fluentui-plus/commit/3995d28139577c477cea842cc9daca77664204a7))
+- Update prettier config ([47b53e1](https://github.com/HuiruDong/fluentui-plus/commit/47b53e17152684cfcd47925570ab433628796740))
+- update README ([9dc2cb3](https://github.com/HuiruDong/fluentui-plus/commit/9dc2cb3e81f1934a1a980b96d9be3f50894f835d))
+
 ### [0.1.4](https://github.com/HuiruDong/fluentui-plus/compare/v0.1.3...v0.1.4) (2025-07-03)
 
 ### [0.1.3](https://github.com/HuiruDong/fluentui-plus/compare/v0.1.2...v0.1.3) (2025-07-03)
