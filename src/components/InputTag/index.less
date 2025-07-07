@@ -1,0 +1,92 @@
+.mm-input-tag {
+  box-sizing: border-box;
+  margin: 0;
+  position: relative;
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  gap: @spacing-horizontal-xs;
+  padding: @spacing-vertical-xs @spacing-horizontal-s;
+  color: @color-neutral-foreground-1;
+  font-size: @font-size-300;
+  line-height: calc(@line-height-300 * @font-size-300);
+  font-family: @font-family-base;
+  list-style: none;
+  background: @color-neutral-background-1;
+  border: @stroke-width-thin solid @color-neutral-stroke-1;
+  border-radius: @border-radius-medium;
+  border-bottom-color: @color-neutral-stroke-accessible;
+  transition: all 0.2s ease;
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 0 0;
+    height: max(2px, @border-radius-medium);
+    border-bottom: @stroke-width-thick solid @color-compound-brand-stroke;
+    border-radius: 0 0 @border-radius-medium @border-radius-medium;
+    box-sizing: border-box;
+    clip-path: inset(calc(100% - 2px) 0px 0px);
+    transform: scaleX(0);
+    transition: transform @duration-ultra-fast @curve-accelerate-mid;
+  }
+
+  &:focus-within::after {
+    transform: scaleX(1);
+    transition: transform @duration-normal @curve-decelerate-mid;
+  }
+
+  &--disabled {
+    cursor: not-allowed;
+    border-color: @color-neutral-stroke-disabled;
+
+    .mm-input-tag__input {
+      cursor: not-allowed;
+      color: @color-neutral-foreground-disabled;
+    }
+
+    .mm-tag {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    &::after {
+      display: none;
+    }
+  }
+
+  &__content {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    gap: @spacing-horizontal-xs;
+  }
+
+  &__item {
+    margin: @spacing-vertical-none @spacing-horizontal-xxs;
+    max-width: 100%;
+  }
+
+  &__input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    color: @color-neutral-foreground-1;
+    font-family: @font-family-base;
+    font-size: @font-size-300;
+    line-height: calc(@line-height-300 * @font-size-300);
+    min-width: 50px;
+    padding: @spacing-vertical-none;
+    margin: @spacing-vertical-xxs @spacing-horizontal-xxs;
+
+    &::placeholder {
+      color: @color-neutral-foreground-4;
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      color: @color-neutral-foreground-disabled;
+    }
+  }
+}

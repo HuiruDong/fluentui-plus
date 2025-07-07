@@ -10,8 +10,10 @@ import reactHooksPlugin from 'eslint-plugin-react-hooks';
 import globals from 'globals';
 
 export default [
-  eslint.configs.recommended,
+  // 基础 ESLint 配置 - 只应用于 src 目录
   {
+    files: ['src/**/*.{js,jsx,ts,tsx}'],
+    ...eslint.configs.recommended,
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',
@@ -39,13 +41,10 @@ export default [
     },
   }, // TypeScript 配置
   {
-    files: ['**/*.{ts,tsx}'],
+    files: ['src/**/*.{ts,tsx}'],
     rules: {
       ...tseslint.configs.recommended.rules,
-      '@typescript-eslint/no-unused-vars': [
-        'error',
-        { argsIgnorePattern: '^_' },
-      ],
+      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
       '@typescript-eslint/explicit-function-return-type': 'off',
       '@typescript-eslint/explicit-module-boundary-types': 'off',
       '@typescript-eslint/no-explicit-any': 'warn',
@@ -58,7 +57,7 @@ export default [
     },
   }, // React 配置
   {
-    files: ['**/*.{jsx,tsx}'],
+    files: ['src/**/*.{jsx,tsx}'],
     rules: {
       ...reactPlugin.configs.recommended.rules,
       'react/react-in-jsx-scope': 'off',
@@ -68,12 +67,56 @@ export default [
     },
   }, // Jest 测试文件配置
   {
-    files: ['**/*.{spec,test}.{js,ts,jsx,tsx}', '**/setupTests.ts'],
+    files: ['src/**/*.{spec,test}.{js,ts,jsx,tsx}', '**/setupTests.ts'],
     languageOptions: {
       globals: globals.jest,
     },
     rules: {
       'no-undef': 'off', // 测试文件中允许使用jest全局变量
+    },
+  }, // Demo 目录配置 - 宽松的规则用于开发和示例
+  {
+    files: ['demo/**/*.{js,jsx,ts,tsx}'],
+    languageOptions: {
+      ecmaVersion: 'latest',
+      sourceType: 'module',
+      globals: {
+        ...globals.browser,
+        ...globals.es2021,
+      },
+      parser: tseslintParser,
+      parserOptions: {
+        ecmaFeatures: {
+          jsx: true,
+        },
+      },
+    },
+    plugins: {
+      react: reactPlugin,
+      'react-hooks': reactHooksPlugin,
+    },
+    settings: {
+      react: {
+        version: 'detect',
+      },
+    },
+    rules: {
+      // 基础规则 - 保证代码能正常运行
+      'no-unused-vars': 'warn', // 未使用变量改为警告
+      'no-console': 'off', // 允许 console
+      'no-debugger': 'warn', // debugger 改为警告
+
+      // React 规则 - 基础但不严格
+      'react/react-in-jsx-scope': 'off',
+      'react/prop-types': 'off',
+      'react/no-unescaped-entities': 'off', // 允许未转义字符
+      'react-hooks/rules-of-hooks': 'error',
+      'react-hooks/exhaustive-deps': 'warn',
+
+      // TypeScript 规则 - 如果使用 TS
+      '@typescript-eslint/no-unused-vars': 'off',
+      '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/ban-ts-comment': 'off',
     },
   }, // Utils 目录配置
   {
