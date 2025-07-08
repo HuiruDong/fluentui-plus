@@ -38,8 +38,10 @@
     "lint:check": "eslint src",
     "lint:demo": "eslint demo --fix",
     "lint:demo:check": "eslint demo",
-    "lint:all": "eslint src demo --fix",
-    "lint:all:check": "eslint src demo",
+    "lint:stories": "eslint stories --fix",
+    "lint:stories:check": "eslint stories",
+    "lint:all": "eslint src demo stories --fix",
+    "lint:all:check": "eslint src demo stories",
     "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json,md}\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,json,md}\"",
     "type-check": "tsc --noEmit",
@@ -55,9 +57,15 @@
     "release:dry-run": "standard-version --dry-run"
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
+    "src/**/*.{js,jsx,ts,tsx}": [
       "eslint --fix",
       "jest --findRelatedTests --passWithNoTests"
+    ],
+    "demo/**/*.{js,jsx,ts,tsx}": [
+      "prettier --write"
+    ],
+    "stories/**/*.{js,jsx,ts,tsx}": [
+      "prettier --write"
     ],
     "*.{json,md,yml,yaml}": [
       "prettier --write"

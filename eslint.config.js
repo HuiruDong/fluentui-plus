@@ -127,6 +127,62 @@ export default [
       },
     },
   },
+  // Stories 目录配置 - 添加 TypeScript 支持
+  {
+    files: ['stories/**/*.{ts,tsx}'],
+    languageOptions: {
+      ecmaVersion: 'latest',
+      sourceType: 'module',
+      globals: {
+        ...globals.browser,
+        ...globals.es2021,
+      },
+      parser: tseslintParser,
+      parserOptions: {
+        ecmaFeatures: {
+          jsx: true,
+        },
+        project: './tsconfig.json',
+      },
+    },
+    plugins: {
+      '@typescript-eslint': tseslint,
+      react: reactPlugin,
+      'react-hooks': reactHooksPlugin,
+    },
+    settings: {
+      react: {
+        version: 'detect',
+      },
+    },
+    rules: {
+      // TypeScript 基础规则
+      ...tseslint.configs.recommended.rules,
+      '@typescript-eslint/no-unused-vars': 'warn',
+      '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/explicit-function-return-type': 'off',
+      '@typescript-eslint/explicit-module-boundary-types': 'off',
+
+      // React 规则
+      ...reactPlugin.configs.recommended.rules,
+      'react/react-in-jsx-scope': 'off',
+      'react/prop-types': 'off',
+      'react-hooks/rules-of-hooks': 'error',
+      'react-hooks/exhaustive-deps': 'warn',
+      'react/no-unescaped-entities': 'off', // 允许未转义字符，这对 stories 很常见
+
+      // Storybook 特定宽松规则
+      'no-console': 'off',
+      'no-unused-vars': 'off',
+
+      // 禁用 Storybook 插件的严格规则
+      'storybook/prefer-pascal-case': 'off',
+      'storybook/no-redundant-story-name': 'off',
+      'storybook/story-exports': 'off',
+      'storybook/default-exports': 'off',
+      'storybook/no-title-property-in-meta': 'off',
+    },
+  },
   ...storybook.configs['flat/recommended'],
   // Prettier 配置 - 必须放在最后以禁用冲突的规则
   prettierConfig,
