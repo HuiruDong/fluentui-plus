@@ -20,3 +20,7 @@ export type { InputTagProps } from './InputTag';
 // DatePicker 组件 (未来添加时取消注释)
 // export { DatePicker } from './DatePicker'
 // export type { DatePickerProps } from './DatePicker'
+
+// Nav 组件
+export { Nav } from './Nav';
+export type { NavProps, NavItemType } from './Nav';
