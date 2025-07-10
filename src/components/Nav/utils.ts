@@ -17,7 +17,7 @@ export const findParentKeys = (items: NavItemType[], targetKey: string, parents:
       const newParents = item.type === 'group' ? parents : [...parents, item.key];
       const result = findParentKeys(item.children, targetKey, newParents);
       if (result.length > 0 || item.children.some(child => child.key === targetKey)) {
-        return newParents;
+        return result.length > 0 ? result : newParents;
       }
     }
   }
@@ -92,5 +92,6 @@ export const generateClassName = (prefix: string, suffix?: string): string => {
  */
 export const generateKeyPath = (items: NavItemType[], targetKey: string): string[] => {
   const parentKeys = findParentKeys(items, targetKey);
-  return [targetKey, ...parentKeys];
+  // 反转顺序，使其从直接父级到根级
+  return [targetKey, ...parentKeys.reverse()];
 };
