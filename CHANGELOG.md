@@ -4,6 +4,24 @@
 
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，项目遵循 [语义化版本](https://semver.org/lang/zh-CN/) 规范。
 
+## [0.2.0](https://github.com/HuiruDong/fluentui-plus/compare/v0.1.7...v0.2.0) (2025-07-10)
+
+### Added
+
+- Add InputTag component ([04113d0](https://github.com/HuiruDong/fluentui-plus/commit/04113d05d94989c84a80b8281e2a76f15d7e0cd0))
+- **nav:** add Nav component ([494e009](https://github.com/HuiruDong/fluentui-plus/commit/494e00967ad7b1b2e1312eb1c4c9b81a7af51118))
+
+### Fixed
+
+- **nav:** fix findParentKeys logic and reverse keyPath order ([7eea54f](https://github.com/HuiruDong/fluentui-plus/commit/7eea54fa7abbdeda7e07d2e3d85d34d774bd4f57))
+
+### Changed
+
+- Add InputTag component story ([c1c0693](https://github.com/HuiruDong/fluentui-plus/commit/c1c0693a9e70ede2e0721c0fbee43b4aaff62335))
+- **nav:** add nav story ([59c8c92](https://github.com/HuiruDong/fluentui-plus/commit/59c8c92a4737a1a79266cd1d2e4c37be03b6d4cf))
+- update docs ([55c7f19](https://github.com/HuiruDong/fluentui-plus/commit/55c7f19f50d7b35b39c6b4b25476745b0814fbcd))
+- update README ([f62f7d7](https://github.com/HuiruDong/fluentui-plus/commit/f62f7d7f1b2f4556fa91704224646eccc1775fc0))
+
 ### [0.1.7](https://github.com/HuiruDong/fluentui-plus/compare/v0.1.6...v0.1.7) (2025-07-04)
 
 ### [0.1.6](https://github.com/HuiruDong/fluentui-plus/compare/v0.1.5...v0.1.6) (2025-07-04)
