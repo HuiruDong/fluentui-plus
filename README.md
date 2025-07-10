@@ -31,14 +31,23 @@ yarn add @luoluoyu/fluentui-plus @fluentui/react-components
 
 ```jsx
 import React from 'react';
-import { Button, Tag } from '@luoluoyu/fluentui-plus';
+import { Tag, InputTag, Nav } from '@luoluoyu/fluentui-plus';
 // 样式会自动导入，无需手动引入
 
 function App() {
+  const navItems = [
+    { key: 'home', label: '首页', icon: '🏠', title: '首页' },
+    { key: 'components', label: '组件', icon: '📦', title: '组件' },
+  ];
+
   return (
     <div>
-      <Button variant='primary'>主要按钮</Button>
-      <Tag color='primary'>标签</Tag>
+      <Tag color='#1890ff'>蓝色标签</Tag>
+      <Tag.CheckableTag checked={true} onChange={checked => console.log(checked)}>
+        可选择标签
+      </Tag.CheckableTag>
+      <InputTag defaultValue={['React', 'TypeScript']} placeholder='输入标签...' maxTags={10} allowDuplicates={false} />
+      <Nav items={navItems} defaultSelectedKeys={['home']} onSelect={info => console.log('选择了:', info.key)} />
     </div>
   );
 }
@@ -50,7 +59,7 @@ function App() {
 
 ```less
 // your-theme.less
-@import '~fluentui-plus/lib/styles/variables.less';
+@import '~@luoluoyu/fluentui-plus/dist/styles/variables.less';
 
 // 覆盖品牌色
 @brand-primary: #your-brand-color;
@@ -62,20 +71,22 @@ function App() {
 你可以直接从主包按需引入组件（推荐方式，支持 tree-shaking）：
 
 ```jsx
-import { Button, Input } from 'fluentui-plus';
+import { Tag, InputTag, Nav } from '@luoluoyu/fluentui-plus';
 ```
 
 如果需要兼容某些工具链或自定义打包方式，也可以使用子路径导入：
 
 ```jsx
-import Button from 'fluentui-plus/lib/Button';
-import Input from 'fluentui-plus/lib/Input';
+import Tag from '@luoluoyu/fluentui-plus/lib/Tag';
+import InputTag from '@luoluoyu/fluentui-plus/lib/InputTag';
 ```
 
 ## 👥 开发指南
 
 如果你是团队成员或想要为项目贡献代码，请参考以下文档：
 
+- **[使用示例](./docs/USAGE_EXAMPLES.md)** - 实际应用场景和最佳实践示例
+- **[API 参考文档](./docs/API_REFERENCE.md)** - 详细的组件 API 文档和使用示例
 - **[开发规范与工作流指南](./docs/DEVELOPMENT_GUIDE.md)** - 详细的开发规范、提交规范和工作流说明
 - **[快速参考](./docs/QUICK_REFERENCE.md)** - 常用命令和规范的快速参考卡片
 - **[贡献指南](./docs/CONTRIBUTING.md)** - 如何参与项目贡献
@@ -109,7 +120,7 @@ git commit -m "fix(Button): resolve click event issue"
 
 - [📖 文档地址](https://your-docs-site.com)
 - [🐛 问题反馈](https://github.com/HuiruDong/fluentui-plus/issues)
-- [📦 NPM 包](https://www.npmjs.com/package/fluentui-plus)
+- [📦 NPM 包](https://www.npmjs.com/package/@luoluoyu/fluentui-plus)
 
 ## 🤝 参与贡献
 

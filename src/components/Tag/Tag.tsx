@@ -1,20 +1,11 @@
-import React, { PropsWithChildren, useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { mergeClasses } from '@fluentui/react-components';
 import { DismissFilled } from '@fluentui/react-icons';
-import CheckableTag, { CheckableTagProps } from './CheckableTag';
+import CheckableTag from './CheckableTag';
+import type { TagProps, CheckableTagProps } from './types';
 import './index.less';
 
 const prefixCls = 'mm-tag';
-
-export interface TagProps extends PropsWithChildren {
-  closeIcon?: boolean | React.ReactNode;
-  color?: string;
-  bordered?: boolean;
-  className?: string;
-  style?: React.CSSProperties;
-  onClose?: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void;
-  onClick?: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void;
-}
 
 const Tag: React.FC<TagProps> & { CheckableTag?: typeof CheckableTag } = ({ children, ...props }) => {
   const { closeIcon = false, color, bordered = true, className, style, onClick, onClose } = props;
@@ -70,3 +61,4 @@ const TagComponent: TagComponentType = Tag as TagComponentType;
 TagComponent.CheckableTag = CheckableTag;
 
 export default TagComponent;
+export type { TagProps } from './types';

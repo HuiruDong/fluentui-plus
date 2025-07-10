@@ -1,15 +1,10 @@
 import React, { useMemo } from 'react';
-import type { TagProps } from '..';
+import type { CheckableTagProps } from './types';
 import Tag from './Tag';
 import { mergeClasses } from '@fluentui/react-components';
 import './index.less';
 
 const prefixCls = 'mm-checkable-tag';
-
-export interface CheckableTagProps extends Omit<TagProps, 'onClick'> {
-  checked?: boolean;
-  onChange?: (checked: boolean) => void;
-}
 
 const CheckableTag: React.FC<CheckableTagProps> = ({ checked, onChange, children, className, ...props }) => {
   const cs = useMemo(
@@ -25,3 +20,4 @@ const CheckableTag: React.FC<CheckableTagProps> = ({ checked, onChange, children
 };
 
 export default CheckableTag;
+export type { CheckableTagProps } from './types';
