@@ -85,7 +85,6 @@ import InputTag from '@luoluoyu/fluentui-plus/lib/InputTag';
 
 如果你是团队成员或想要为项目贡献代码，请参考以下文档：
 
-- **[使用示例](./docs/USAGE_EXAMPLES.md)** - 实际应用场景和最佳实践示例
 - **[API 参考文档](./docs/API_REFERENCE.md)** - 详细的组件 API 文档和使用示例
 - **[开发规范与工作流指南](./docs/DEVELOPMENT_GUIDE.md)** - 详细的开发规范、提交规范和工作流说明
 - **[快速参考](./docs/QUICK_REFERENCE.md)** - 常用命令和规范的快速参考卡片
