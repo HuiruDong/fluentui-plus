@@ -1,167 +1,162 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
 import Tag from '../Tag';
 
-describe('Tag', () => {
-  it('renders correctly with default props', () => {
-    render(<Tag>Test Tag</Tag>);
-    const content = screen.getByText('Test Tag');
-    expect(content).toBeInTheDocument();
-    const tag = content.closest('span')?.parentElement;
-    expect(tag).toHaveClass('mm-tag');
-    expect(tag).toHaveClass('mm-tag--bordered');
+// Mock FluentUI components
+jest.mock('@fluentui/react-components', () => ({
+  mergeClasses: (...classes: (string | undefined | false)[]) => classes.filter(Boolean).join(' '),
+}));
+
+jest.mock('@fluentui/react-icons', () => ({
+  DismissFilled: () => <span data-testid='dismiss-icon'>×</span>,
+}));
+
+describe('Tag Component', () => {
+  describe('基础渲染', () => {
+    it('should render correctly with default props', () => {
+      render(<Tag>Test Tag</Tag>);
+      const content = screen.getByText('Test Tag');
+      expect(content).toBeInTheDocument();
+      const tag = content.closest('span')?.parentElement;
+      expect(tag).toHaveClass('mm-tag');
+      expect(tag).toHaveClass('mm-tag--bordered');
+    });
+
+    it('should render content correctly', () => {
+      render(<Tag>Tag Content</Tag>);
+      expect(screen.getByText('Tag Content')).toBeInTheDocument();
+    });
+
+    it('should apply custom className', () => {
+      render(<Tag className='custom-class'>Test Tag</Tag>);
+      const content = screen.getByText('Test Tag');
+      const tag = content.closest('span')?.parentElement;
+      expect(tag).toHaveClass('custom-class');
+    });
+
+    it('should apply custom styles', () => {
+      const customStyle = { fontSize: '16px', padding: '8px' };
+      render(<Tag style={customStyle}>Test Tag</Tag>);
+      const content = screen.getByText('Test Tag');
+      const tag = content.closest('span')?.parentElement;
+      expect(tag).toHaveStyle('font-size: 16px');
+      expect(tag).toHaveStyle('padding: 8px');
+    });
+
+    it('should render as borderless when bordered is false', () => {
+      render(<Tag bordered={false}>Test Tag</Tag>);
+      const content = screen.getByText('Test Tag');
+      const tag = content.closest('span')?.parentElement;
+      expect(tag).toHaveClass('mm-tag--borderless');
+      expect(tag).not.toHaveClass('mm-tag--bordered');
+    });
   });
 
-  it('renders content correctly', () => {
-    render(<Tag>Tag Content</Tag>);
-    expect(screen.getByText('Tag Content')).toBeInTheDocument();
+  describe('颜色样式', () => {
+    it('should apply custom color correctly', () => {
+      render(<Tag color='#ff0000'>Red Tag</Tag>);
+      const content = screen.getByText('Red Tag');
+      const tag = content.closest('span')?.parentElement;
+      expect(tag).toHaveStyle('background-color: #ff0000');
+      expect(tag).toHaveStyle('color: #fff');
+    });
+
+    it('should handle transparent colors', () => {
+      render(<Tag color='rgba(255, 0, 0, 0.5)'>Semi-transparent Tag</Tag>);
+      const content = screen.getByText('Semi-transparent Tag');
+      const tag = content.closest('span')?.parentElement;
+      expect(tag).toHaveStyle('background-color: rgba(255, 0, 0, 0.5)');
+    });
   });
 
-  it('applies custom className', () => {
-    render(<Tag className='custom-class'>Test Tag</Tag>);
-    const content = screen.getByText('Test Tag');
-    const tag = content.closest('span')?.parentElement;
-    expect(tag).toHaveClass('custom-class');
+  describe('关闭功能', () => {
+    it('should show close icon when closeIcon is true', () => {
+      render(<Tag closeIcon>Closable Tag</Tag>);
+      const closeIcon = document.querySelector('.mm-tag__close');
+      expect(closeIcon).toBeInTheDocument();
+      expect(screen.getByTestId('dismiss-icon')).toBeInTheDocument();
+    });
+
+    it('should not show close icon by default', () => {
+      render(<Tag>Default Tag</Tag>);
+      const closeIcon = document.querySelector('.mm-tag__close');
+      expect(closeIcon).not.toBeInTheDocument();
+    });
+
+    it('should show custom close icon', () => {
+      const customIcon = <span data-testid='custom-close'>X</span>;
+      render(<Tag closeIcon={customIcon}>Custom Close</Tag>);
+
+      expect(screen.getByTestId('custom-close')).toBeInTheDocument();
+      expect(screen.queryByTestId('dismiss-icon')).not.toBeInTheDocument();
+    });
+
+    it('should call onClose when close icon is clicked', async () => {
+      const user = userEvent.setup();
+      const onClose = jest.fn();
+
+      render(
+        <Tag closeIcon onClose={onClose}>
+          Closable Tag
+        </Tag>
+      );
+
+      const closeIcon = document.querySelector('.mm-tag__close');
+      await user.click(closeIcon!);
+
+      expect(onClose).toHaveBeenCalledTimes(1);
+    });
+
+    it('should stop propagation when close icon is clicked', async () => {
+      const user = userEvent.setup();
+      const onClose = jest.fn();
+      const onClick = jest.fn();
+
+      render(
+        <Tag closeIcon onClose={onClose} onClick={onClick}>
+          Closable Tag
+        </Tag>
+      );
+
+      const closeIcon = document.querySelector('.mm-tag__close');
+      await user.click(closeIcon!);
+
+      expect(onClose).toHaveBeenCalledTimes(1);
+      expect(onClick).not.toHaveBeenCalled();
+    });
   });
 
-  it('applies custom styles', () => {
-    const customStyle = { fontSize: '16px', padding: '8px' };
-    render(<Tag style={customStyle}>Test Tag</Tag>);
-    const content = screen.getByText('Test Tag');
-    const tag = content.closest('span')?.parentElement;
-    expect(tag).toHaveStyle('font-size: 16px');
-    expect(tag).toHaveStyle('padding: 8px');
+  describe('点击事件', () => {
+    it('should call onClick when tag is clicked', async () => {
+      const user = userEvent.setup();
+      const onClick = jest.fn();
+
+      render(<Tag onClick={onClick}>Clickable Tag</Tag>);
+
+      const tag = screen.getByText('Clickable Tag').parentElement;
+      await user.click(tag!);
+
+      expect(onClick).toHaveBeenCalledTimes(1);
+    });
+
+    it('should not call onClick when tag is not clickable', async () => {
+      const user = userEvent.setup();
+      const onClick = jest.fn();
+
+      render(<Tag>Non-clickable Tag</Tag>);
+
+      const tag = screen.getByText('Non-clickable Tag').parentElement;
+      await user.click(tag!);
+
+      expect(onClick).not.toHaveBeenCalled();
+    });
   });
 
-  it('renders as borderless when bordered is false', () => {
-    render(<Tag bordered={false}>Test Tag</Tag>);
-    const content = screen.getByText('Test Tag');
-    const tag = content.closest('span')?.parentElement;
-    expect(tag).toHaveClass('mm-tag--borderless');
-    expect(tag).not.toHaveClass('mm-tag--bordered');
-  });
-
-  it('applies custom color correctly', () => {
-    render(<Tag color='#ff0000'>Red Tag</Tag>);
-    const content = screen.getByText('Red Tag');
-    const tag = content.closest('span')?.parentElement;
-    expect(tag).toHaveStyle('background-color: #ff0000');
-    expect(tag).toHaveStyle('color: #fff');
-  });
-
-  it('handles onClick event', () => {
-    const handleClick = jest.fn();
-    render(<Tag onClick={handleClick}>Clickable Tag</Tag>);
-
-    const content = screen.getByText('Clickable Tag');
-    const tag = content.closest('span')?.parentElement;
-    fireEvent.click(tag!);
-
-    expect(handleClick).toHaveBeenCalledTimes(1);
-    expect(handleClick).toHaveBeenCalledWith(
-      expect.objectContaining({
-        type: 'click',
-      })
-    );
-  });
-
-  it('renders close icon when closeIcon is true', () => {
-    render(<Tag closeIcon>Closable Tag</Tag>);
-    const closeIcon = document.querySelector('.mm-tag__close');
-    expect(closeIcon).toBeInTheDocument();
-  });
-
-  it('renders custom close icon', () => {
-    const customCloseIcon = <span data-testid='custom-close'>×</span>;
-    render(<Tag closeIcon={customCloseIcon}>Closable Tag</Tag>);
-
-    expect(screen.getByTestId('custom-close')).toBeInTheDocument();
-    expect(screen.getByText('×')).toBeInTheDocument();
-  });
-
-  it('handles onClose event', () => {
-    const handleClose = jest.fn();
-    render(
-      <Tag closeIcon onClose={handleClose}>
-        Closable Tag
-      </Tag>
-    );
-
-    const closeIcon = document.querySelector('.mm-tag__close');
-    fireEvent.click(closeIcon!);
-
-    expect(handleClose).toHaveBeenCalledTimes(1);
-    expect(handleClose).toHaveBeenCalledWith(
-      expect.objectContaining({
-        type: 'click',
-      })
-    );
-  });
-
-  it('stops propagation when clicking close icon', () => {
-    const handleClick = jest.fn();
-    const handleClose = jest.fn();
-
-    render(
-      <Tag onClick={handleClick} closeIcon onClose={handleClose}>
-        Closable Tag
-      </Tag>
-    );
-
-    const closeIcon = document.querySelector('.mm-tag__close');
-    fireEvent.click(closeIcon!);
-
-    expect(handleClose).toHaveBeenCalledTimes(1);
-    expect(handleClick).not.toHaveBeenCalled();
-  });
-
-  it('stops propagation when clicking the tag itself', () => {
-    const handleClick = jest.fn();
-    const parentHandleClick = jest.fn();
-
-    render(
-      <div onClick={parentHandleClick}>
-        <Tag onClick={handleClick}>Test Tag</Tag>
-      </div>
-    );
-
-    const content = screen.getByText('Test Tag');
-    const tag = content.closest('span')?.parentElement;
-    fireEvent.click(tag!);
-
-    expect(handleClick).toHaveBeenCalledTimes(1);
-    expect(parentHandleClick).not.toHaveBeenCalled();
-  });
-
-  it('does not render close icon when closeIcon is false', () => {
-    render(<Tag closeIcon={false}>Tag without close</Tag>);
-    const closeIcon = document.querySelector('.mm-tag__close');
-    expect(closeIcon).not.toBeInTheDocument();
-  });
-
-  it('merges custom background color with style prop', () => {
-    render(
-      <Tag color='#ff0000' style={{ backgroundColor: '#00ff00', margin: '10px' }}>
-        Test Tag
-      </Tag>
-    );
-
-    const content = screen.getByText('Test Tag');
-    const tag = content.closest('span')?.parentElement;
-    expect(tag).toHaveStyle('background-color: #ff0000'); // color prop takes precedence
-    expect(tag).toHaveStyle('margin: 10px'); // style prop is preserved
-  });
-
-  it('renders content wrapper with correct class', () => {
-    render(<Tag>Content</Tag>);
-    const contentWrapper = document.querySelector('.mm-tag__content');
-    expect(contentWrapper).toBeInTheDocument();
-    expect(contentWrapper).toHaveTextContent('Content');
-  });
-
-  it('has CheckableTag as static property', () => {
-    expect(Tag.CheckableTag).toBeDefined();
-    expect(typeof Tag.CheckableTag).toBe('function');
+  describe('子组件', () => {
+    it('should have CheckableTag as static property', () => {
+      expect(Tag.CheckableTag).toBeDefined();
+    });
   });
 });

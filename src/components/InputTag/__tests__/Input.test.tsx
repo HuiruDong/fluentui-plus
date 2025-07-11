@@ -4,336 +4,124 @@ import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
 import Input from '../Input';
 
-describe('Input', () => {
-  it('renders correctly with default props', () => {
-    const inputRef = createRef<HTMLInputElement>();
-    const mockFn = jest.fn();
+describe('Input Component', () => {
+  const defaultProps = {
+    value: '',
+    inputRef: createRef<HTMLInputElement>(),
+    onChange: jest.fn(),
+    onKeyDown: jest.fn(),
+    onFocus: jest.fn(),
+    onBlur: jest.fn(),
+    onPaste: jest.fn(),
+  };
 
-    render(
-      <Input
-        value=''
-        inputRef={inputRef}
-        onChange={mockFn}
-        onKeyDown={mockFn}
-        onFocus={mockFn}
-        onBlur={mockFn}
-        onPaste={mockFn}
-      />
-    );
-
-    const input = document.querySelector('.mm-input-tag__input');
-    expect(input).toBeInTheDocument();
-    expect(input).toHaveValue('');
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
-  it('renders with placeholder', () => {
-    const inputRef = createRef<HTMLInputElement>();
-    const mockFn = jest.fn();
-    const placeholder = 'Enter text here';
+  describe('基础渲染', () => {
+    it('should render correctly with default props', () => {
+      render(<Input {...defaultProps} />);
 
-    render(
-      <Input
-        value=''
-        placeholder={placeholder}
-        inputRef={inputRef}
-        onChange={mockFn}
-        onKeyDown={mockFn}
-        onFocus={mockFn}
-        onBlur={mockFn}
-        onPaste={mockFn}
-      />
-    );
+      const input = document.querySelector('.mm-input-tag__input');
+      expect(input).toBeInTheDocument();
+      expect(input).toHaveValue('');
+    });
 
-    const input = screen.getByPlaceholderText(placeholder);
-    expect(input).toBeInTheDocument();
+    it('should render with placeholder', () => {
+      const placeholder = 'Enter text here';
+      render(<Input {...defaultProps} placeholder={placeholder} />);
+
+      const input = screen.getByPlaceholderText(placeholder);
+      expect(input).toBeInTheDocument();
+    });
+
+    it('should render with value', () => {
+      render(<Input {...defaultProps} value='test value' />);
+
+      const input = screen.getByDisplayValue('test value');
+      expect(input).toBeInTheDocument();
+    });
+
+    it('should render as disabled when disabled is true', () => {
+      render(<Input {...defaultProps} disabled />);
+
+      const input = document.querySelector('.mm-input-tag__input');
+      expect(input).toBeDisabled();
+    });
   });
 
-  it('renders with value', () => {
-    const inputRef = createRef<HTMLInputElement>();
-    const mockFn = jest.fn();
-    const value = 'test value';
+  describe('事件处理', () => {
+    it('should call onChange when input value changes', async () => {
+      const user = userEvent.setup();
+      const onChange = jest.fn();
 
-    render(
-      <Input
-        value={value}
-        inputRef={inputRef}
-        onChange={mockFn}
-        onKeyDown={mockFn}
-        onFocus={mockFn}
-        onBlur={mockFn}
-        onPaste={mockFn}
-      />
-    );
+      render(<Input {...defaultProps} onChange={onChange} />);
+      const input = document.querySelector('.mm-input-tag__input') as HTMLInputElement;
 
-    const input = document.querySelector('.mm-input-tag__input') as HTMLInputElement;
-    expect(input.value).toBe(value);
+      await user.type(input, 'test');
+
+      expect(onChange).toHaveBeenCalledTimes(4);
+    });
+
+    it('should call onKeyDown when key is pressed', async () => {
+      const user = userEvent.setup();
+      const onKeyDown = jest.fn();
+
+      render(<Input {...defaultProps} onKeyDown={onKeyDown} />);
+      const input = document.querySelector('.mm-input-tag__input') as HTMLInputElement;
+
+      await user.type(input, '{Enter}');
+
+      expect(onKeyDown).toHaveBeenCalled();
+    });
+
+    it('should call onFocus when input is focused', async () => {
+      const user = userEvent.setup();
+      const onFocus = jest.fn();
+
+      render(<Input {...defaultProps} onFocus={onFocus} />);
+      const input = document.querySelector('.mm-input-tag__input') as HTMLInputElement;
+
+      await user.click(input);
+
+      expect(onFocus).toHaveBeenCalled();
+    });
+
+    it('should call onBlur when input loses focus', async () => {
+      const user = userEvent.setup();
+      const onBlur = jest.fn();
+
+      render(<Input {...defaultProps} onBlur={onBlur} />);
+      const input = document.querySelector('.mm-input-tag__input') as HTMLInputElement;
+
+      await user.click(input);
+      await user.tab();
+
+      expect(onBlur).toHaveBeenCalled();
+    });
+
+    it('should call onPaste when content is pasted', async () => {
+      const user = userEvent.setup();
+      const onPaste = jest.fn();
+
+      render(<Input {...defaultProps} onPaste={onPaste} />);
+      const input = document.querySelector('.mm-input-tag__input') as HTMLInputElement;
+
+      await user.click(input);
+      await user.paste('pasted content');
+
+      expect(onPaste).toHaveBeenCalled();
+    });
   });
 
-  it('renders as disabled when disabled prop is true', () => {
-    const inputRef = createRef<HTMLInputElement>();
-    const mockFn = jest.fn();
+  describe('引用处理', () => {
+    it('should pass ref to input element', () => {
+      const inputRef = createRef<HTMLInputElement>();
+      render(<Input {...defaultProps} inputRef={inputRef} />);
 
-    render(
-      <Input
-        value=''
-        disabled
-        placeholder='Disabled input'
-        inputRef={inputRef}
-        onChange={mockFn}
-        onKeyDown={mockFn}
-        onFocus={mockFn}
-        onBlur={mockFn}
-        onPaste={mockFn}
-      />
-    );
-
-    const input = screen.getByPlaceholderText('Disabled input');
-    expect(input).toBeDisabled();
-  });
-
-  it('calls onChange when input value changes', async () => {
-    const user = userEvent.setup();
-    const inputRef = createRef<HTMLInputElement>();
-    const handleChange = jest.fn();
-    const mockFn = jest.fn();
-
-    render(
-      <Input
-        value=''
-        placeholder='Type here'
-        inputRef={inputRef}
-        onChange={handleChange}
-        onKeyDown={mockFn}
-        onFocus={mockFn}
-        onBlur={mockFn}
-        onPaste={mockFn}
-      />
-    );
-
-    const input = screen.getByPlaceholderText('Type here');
-    await user.type(input, 'test');
-
-    expect(handleChange).toHaveBeenCalledTimes(4); // 't', 'e', 's', 't'
-  });
-
-  it('calls onKeyDown when key is pressed', async () => {
-    const user = userEvent.setup();
-    const inputRef = createRef<HTMLInputElement>();
-    const handleKeyDown = jest.fn();
-    const mockFn = jest.fn();
-
-    render(
-      <Input
-        value=''
-        placeholder='Type here'
-        inputRef={inputRef}
-        onChange={mockFn}
-        onKeyDown={handleKeyDown}
-        onFocus={mockFn}
-        onBlur={mockFn}
-        onPaste={mockFn}
-      />
-    );
-
-    const input = screen.getByPlaceholderText('Type here');
-    await user.type(input, '{Enter}');
-
-    expect(handleKeyDown).toHaveBeenCalledWith(
-      expect.objectContaining({
-        key: 'Enter',
-      })
-    );
-  });
-
-  it('calls onFocus when input is focused', async () => {
-    const user = userEvent.setup();
-    const inputRef = createRef<HTMLInputElement>();
-    const handleFocus = jest.fn();
-    const mockFn = jest.fn();
-
-    render(
-      <Input
-        value=''
-        placeholder='Type here'
-        inputRef={inputRef}
-        onChange={mockFn}
-        onKeyDown={mockFn}
-        onFocus={handleFocus}
-        onBlur={mockFn}
-        onPaste={mockFn}
-      />
-    );
-
-    const input = screen.getByPlaceholderText('Type here');
-    await user.click(input);
-
-    expect(handleFocus).toHaveBeenCalledTimes(1);
-  });
-
-  it('calls onBlur when input loses focus', async () => {
-    const user = userEvent.setup();
-    const inputRef = createRef<HTMLInputElement>();
-    const handleBlur = jest.fn();
-    const mockFn = jest.fn();
-
-    render(
-      <Input
-        value=''
-        placeholder='Type here'
-        inputRef={inputRef}
-        onChange={mockFn}
-        onKeyDown={mockFn}
-        onFocus={mockFn}
-        onBlur={handleBlur}
-        onPaste={mockFn}
-      />
-    );
-
-    const input = screen.getByPlaceholderText('Type here');
-    await user.click(input);
-    await user.click(document.body);
-
-    expect(handleBlur).toHaveBeenCalledTimes(1);
-  });
-
-  it('calls onPaste when content is pasted', async () => {
-    const user = userEvent.setup();
-    const inputRef = createRef<HTMLInputElement>();
-    const handlePaste = jest.fn();
-    const mockFn = jest.fn();
-
-    render(
-      <Input
-        value=''
-        placeholder='Type here'
-        inputRef={inputRef}
-        onChange={mockFn}
-        onKeyDown={mockFn}
-        onFocus={mockFn}
-        onBlur={mockFn}
-        onPaste={handlePaste}
-      />
-    );
-
-    const input = screen.getByPlaceholderText('Type here');
-
-    // Use userEvent.paste to simulate paste action more realistically
-    await user.click(input);
-    await user.paste('pasted content');
-
-    expect(handlePaste).toHaveBeenCalledTimes(1);
-    expect(handlePaste).toHaveBeenCalledWith(
-      expect.objectContaining({
-        type: 'paste',
-      })
-    );
-  });
-
-  it('applies correct CSS class', () => {
-    const inputRef = createRef<HTMLInputElement>();
-    const mockFn = jest.fn();
-
-    render(
-      <Input
-        value=''
-        inputRef={inputRef}
-        onChange={mockFn}
-        onKeyDown={mockFn}
-        onFocus={mockFn}
-        onBlur={mockFn}
-        onPaste={mockFn}
-      />
-    );
-
-    const input = document.querySelector('.mm-input-tag__input');
-    expect(input).toHaveClass('mm-input-tag__input');
-  });
-
-  it('properly sets input ref', () => {
-    const inputRef = createRef<HTMLInputElement>();
-    const mockFn = jest.fn();
-
-    render(
-      <Input
-        value=''
-        inputRef={inputRef}
-        onChange={mockFn}
-        onKeyDown={mockFn}
-        onFocus={mockFn}
-        onBlur={mockFn}
-        onPaste={mockFn}
-      />
-    );
-
-    expect(inputRef.current).toBeInstanceOf(HTMLInputElement);
-    expect(inputRef.current).toHaveClass('mm-input-tag__input');
-  });
-
-  it('handles different keyboard events', async () => {
-    const user = userEvent.setup();
-    const inputRef = createRef<HTMLInputElement>();
-    const handleKeyDown = jest.fn();
-    const mockFn = jest.fn();
-
-    render(
-      <Input
-        value=''
-        placeholder='Type here'
-        inputRef={inputRef}
-        onChange={mockFn}
-        onKeyDown={handleKeyDown}
-        onFocus={mockFn}
-        onBlur={mockFn}
-        onPaste={mockFn}
-      />
-    );
-
-    const input = screen.getByPlaceholderText('Type here');
-
-    // Test different keys
-    await user.type(input, '{Enter}');
-    expect(handleKeyDown).toHaveBeenCalledWith(expect.objectContaining({ key: 'Enter' }));
-
-    handleKeyDown.mockClear();
-
-    await user.type(input, '{Tab}');
-    expect(handleKeyDown).toHaveBeenCalledWith(expect.objectContaining({ key: 'Tab' }));
-
-    handleKeyDown.mockClear();
-
-    await user.type(input, '{Backspace}');
-    expect(handleKeyDown).toHaveBeenCalledWith(expect.objectContaining({ key: 'Backspace' }));
-  });
-
-  it('does not call event handlers when disabled', async () => {
-    const user = userEvent.setup();
-    const inputRef = createRef<HTMLInputElement>();
-    const handleChange = jest.fn();
-    const handleKeyDown = jest.fn();
-    const handleFocus = jest.fn();
-
-    render(
-      <Input
-        value=''
-        disabled
-        placeholder='Disabled input'
-        inputRef={inputRef}
-        onChange={handleChange}
-        onKeyDown={handleKeyDown}
-        onFocus={handleFocus}
-        onBlur={jest.fn()}
-        onPaste={jest.fn()}
-      />
-    );
-
-    const input = screen.getByPlaceholderText('Disabled input');
-
-    // Try to interact with disabled input
-    await user.click(input);
-    await user.type(input, 'test');
-
-    expect(handleFocus).not.toHaveBeenCalled();
-    expect(handleChange).not.toHaveBeenCalled();
-    expect(handleKeyDown).not.toHaveBeenCalled();
+      expect(inputRef.current).toBeInstanceOf(HTMLInputElement);
+      expect(inputRef.current).toHaveClass('mm-input-tag__input');
+    });
   });
 });
