@@ -27,7 +27,7 @@
     "build:lib": "vite build",
     "build:lib:dev": "cross-env NODE_ENV=development vite build",
     "build:lib:prod": "cross-env NODE_ENV=production vite build",
-    "build:types": "tsc --emitDeclarationOnly --outDir dist",
+    "build:types": "tsc --project tsconfig.build.json --emitDeclarationOnly --outDir dist",
     "build:es": "cross-env BUILD_FORMAT=es vite build",
     "build:cjs": "cross-env BUILD_FORMAT=cjs vite build",
     "clean": "rimraf dist",
