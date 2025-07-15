@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { cloneDeep } from 'lodash';
+import { useTagManager } from '@/hooks';
 
 export interface UseInputTagProps {
   value?: string[];
@@ -18,102 +18,63 @@ export const useInputTag = ({
   allowDuplicates = true,
   onTagRemove,
 }: UseInputTagProps) => {
-  const [internalTags, setInternalTags] = useState<string[]>(defaultValue || []);
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
 
-  // 获取当前的标签数组（受控模式严格使用value，非受控模式使用internalTags）
-  const getCurrentTags = useCallback(() => {
-    const tags = value !== undefined ? value : internalTags;
-    return cloneDeep(tags);
-  }, [value, internalTags]);
+  // 使用通用的标签管理 hook
+  const tagManager = useTagManager({
+    value,
+    defaultValue,
+    onChange,
+    maxTags,
+    allowDuplicates,
+  });
 
-  // 添加标签
+  // 重写 getCurrentTags 以支持深拷贝（InputTag 特有需求）
+  const getCurrentTags = useCallback(() => {
+    return tagManager.getCurrentTags();
+  }, [tagManager]);
+
+  // 重写 addTag 以保持原有的行为
   const addTag = useCallback(
     (tag: string) => {
-      if (!tag.trim()) return false;
-
-      const currentTags = getCurrentTags();
-
-      // 检查最大标签数量限制
-      if (maxTags !== undefined && currentTags.length >= maxTags) {
-        return false;
-      }
-
-      // 检查是否允许重复标签
-      if (!allowDuplicates && currentTags.includes(tag)) {
-        return false;
-      }
-
-      const newTags = [...currentTags, tag.trim()];
-      if (value === undefined) {
-        setInternalTags(newTags);
-      }
-      onChange?.(newTags);
-      return true;
+      return tagManager.addTag(tag);
     },
-    [getCurrentTags, maxTags, allowDuplicates, value, onChange]
+    [tagManager]
   );
 
-  // 删除标签
+  // 扩展 removeTag 以支持删除回调和删除状态
   const removeTag = useCallback(
     (indexToRemove: number) => {
       setIsDeleting(true);
 
-      let tagsToModify: string[];
-      if (value !== undefined) {
-        tagsToModify = cloneDeep(value);
-      } else {
-        tagsToModify = cloneDeep(internalTags);
-      }
-
-      if (indexToRemove < 0 || indexToRemove >= tagsToModify.length) {
+      // 获取要删除的标签
+      const currentTags = getCurrentTags();
+      if (indexToRemove < 0 || indexToRemove >= currentTags.length) {
         setIsDeleting(false);
         return false;
       }
 
-      const tagToRemove = tagsToModify[indexToRemove];
-      const newTags = [...tagsToModify.slice(0, indexToRemove), ...tagsToModify.slice(indexToRemove + 1)];
+      const tagToRemove = currentTags[indexToRemove];
 
-      if (value === undefined) {
-        setInternalTags(newTags);
+      // 调用基础的删除操作
+      const result = tagManager.removeTag(indexToRemove);
+
+      if (result) {
+        onTagRemove?.(tagToRemove, indexToRemove);
       }
-
-      onChange?.(newTags);
-      onTagRemove?.(tagToRemove, indexToRemove);
 
       setTimeout(() => setIsDeleting(false), 0);
-      return true;
+      return result;
     },
-    [value, internalTags, onChange, onTagRemove]
+    [tagManager, getCurrentTags, onTagRemove]
   );
 
-  // 批量添加标签（用于粘贴功能）
+  // 重写 addMultipleTags 以保持原有的行为
   const addMultipleTags = useCallback(
     (tags: string[]) => {
-      const newTags = [...getCurrentTags()];
-      let addedCount = 0;
-
-      tags.forEach(tag => {
-        const trimmedTag = tag.trim();
-        if (!trimmedTag) return;
-
-        if (maxTags !== undefined && newTags.length >= maxTags) return;
-        if (allowDuplicates || !newTags.includes(trimmedTag)) {
-          newTags.push(trimmedTag);
-          addedCount++;
-        }
-      });
-
-      if (addedCount > 0) {
-        if (value === undefined) {
-          setInternalTags(newTags);
-        }
-        onChange?.(newTags);
-      }
-
-      return addedCount;
+      return tagManager.addMultipleTags(tags);
     },
-    [getCurrentTags, maxTags, allowDuplicates, value, onChange]
+    [tagManager]
   );
 
   return {

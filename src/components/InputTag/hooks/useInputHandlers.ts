@@ -1,4 +1,5 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
+import { useInputValue } from '@/hooks';
 
 export interface UseInputHandlersProps {
   onInputChange?: (value: string) => void;
@@ -19,9 +20,12 @@ export const useInputHandlers = ({
   isDeleting,
   delimiter,
 }: UseInputHandlersProps) => {
-  const [inputValue, setInputValue] = useState<string>('');
-  const [isFocused, setIsFocused] = useState<boolean>(false);
-  // 处理输入变化
+  // 使用通用的输入值管理 hook
+  const inputManager = useInputValue({
+    onInputChange,
+  });
+
+  // 扩展的输入变化处理（包含分隔符处理）
   const handleInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const newValue = e.target.value;
@@ -57,31 +61,31 @@ export const useInputHandlers = ({
 
           if (tagsToAdd.length > 0) {
             addMultipleTags(tagsToAdd);
-            setInputValue(remainingText);
+            inputManager.setInputValue(remainingText);
             onInputChange?.(remainingText);
             return;
           }
         }
       }
 
-      setInputValue(newValue);
-      onInputChange?.(newValue);
+      // 使用通用的输入处理
+      inputManager.handleInputChange(e);
     },
-    [onInputChange, delimiter, addMultipleTags]
+    [onInputChange, delimiter, addMultipleTags, inputManager]
   ); // 处理按键事件
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
       const currentTags = getCurrentTags();
 
-      if (e.key === 'Enter' && inputValue) {
+      if (e.key === 'Enter' && inputManager.inputValue) {
         e.preventDefault();
-        addTag(inputValue);
-        setInputValue('');
-      } else if (e.key === 'Backspace' && !inputValue && currentTags.length > 0) {
+        addTag(inputManager.inputValue);
+        inputManager.setInputValue('');
+      } else if (e.key === 'Backspace' && !inputManager.inputValue && currentTags.length > 0) {
         removeTag(currentTags.length - 1);
       }
     },
-    [inputValue, getCurrentTags, addTag, removeTag]
+    [inputManager.inputValue, getCurrentTags, addTag, removeTag, inputManager]
   ); // 处理粘贴事件
   const handlePaste = useCallback(
     (e: React.ClipboardEvent<HTMLInputElement>) => {
@@ -102,36 +106,37 @@ export const useInputHandlers = ({
         const validTags = tags.map(tag => tag.trim()).filter(tag => tag);
 
         if (addMultipleTags(validTags) > 0) {
-          setInputValue('');
+          inputManager.setInputValue('');
         }
       }
     },
-    [addMultipleTags, delimiter]
+    [addMultipleTags, delimiter, inputManager]
   );
+
   // 处理整个组件失焦事件
   const handleContainerBlur = useCallback(
     (e: React.FocusEvent<HTMLDivElement>) => {
       if (!e.currentTarget.contains(e.relatedTarget as Node)) {
-        setIsFocused(false);
+        inputManager.setIsFocused(false);
 
-        if (inputValue && !isDeleting) {
-          addTag(inputValue);
-          setInputValue('');
+        if (inputManager.inputValue && !isDeleting) {
+          addTag(inputManager.inputValue);
+          inputManager.setInputValue('');
         }
       }
     },
-    [inputValue, isDeleting, addTag]
+    [inputManager, isDeleting, addTag]
   );
-  // 处理输入框失焦事件
 
+  // 处理输入框失焦事件
   const handleInputBlur = useCallback((_: React.FocusEvent<HTMLInputElement>) => {
     // 移除了 inputProps?.onBlur?.(e) 调用
   }, []);
 
   return {
-    inputValue,
-    isFocused,
-    setIsFocused,
+    inputValue: inputManager.inputValue,
+    isFocused: inputManager.isFocused,
+    setIsFocused: inputManager.setIsFocused,
     handleInputChange,
     handleKeyDown,
     handlePaste,
