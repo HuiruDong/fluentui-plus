@@ -62,6 +62,94 @@ const SelectDemo: React.FC = () => {
           placeholder='请选择'
         />
       </div>
+
+      <div style={{ marginBottom: '20px' }}>
+        <h4>自定义选项渲染 (optionRender)</h4>
+        <Select
+          options={options}
+          style={{ width: '250px' }}
+          placeholder='请选择'
+          optionRender={option => (
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                padding: '8px 12px',
+                background: option.disabled ? '#f5f5f5' : 'transparent',
+              }}
+            >
+              <div
+                style={{
+                  width: '8px',
+                  height: '8px',
+                  borderRadius: '50%',
+                  backgroundColor: option.disabled ? '#ccc' : '#0078d4',
+                  marginRight: '8px',
+                }}
+              />
+              <span
+                style={{
+                  fontWeight: option.value === 'option1' ? 'bold' : 'normal',
+                  color: option.disabled ? '#999' : '#000',
+                }}
+              >
+                {option.label}
+              </span>
+              {option.value === 'option1' && (
+                <span
+                  style={{
+                    marginLeft: '8px',
+                    fontSize: '12px',
+                    color: '#0078d4',
+                    fontWeight: 'normal',
+                  }}
+                >
+                  (推荐)
+                </span>
+              )}
+            </div>
+          )}
+        />
+      </div>
+
+      <div style={{ marginBottom: '20px' }}>
+        <h4>自定义弹窗内容 (popupRender)</h4>
+        <Select
+          options={options}
+          style={{ width: '250px' }}
+          placeholder='请选择'
+          popupRender={originNode => (
+            <div>
+              <div
+                style={{
+                  padding: '8px 12px',
+                  borderBottom: '1px solid #e0e0e0',
+                  background: '#f8f9fa',
+                  fontSize: '12px',
+                  color: '#666',
+                }}
+              >
+                共 {options.length} 个选项
+              </div>
+              {originNode}
+              <div
+                style={{
+                  padding: '8px 12px',
+                  borderTop: '1px solid #e0e0e0',
+                  background: '#f8f9fa',
+                  fontSize: '12px',
+                  color: '#666',
+                  textAlign: 'center',
+                }}
+              >
+                <a href='#' style={{ color: '#0078d4', textDecoration: 'none' }}>
+                  查看更多选项
+                </a>
+              </div>
+            </div>
+          )}
+        />
+      </div>
     </div>
   );
 };

@@ -18,6 +18,8 @@ const Select: React.FC<SelectProps> = ({
   options = [],
   placeholder,
   onChange,
+  optionRender,
+  popupRender,
 }) => {
   // 内部状态管理
   const [internalValue, setInternalValue] = useState<string | number | undefined>(defaultValue);
@@ -59,6 +61,20 @@ const Select: React.FC<SelectProps> = ({
       }
     },
     [value, open, onChange]
+  );
+
+  // 缓存 Options 组件
+  const optionsNode = useMemo(
+    () => (
+      <Options
+        options={options}
+        value={currentValue}
+        listHeight={listHeight}
+        onOptionClick={handleOptionClick}
+        optionRender={optionRender}
+      />
+    ),
+    [options, currentValue, listHeight, handleOptionClick, optionRender]
   );
 
   // 处理选择器点击
@@ -122,7 +138,7 @@ const Select: React.FC<SelectProps> = ({
         </PopoverTrigger>
 
         <PopoverSurface ref={popoverSurfaceRef} className='popoverSurface'>
-          <Options options={options} value={currentValue} listHeight={listHeight} onOptionClick={handleOptionClick} />
+          {popupRender ? popupRender(optionsNode) : optionsNode}
         </PopoverSurface>
       </Popover>
     </div>

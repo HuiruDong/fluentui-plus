@@ -18,4 +18,6 @@ export interface SelectProps {
   options?: Option[];
   placeholder?: string;
   onChange?: (value: string | number, option: Option) => void; // 值变化回调
+  optionRender?: (option: Option) => React.ReactNode; // 自定义渲染下拉选项
+  popupRender?: (originNode: React.ReactNode) => React.ReactNode; // 自定义下拉框内容
 }

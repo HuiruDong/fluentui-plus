@@ -7,9 +7,10 @@ interface OptionsProps {
   value?: string | number;
   listHeight?: number;
   onOptionClick?: (option: Option) => void;
+  optionRender?: (option: Option) => React.ReactNode;
 }
 
-const Options: React.FC<OptionsProps> = ({ options = [], value, listHeight = 256, onOptionClick }) => {
+const Options: React.FC<OptionsProps> = ({ options = [], value, listHeight = 256, onOptionClick, optionRender }) => {
   const handleOptionClick = (option: Option) => {
     if (option.disabled) return;
     onOptionClick?.(option);
@@ -31,10 +32,14 @@ const Options: React.FC<OptionsProps> = ({ options = [], value, listHeight = 256
               title={option.title ?? option.label}
               onClick={() => handleOptionClick(option)}
             >
-              <div className='mm-select__option-content'>
-                <div className='mm-select__option-checkmark'>{isSelected && <CheckmarkRegular />}</div>
-                <span className='mm-select__option-label'>{option.label || option.value}</span>
-              </div>
+              {optionRender ? (
+                optionRender(option)
+              ) : (
+                <div className='mm-select__option-content'>
+                  <div className='mm-select__option-checkmark'>{isSelected && <CheckmarkRegular />}</div>
+                  <span className='mm-select__option-label'>{option.label || option.value}</span>
+                </div>
+              )}
             </div>
           );
         })
