@@ -44,7 +44,7 @@ export default defineConfig({
     preprocessorOptions: {
       less: {
         javascriptEnabled: true,
-        additionalData: `@import "${resolve(__dirname, 'src/styles/variables.less')}";`,
+        additionalData: `@import "${resolve(__dirname, 'src/styles/variables.less')}"; @import "${resolve(__dirname, 'src/styles/mixins.less')}";`,
         modifyVars: {
           // 可以在这里添加全局 Less 变量
         },

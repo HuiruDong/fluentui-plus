@@ -6,35 +6,11 @@
   font-size: @font-size-300;
 
   &__selector {
-    position: relative;
-    border: @stroke-width-thin solid @color-neutral-stroke-1;
-    border-radius: @border-radius-medium;
-    border-bottom-color: @color-neutral-stroke-accessible;
-    transition: all 0.2s ease;
-    outline: none;
+    .form-control-base();
     overflow: hidden;
 
-    &::after {
-      content: "";
-      position: absolute;
-      inset: auto 0 0 0;
-      height: max(2px, @border-radius-medium);
-      border-bottom: @stroke-width-thick solid @color-compound-brand-stroke;
-      border-radius: 0 0 @border-radius-medium @border-radius-medium;
-      box-sizing: border-box;
-      clip-path: inset(calc(100% - 2px) 0px 0px);
-      transform: scaleX(0);
-      transition: transform @duration-ultra-fast @curve-accelerate-mid;
-    }
-
-    &:focus-within::after {
-      transform: scaleX(1);
-      transition: transform @duration-normal @curve-decelerate-mid;
-    }
-
     &--disabled {
-      cursor: not-allowed;
-      border-color: @color-neutral-stroke-disabled;
+      .form-control-disabled();
 
       .mm-select__selector-inner {
         cursor: not-allowed;
@@ -51,10 +27,6 @@
 
       .mm-select__selector-arrow {
         color: @color-neutral-foreground-disabled;
-      }
-
-      &::after {
-        display: none;
       }
     }
   }

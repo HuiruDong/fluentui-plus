@@ -1,0 +1,74 @@
+// FluentUI Plus Mixins
+// 样式混合，提供可复用的样式模式
+
+// ==================== 表单控件通用样式 ====================
+
+/**
+ * 表单控件 Focus 边框效果
+ *
+ * 使用要求：
+ * 1. 容器必须设置 position: relative
+ * 2. 容器必须有 border-radius 属性
+ * 3. 容器内部必须有可聚焦元素（支持 :focus-within）
+ *
+ * 适用组件：Select、InputTag、Input、Textarea 等表单控件
+ */
+.form-control-focus-border() {
+  // 确保基础定位
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 0 0;
+    height: max(2px, @border-radius-medium);
+    border-bottom: @stroke-width-thick solid @color-compound-brand-stroke;
+    border-radius: 0 0 @border-radius-medium @border-radius-medium;
+    box-sizing: border-box;
+    clip-path: inset(calc(100% - 2px) 0px 0px);
+    transform: scaleX(0);
+    transition: transform @duration-ultra-fast @curve-accelerate-mid;
+  }
+
+  &:focus-within::after {
+    transform: scaleX(1);
+    transition: transform @duration-normal @curve-decelerate-mid;
+  }
+}
+
+/**
+ * 表单控件禁用状态
+ *
+ * 使用要求：
+ * 1. 配合 form-control-focus-border 使用
+ * 2. 需要在 --disabled 修饰符上调用
+ */
+.form-control-disabled() {
+  cursor: not-allowed;
+  border-color: @color-neutral-stroke-disabled;
+
+  &::after {
+    display: none;
+  }
+}
+
+/**
+ * 表单控件基础样式
+ *
+ * 包含边框、圆角、过渡效果和 focus 边框效果
+ * 适用于需要完整表单控件样式的元素
+ */
+.form-control-base() {
+  border: @stroke-width-thin solid @color-neutral-stroke-1;
+  border-radius: @border-radius-medium;
+  border-bottom-color: @color-neutral-stroke-accessible;
+  transition: all 0.2s ease;
+  outline: none;
+  background: @color-neutral-background-1;
+
+  .form-control-focus-border();
+
+  &--disabled {
+    .form-control-disabled();
+  }
+}
