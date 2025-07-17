@@ -24,3 +24,7 @@ export type { InputTagProps } from './InputTag';
 // Nav 组件
 export { Nav } from './Nav';
 export type { NavProps, NavItemType } from './Nav';
+
+// Select 组件
+export { Select } from './Select';
+export type { SelectProps } from './Select';
