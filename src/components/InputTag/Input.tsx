@@ -13,11 +13,16 @@ const Input: React.FC<InputProps> = ({
   onFocus,
   onBlur,
   onPaste,
+  className,
+  style,
 }) => {
+  const inputClassName = className ? `${prefixCls} ${className}` : prefixCls;
+
   return (
     <input
       ref={inputRef}
-      className={prefixCls}
+      className={inputClassName}
+      style={style}
       value={value}
       onChange={onChange}
       onKeyDown={onKeyDown}

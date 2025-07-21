@@ -4,17 +4,53 @@ import type { Option } from '@/components/Select/types';
 
 const SelectDemo: React.FC = () => {
   const [value, setValue] = useState<string | number>();
+  const [multipleValue, setMultipleValue] = useState<(string | number)[]>([]);
+  const [searchValue, setSearchValue] = useState<string | number>();
+  const [multipleSearchValue, setMultipleSearchValue] = useState<(string | number)[]>([]);
 
   const options: Option[] = [
     { value: 'option1', label: '选项1选项1选项1选项1选项1选项1选项1选项1选项1选项1选项1选项1' },
     { value: 'option2', label: '选项2' },
     { value: 'option3', label: '选项3', disabled: true },
     { value: 'option4', label: '选项4', title: '这是选项4的提示' },
+    { value: 'option5', label: '选项5' },
+    { value: 'option6', label: '选项6' },
+    { value: 'option7', label: '选项7' },
+    { value: 'option8', label: '选项8' },
   ];
 
-  const handleChange = (value: string | number, option: Option) => {
+  const handleChange = (value: string | number | (string | number)[], option: Option) => {
     console.log('Selected:', value, option);
-    setValue(value);
+    if (Array.isArray(value)) {
+      setMultipleValue(value);
+    } else {
+      setValue(value);
+    }
+  };
+
+  const handleMultipleChange = (value: string | number | (string | number)[], option: Option) => {
+    console.log('Multiple Selected:', value, option);
+    if (Array.isArray(value)) {
+      setMultipleValue(value);
+    }
+  };
+
+  const handleSearchChange = (value: string | number | (string | number)[], option: Option) => {
+    console.log('Search Selected:', value, option);
+    if (!Array.isArray(value)) {
+      setSearchValue(value);
+    }
+  };
+
+  const handleMultipleSearchChange = (value: string | number | (string | number)[], option: Option) => {
+    console.log('Multiple Search Selected:', value, option);
+    if (Array.isArray(value)) {
+      setMultipleSearchValue(value);
+    }
+  };
+
+  const handleSearch = (searchTerm: string) => {
+    console.log('Search:', searchTerm);
   };
 
   return (
@@ -39,8 +75,55 @@ const SelectDemo: React.FC = () => {
       </div>
 
       <div style={{ marginBottom: '20px' }}>
+        <h4>多选模式</h4>
+        <Select
+          multiple
+          value={multipleValue}
+          placeholder='请选择多个选项'
+          options={options}
+          onChange={handleMultipleChange}
+          style={{ width: '300px' }}
+        />
+        <p>当前值: {JSON.stringify(multipleValue)}</p>
+      </div>
+
+      <div style={{ marginBottom: '20px' }}>
+        <h4>搜索模式</h4>
+        <Select
+          showSearch
+          value={searchValue}
+          placeholder='请搜索选项'
+          options={options}
+          onChange={handleSearchChange}
+          onSearch={handleSearch}
+          style={{ width: '200px' }}
+        />
+        <p>当前值: {searchValue}</p>
+      </div>
+
+      <div style={{ marginBottom: '20px' }}>
+        <h4>多选 + 搜索模式</h4>
+        <Select
+          multiple
+          showSearch
+          value={multipleSearchValue}
+          placeholder='请搜索并选择多个选项'
+          options={options}
+          onChange={handleMultipleSearchChange}
+          onSearch={handleSearch}
+          style={{ width: '350px' }}
+        />
+        <p>当前值: {JSON.stringify(multipleSearchValue)}</p>
+      </div>
+
+      <div style={{ marginBottom: '20px' }}>
         <h4>默认值</h4>
         <Select defaultValue='option2' options={options} style={{ width: '200px' }} />
+      </div>
+
+      <div style={{ marginBottom: '20px' }}>
+        <h4>多选默认值</h4>
+        <Select multiple defaultValue={['option1', 'option2']} options={options} style={{ width: '300px' }} />
       </div>
 
       <div style={{ marginBottom: '20px' }}>
@@ -51,7 +134,7 @@ const SelectDemo: React.FC = () => {
       <div style={{ marginBottom: '20px' }}>
         <h4>自定义列表高度</h4>
         <Select
-          listHeight={400}
+          listHeight={100}
           options={[
             ...options,
             { value: 'option5', label: '选项5' },

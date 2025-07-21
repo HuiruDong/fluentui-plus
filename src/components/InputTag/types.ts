@@ -31,6 +31,10 @@ export interface InputProps extends BaseInputTagProps {
   onFocus: () => void;
   onBlur: (e: React.FocusEvent<HTMLInputElement>) => void;
   onPaste: (e: React.ClipboardEvent<HTMLInputElement>) => void;
+  /** 自定义样式类名 */
+  className?: string;
+  /** 自定义内联样式 */
+  style?: React.CSSProperties;
 }
 
 // 标签列表内部组件的属性

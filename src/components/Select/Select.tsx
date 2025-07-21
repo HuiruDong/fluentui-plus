@@ -1,8 +1,8 @@
-import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react';
+import React, { useCallback,  useRef } from 'react';
 import type { SelectProps, Option } from './types';
-import { Popover, PopoverTrigger, PopoverSurface } from '@fluentui/react-components';
 import Selector from './Selector';
-import Options from './Options';
+import Listbox from './Listbox';
+import { useSelect, useSelectOptions } from './hooks';
 import './index.less';
 
 const prefixCls = 'mm-select';
@@ -17,64 +17,57 @@ const Select: React.FC<SelectProps> = ({
   open,
   options = [],
   placeholder,
+  multiple = false,
+  showSearch = false,
   onChange,
+  onSearch,
+  filterOption,
   optionRender,
   popupRender,
 }) => {
-  // 内部状态管理
-  const [internalValue, setInternalValue] = useState<string | number | undefined>(defaultValue);
-  const [internalOpen, setInternalOpen] = useState(false);
+  // 使用专用 hook 管理状态
+  const selectState = useSelect({
+    value,
+    defaultValue,
+    multiple,
+    showSearch,
+    options,
+    onChange,
+    onSearch,
+    filterOption,
+  });
+
+  // 使用搜索和选项处理 hook
+  const optionsState = useSelectOptions({
+    options,
+    searchValue: selectState.inputManager.inputValue,
+    filterOption,
+    showSearch,
+  });
 
   // 引用相关元素
   const selectorRef = useRef<HTMLDivElement>(null);
-  const popoverSurfaceRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  // 当前值（受控/非受控）
-  const currentValue = value !== undefined ? value : internalValue;
-
-  // 当前展开状态（受控/非受控），禁用时强制关闭
-  const currentOpen = disabled ? false : open !== undefined ? open : internalOpen;
-
-  // 根据当前值找到对应的选项
-  const selectedOption = useMemo(() => {
-    return options.find(option => option.value === currentValue);
-  }, [options, currentValue]);
+  // 当前值和展开状态
+  const currentValue = selectState.getCurrentValue();
+  const currentOpen = disabled ? false : open !== undefined ? open : selectState.internalOpen;
+  const selectedOptions = selectState.getSelectedOptions();
 
   // 处理选项点击
   const handleOptionClick = useCallback(
     (option: Option) => {
       if (option.disabled) return;
+      selectState.handleOptionSelect(option);
 
-      // 更新内部状态
-      if (value === undefined) {
-        setInternalValue(option.value);
-      }
-
-      // 关闭下拉菜单
-      if (open === undefined) {
-        setInternalOpen(false);
-      }
-
-      // 调用回调
-      if (onChange && option.value !== undefined) {
-        onChange(option.value, option);
+      // 多选+搜索模式下，选择选项后重新聚焦输入框
+      if (multiple && showSearch) {
+        setTimeout(() => {
+          inputRef.current?.focus();
+        }, 0);
       }
     },
-    [value, open, onChange]
-  );
-
-  // 缓存 Options 组件
-  const optionsNode = useMemo(
-    () => (
-      <Options
-        options={options}
-        value={currentValue}
-        listHeight={listHeight}
-        onOptionClick={handleOptionClick}
-        optionRender={optionRender}
-      />
-    ),
-    [options, currentValue, listHeight, handleOptionClick, optionRender]
+    [selectState, multiple, showSearch]
   );
 
   // 处理选择器点击
@@ -82,65 +75,96 @@ const Select: React.FC<SelectProps> = ({
     if (disabled) return;
 
     if (open === undefined) {
-      setInternalOpen(!internalOpen);
+      selectState.handleSelectorClick();
     }
-  }, [disabled, open, internalOpen]);
 
-  // 处理弹窗状态变化
-  const handleOpenChange = useCallback(
-    (event: any, data: { open: boolean }) => {
-      if (disabled) return;
+    // 搜索模式下异步聚焦输入框
+    if (showSearch) {
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 0);
+    }
+  }, [disabled, open, showSearch, selectState]);
 
-      if (open === undefined) {
-        setInternalOpen(data.open);
-      }
+  // 处理弹窗关闭
+  const handleClose = useCallback(() => {
+    if (disabled) return;
+
+    if (open === undefined) {
+      selectState.setInternalOpen(false);
+    }
+
+    // 失焦时处理
+    selectState.handleBlur();
+  }, [disabled, open, selectState]);
+
+  // 处理搜索输入变化
+  const handleSearchChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      selectState.inputManager.handleInputChange(e);
     },
-    [disabled, open]
+    [selectState.inputManager]
   );
 
-  // 使用 ResizeObserver 监听 selector 宽度变化并同步到 PopoverSurface
-  useEffect(() => {
-    const selectorElement = selectorRef.current;
-    const popoverSurfaceElement = popoverSurfaceRef.current;
+  // 处理搜索聚焦
+  const handleSearchFocus = useCallback(() => {
+    selectState.inputManager.setIsFocused(true);
+  }, [selectState.inputManager]);
 
-    if (!selectorElement || !popoverSurfaceElement) return;
+  // 处理搜索失焦
+  const handleSearchBlur = useCallback(() => {
+    selectState.inputManager.setIsFocused(false);
+  }, [selectState.inputManager]);
 
-    const resizeObserver = new ResizeObserver(entries => {
-      for (const entry of entries) {
-        const { width } = entry.contentRect;
-        popoverSurfaceElement.style.width = `${width}px`;
-      }
-    });
+  // 处理标签删除（多选模式）
+  const handleTagRemove = useCallback(
+    (tag: string, index: number) => {
+      selectState.handleTagRemove(tag, index);
+    },
+    [selectState]
+  );
 
-    resizeObserver.observe(selectorElement);
-
-    return () => {
-      resizeObserver.disconnect();
-    };
-  }, [currentOpen]); // 当弹窗状态改变时重新执行，确保在弹窗打开时能正确设置宽度
+  // 使用过滤后的选项
+  const displayOptions = optionsState.processedOptions;
 
   return (
     <div className={`${prefixCls} ${className || ''}`} style={style}>
-      <Popover open={currentOpen} onOpenChange={handleOpenChange} positioning='below'>
-        <PopoverTrigger disableButtonEnhancement>
-          <div
-            ref={selectorRef}
-            className={`${prefixCls}__selector ${disabled ? ` ${prefixCls}__selector--disabled` : ''}`}
-          >
-            <Selector
-              value={currentValue}
-              placeholder={placeholder}
-              disabled={disabled}
-              selectedOption={selectedOption}
-              onClick={handleSelectorClick}
-            />
-          </div>
-        </PopoverTrigger>
+      <div
+        ref={selectorRef}
+        className={`${prefixCls}__selector ${disabled ? `${prefixCls}__selector--disabled` : ''} ${
+          multiple ? `${prefixCls}__selector--multiple` : ''
+        }`}
+      >
+        <Selector
+          value={currentValue}
+          placeholder={placeholder}
+          disabled={disabled}
+          selectedOptions={selectedOptions}
+          onClick={handleSelectorClick}
+          multiple={multiple}
+          showSearch={showSearch}
+          searchValue={selectState.inputManager.inputValue}
+          onSearchChange={handleSearchChange}
+          onSearchFocus={handleSearchFocus}
+          onSearchBlur={handleSearchBlur}
+          onTagRemove={handleTagRemove}
+          inputRef={showSearch ? inputRef : undefined}
+          isOpen={currentOpen}
+        />
+      </div>
 
-        <PopoverSurface ref={popoverSurfaceRef} className='popoverSurface'>
-          {popupRender ? popupRender(optionsNode) : optionsNode}
-        </PopoverSurface>
-      </Popover>
+      <Listbox
+        isOpen={currentOpen}
+        triggerRef={selectorRef}
+        onClose={handleClose}
+        options={displayOptions}
+        value={currentValue}
+        listHeight={listHeight}
+        multiple={multiple}
+        onOptionClick={handleOptionClick}
+        optionRender={optionRender}
+        popupRender={popupRender}
+      />
     </div>
   );
 };
