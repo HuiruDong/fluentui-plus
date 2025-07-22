@@ -1,0 +1,16 @@
+{
+  "name": "mcp-server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "MCP server for Fluentui Plus automation",
+  "type": "module",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.16.0"
+  }
+}
