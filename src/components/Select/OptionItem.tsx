@@ -1,16 +1,8 @@
 import React from 'react';
-import type { Option } from './types';
+import { mergeClasses } from '@fluentui/react-components';
+import type { OptionItemProps } from './types';
 import { CheckmarkRegular } from '@fluentui/react-icons';
 import { Checkbox } from '@fluentui/react-components';
-
-interface OptionItemProps {
-  option: Option;
-  index: number;
-  isSelected: boolean;
-  multiple?: boolean;
-  onOptionClick?: (option: Option) => void;
-  optionRender?: (option: Option) => React.ReactNode;
-}
 
 const OptionItem: React.FC<OptionItemProps> = ({
   option,
@@ -19,6 +11,7 @@ const OptionItem: React.FC<OptionItemProps> = ({
   multiple = false,
   onOptionClick,
   optionRender,
+  prefixCls,
 }) => {
   const handleClick = () => {
     if (option.disabled) return;
@@ -30,22 +23,26 @@ const OptionItem: React.FC<OptionItemProps> = ({
   return (
     <div
       key={option.value !== undefined ? option.value : index}
-      className={`mm-select__option ${multiple ? 'mm-select__option--multiple' : ''} ${isDisabled ? 'mm-select__option--disabled' : ''}`}
+      className={mergeClasses(
+        `${prefixCls}__option`,
+        multiple && `${prefixCls}__option--multiple`,
+        isDisabled && `${prefixCls}__option--disabled`
+      )}
       title={option.title ?? option.label}
       onClick={handleClick}
     >
       {optionRender ? (
         optionRender(option)
       ) : (
-        <div className='mm-select__option-content'>
+        <div className={mergeClasses(`${prefixCls}__option-content`)}>
           {multiple ? (
-            <div className='mm-select__option-checkbox'>
+            <div className={mergeClasses(`${prefixCls}__option-checkbox`)}>
               <Checkbox checked={isSelected} disabled={isDisabled} />
             </div>
           ) : (
-            <div className='mm-select__option-checkmark'>{isSelected && <CheckmarkRegular />}</div>
+            <div className={mergeClasses(`${prefixCls}__option-checkmark`)}>{isSelected && <CheckmarkRegular />}</div>
           )}
-          <span className='mm-select__option-label'>{option.label || option.value}</span>
+          <span className={mergeClasses(`${prefixCls}__option-label`)}>{option.label || option.value}</span>
         </div>
       )}
     </div>

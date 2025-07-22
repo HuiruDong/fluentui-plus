@@ -1,8 +1,9 @@
-import React, { useCallback,  useRef } from 'react';
+import React, { useCallback, useRef } from 'react';
+import { mergeClasses } from '@fluentui/react-components';
 import type { SelectProps, Option } from './types';
 import Selector from './Selector';
 import Listbox from './Listbox';
-import { useSelect, useSelectOptions } from './hooks';
+import { useSelect } from './hooks';
 import './index.less';
 
 const prefixCls = 'mm-select';
@@ -25,24 +26,17 @@ const Select: React.FC<SelectProps> = ({
   optionRender,
   popupRender,
 }) => {
-  // 使用专用 hook 管理状态
+  // 使用重构后的新 hook 管理状态
   const selectState = useSelect({
     value,
     defaultValue,
     multiple,
     showSearch,
+    open,
     options,
     onChange,
     onSearch,
     filterOption,
-  });
-
-  // 使用搜索和选项处理 hook
-  const optionsState = useSelectOptions({
-    options,
-    searchValue: selectState.inputManager.inputValue,
-    filterOption,
-    showSearch,
   });
 
   // 引用相关元素
@@ -51,7 +45,7 @@ const Select: React.FC<SelectProps> = ({
 
   // 当前值和展开状态
   const currentValue = selectState.getCurrentValue();
-  const currentOpen = disabled ? false : open !== undefined ? open : selectState.internalOpen;
+  const currentOpen = disabled ? false : selectState.isOpen;
   const selectedOptions = selectState.getSelectedOptions();
 
   // 处理选项点击
@@ -90,13 +84,9 @@ const Select: React.FC<SelectProps> = ({
   const handleClose = useCallback(() => {
     if (disabled) return;
 
-    if (open === undefined) {
-      selectState.setInternalOpen(false);
-    }
-
-    // 失焦时处理
+    selectState.closeDropdown();
     selectState.handleBlur();
-  }, [disabled, open, selectState]);
+  }, [disabled, selectState]);
 
   // 处理搜索输入变化
   const handleSearchChange = useCallback(
@@ -124,16 +114,18 @@ const Select: React.FC<SelectProps> = ({
     [selectState]
   );
 
-  // 使用过滤后的选项
-  const displayOptions = optionsState.processedOptions;
+  // 使用重构后的过滤选项
+  const displayOptions = selectState.filteredOptions;
 
   return (
-    <div className={`${prefixCls} ${className || ''}`} style={style}>
+    <div className={mergeClasses(prefixCls, className)} style={style}>
       <div
         ref={selectorRef}
-        className={`${prefixCls}__selector ${disabled ? `${prefixCls}__selector--disabled` : ''} ${
-          multiple ? `${prefixCls}__selector--multiple` : ''
-        }`}
+        className={mergeClasses(
+          `${prefixCls}__selector`,
+          disabled && `${prefixCls}__selector--disabled`,
+          multiple && `${prefixCls}__selector--multiple`
+        )}
       >
         <Selector
           value={currentValue}
@@ -150,6 +142,7 @@ const Select: React.FC<SelectProps> = ({
           onTagRemove={handleTagRemove}
           inputRef={showSearch ? inputRef : undefined}
           isOpen={currentOpen}
+          prefixCls={prefixCls}
         />
       </div>
 
@@ -164,6 +157,7 @@ const Select: React.FC<SelectProps> = ({
         onOptionClick={handleOptionClick}
         optionRender={optionRender}
         popupRender={popupRender}
+        prefixCls={prefixCls}
       />
     </div>
   );

@@ -1,14 +1,28 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Tag } from '..';
 import type { TagListProps } from './types';
 
 const prefixCls = 'mm-input-tag__item';
 
 const TagList: React.FC<TagListProps> = ({ tags, disabled = false, tagClosable = true, onTagRemove, renderTag }) => {
+  // 使用 useCallback 优化标签移除处理函数
+  const handleTagRemove = useCallback(
+    (tag: string, index: number) => {
+      return (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+        e.stopPropagation();
+        if (!disabled) {
+          onTagRemove?.(tag, index);
+        }
+      };
+    },
+    [disabled, onTagRemove]
+  );
+
   return (
     <>
       {tags.map((tag, index) => {
-        const tagKey = `tag-${index}-${tag}-${Math.random().toString(36).substring(2, 8)}`;
+        // 优化 key 生成，避免使用随机数
+        const tagKey = `tag-${index}-${tag}`;
 
         if (renderTag) {
           return (
@@ -18,19 +32,12 @@ const TagList: React.FC<TagListProps> = ({ tags, disabled = false, tagClosable =
           );
         }
 
-        const handleClose = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
-          e.stopPropagation();
-          if (!disabled) {
-            onTagRemove?.(tag, index);
-          }
-        };
-
         return (
           <Tag
             key={tagKey}
             className={prefixCls}
             closeIcon={tagClosable && !disabled}
-            onClose={!disabled ? handleClose : undefined}
+            onClose={!disabled ? handleTagRemove(tag, index) : undefined}
           >
             {tag}
           </Tag>

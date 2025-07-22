@@ -1,20 +1,8 @@
 import React from 'react';
-import type { Option } from './types';
+import { mergeClasses } from '@fluentui/react-components';
+import type { ListboxProps } from './types';
 import OptionItem from './OptionItem';
 import { useFloatingPosition, useOptionSelection } from './hooks';
-
-interface ListboxProps {
-  isOpen: boolean;
-  triggerRef: React.RefObject<HTMLElement>;
-  onClose: () => void;
-  options?: Option[];
-  value?: string | number | (string | number)[];
-  listHeight?: number;
-  multiple?: boolean;
-  onOptionClick?: (option: Option) => void;
-  optionRender?: (option: Option) => React.ReactNode;
-  popupRender?: (originNode: React.ReactNode) => React.ReactNode;
-}
 
 const Listbox: React.FC<ListboxProps> = ({
   isOpen,
@@ -27,6 +15,7 @@ const Listbox: React.FC<ListboxProps> = ({
   onOptionClick,
   optionRender,
   popupRender,
+  prefixCls,
 }) => {
   // 使用浮动定位 hook
   const { floatingRef } = useFloatingPosition({
@@ -47,9 +36,9 @@ const Listbox: React.FC<ListboxProps> = ({
 
   // 原始选项列表节点
   const optionsNode = (
-    <div className='mm-select__listbox' style={{ maxHeight: listHeight }}>
+    <div className={mergeClasses(`${prefixCls}__listbox`)} style={{ maxHeight: listHeight }}>
       {options.length === 0 ? (
-        <div className='mm-select__option mm-select__option--empty'>暂无数据</div>
+        <div className={mergeClasses(`${prefixCls}__option`, `${prefixCls}__option--empty`)}>暂无数据</div>
       ) : (
         options.map((option, index) => (
           <OptionItem
@@ -60,6 +49,7 @@ const Listbox: React.FC<ListboxProps> = ({
             multiple={multiple}
             onOptionClick={onOptionClick}
             optionRender={optionRender}
+            prefixCls={prefixCls}
           />
         ))
       )}
@@ -69,7 +59,7 @@ const Listbox: React.FC<ListboxProps> = ({
   return (
     <div
       ref={floatingRef}
-      className='mm-select__popover-surface'
+      className={mergeClasses(`${prefixCls}__popover-surface`)}
       style={{
         position: 'absolute',
         top: 0,

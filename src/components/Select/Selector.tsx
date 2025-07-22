@@ -1,32 +1,10 @@
-import React, { useRef } from 'react';
-import type { Option } from './types';
+import React from 'react';
+import { mergeClasses } from '@fluentui/react-components';
+import type { SelectorProps, Option } from './types';
 import { ChevronDownRegular } from '@fluentui/react-icons';
-import TagList from '../InputTag/TagList';
-import Input from '../InputTag/Input';
-
-interface SelectorProps {
-  // 基础属性
-  value?: string | number | (string | number)[];
-  placeholder?: string;
-  disabled?: boolean;
-  selectedOptions?: Option[];
-  onClick?: () => void;
-
-  // 模式控制
-  multiple?: boolean;
-  showSearch?: boolean;
-
-  // 搜索相关
-  searchValue?: string;
-  onSearchChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onSearchFocus?: () => void;
-  onSearchBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
-  inputRef?: React.RefObject<HTMLInputElement>;
-  isOpen?: boolean; // 新增：下拉框是否打开
-
-  // 多选标签处理
-  onTagRemove?: (tag: string, index: number) => void;
-}
+import SearchInput from './SearchInput';
+import TextDisplay from './TextDisplay';
+import MultipleSelector from './MultipleSelector';
 
 const Selector: React.FC<SelectorProps> = ({
   value,
@@ -42,109 +20,173 @@ const Selector: React.FC<SelectorProps> = ({
   onSearchBlur,
   inputRef,
   onTagRemove,
-  isOpen = false, // 新增参数，默认为false
+  isOpen = false,
+  prefixCls,
 }) => {
-  const localInputRef = useRef<HTMLInputElement>(null);
-
-  // 多选模式
+  // 多选模式 - 早期返回
   if (multiple) {
-    const tags = selectedOptions.map(option => option.label || String(option.value));
-    const hasSelectedItems = tags.length > 0;
+    return (
+      <MultipleSelector
+        selectedOptions={selectedOptions}
+        disabled={disabled}
+        placeholder={placeholder}
+        showSearch={showSearch}
+        searchValue={searchValue}
+        onClick={onClick}
+        onTagRemove={onTagRemove}
+        onSearchChange={onSearchChange}
+        onSearchFocus={onSearchFocus}
+        onSearchBlur={onSearchBlur}
+        inputRef={inputRef}
+        prefixCls={prefixCls}
+      />
+    );
+  }
+
+  // 单选模式处理
+  return renderSingleSelector({
+    value,
+    placeholder,
+    disabled,
+    selectedOptions,
+    onClick,
+    showSearch,
+    searchValue,
+    onSearchChange,
+    onSearchFocus,
+    onSearchBlur,
+    inputRef,
+    isOpen,
+    prefixCls,
+  });
+};
+
+// 单选模式渲染逻辑
+const renderSingleSelector = ({
+  value,
+  placeholder,
+  disabled,
+  selectedOptions,
+  onClick,
+  showSearch,
+  searchValue,
+  onSearchChange,
+  onSearchFocus,
+  onSearchBlur,
+  inputRef,
+  isOpen,
+  prefixCls,
+}: Omit<SelectorProps, 'multiple' | 'onTagRemove'>) => {
+  const selectedOption = selectedOptions?.[0];
+
+  // 显示搜索输入框模式
+  if (showSearch) {
+    return renderSearchableSelector({
+      selectedOption,
+      placeholder,
+      disabled,
+      onClick,
+      searchValue,
+      onSearchChange,
+      onSearchFocus,
+      onSearchBlur,
+      inputRef,
+      isOpen,
+      prefixCls,
+    });
+  }
+
+  // 普通显示模式
+  const displayText = getDisplayText(selectedOption, Array.isArray(value) ? undefined : value, placeholder);
+
+  return (
+    <TextDisplay
+      displayText={displayText}
+      isPlaceholder={!selectedOption && !value}
+      onClick={onClick}
+      selectedOption={selectedOption}
+      prefixCls={prefixCls}
+    />
+  );
+};
+
+// 可搜索选择器渲染逻辑
+const renderSearchableSelector = ({
+  selectedOption,
+  placeholder,
+  disabled,
+  onClick,
+  searchValue,
+  onSearchChange,
+  onSearchFocus,
+  onSearchBlur,
+  inputRef,
+  isOpen,
+  prefixCls,
+}: {
+  selectedOption?: Option;
+  placeholder?: string;
+  disabled?: boolean;
+  onClick?: () => void;
+  searchValue?: string;
+  onSearchChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onSearchFocus?: () => void;
+  onSearchBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
+  inputRef?: React.RefObject<HTMLInputElement>;
+  isOpen?: boolean;
+  prefixCls: string;
+}) => {
+  const inputActivated = isOpen || searchValue !== '';
+
+  // 输入框激活状态 - 显示搜索输入框
+  if (inputActivated) {
+    const searchPlaceholder = selectedOption ? selectedOption.label || String(selectedOption.value) : placeholder || '';
 
     return (
-      <div className='mm-select__selector-inner mm-select__selector-inner--multiple' onClick={onClick}>
-        <div className='mm-select__tags-container'>
-          <TagList tags={tags} disabled={disabled} onTagRemove={onTagRemove} />
-
-          {/* 搜索模式：通过 Input 组件显示 placeholder */}
-          {showSearch && (
-            <Input
-              inputRef={inputRef || localInputRef}
-              value={searchValue}
-              placeholder={hasSelectedItems ? '' : placeholder}
-              disabled={disabled}
-              onChange={onSearchChange || (() => {})}
-              onFocus={onSearchFocus || (() => {})}
-              onBlur={onSearchBlur || (() => {})}
-              onPaste={() => {}} // 必需属性，空实现
-              onKeyDown={() => {}} // Input 组件必需属性，Select 组件不处理键盘事件
-              style={{ margin: 0 }} // 自定义样式：移除 margin
-            />
-          )}
-
-          {/* 非搜索模式：当没有选中项时显示 placeholder */}
-          {!showSearch && !hasSelectedItems && placeholder && (
-            <span className='mm-select__selector-text mm-select__selector-text--placeholder'>{placeholder}</span>
-          )}
-        </div>
-        <ChevronDownRegular className='mm-select__selector-arrow' />
+      <div className={mergeClasses(`${prefixCls}__selector-inner`)} onClick={onClick}>
+        <SearchInput
+          value={searchValue || ''}
+          placeholder={searchPlaceholder}
+          disabled={disabled}
+          inputRef={inputRef}
+          onChange={onSearchChange}
+          onFocus={onSearchFocus}
+          onBlur={onSearchBlur}
+        />
+        <ChevronDownRegular className={mergeClasses(`${prefixCls}__selector-arrow`)} />
       </div>
     );
   }
 
-  // 单选模式
-  const selectedOption = selectedOptions[0];
-
-  // 单选 + 搜索模式
-  if (showSearch) {
-    // 判断是否激活了input：下拉框打开 或 有搜索内容
-    const inputActivated = isOpen || searchValue !== '';
-
-    if (inputActivated) {
-      // 激活了input：用placeholder显示选中文本
-      const searchPlaceholder = selectedOption ? selectedOption.label || String(selectedOption.value) : placeholder;
-
-      return (
-        <div className='mm-select__selector-inner' onClick={onClick}>
-          <Input
-            inputRef={inputRef || localInputRef}
-            value={searchValue}
-            placeholder={searchPlaceholder}
-            disabled={disabled}
-            onChange={onSearchChange || (() => {})}
-            onFocus={onSearchFocus || (() => {})}
-            onBlur={onSearchBlur || (() => {})}
-            onPaste={() => {}} // 必需属性，空实现
-            onKeyDown={() => {}} // Input 组件必需属性，Select 组件不处理键盘事件
-            style={{ margin: 0 }} // 自定义样式：移除 margin
-          />
-          <ChevronDownRegular className='mm-select__selector-arrow' />
-        </div>
-      );
-    } else {
-      // 没有激活input：使用基础模式的逻辑，用span显示截断的选中文本
-      const displayText =
-        selectedOption?.label ||
-        (selectedOption?.value !== undefined ? String(selectedOption.value) : '') ||
-        placeholder ||
-        '';
-
-      return (
-        <div className='mm-select__selector-inner' onClick={onClick} title={selectedOption?.title}>
-          <span
-            className={`mm-select__selector-text ${!selectedOption ? 'mm-select__selector-text--placeholder' : ''}`}
-          >
-            {displayText}
-          </span>
-          <ChevronDownRegular className='mm-select__selector-arrow' />
-        </div>
-      );
-    }
-  }
-
-  // 单选模式（原有实现）
-  const displayText = selectedOption?.label || (value !== undefined ? String(value) : '') || placeholder || '';
+  // 输入框未激活状态 - 显示文本
+  const displayText = getDisplayText(selectedOption, undefined, placeholder);
 
   return (
-    <div className='mm-select__selector-inner' onClick={onClick} title={selectedOption?.title}>
-      <span
-        className={`mm-select__selector-text ${!selectedOption && !value ? 'mm-select__selector-text--placeholder' : ''}`}
-      >
-        {displayText}
-      </span>
-      <ChevronDownRegular className='mm-select__selector-arrow' />
-    </div>
+    <TextDisplay
+      displayText={displayText}
+      isPlaceholder={!selectedOption}
+      onClick={onClick}
+      selectedOption={selectedOption}
+      prefixCls={prefixCls}
+    />
   );
+};
+
+// 获取显示文本的工具函数
+const getDisplayText = (selectedOption?: Option, value?: string | number, placeholder?: string): string => {
+  if (selectedOption?.label) {
+    return selectedOption.label;
+  }
+
+  if (selectedOption?.value !== undefined) {
+    return String(selectedOption.value);
+  }
+
+  if (value !== undefined) {
+    return String(value);
+  }
+
+  return placeholder || '';
 };
 
 export default Selector;

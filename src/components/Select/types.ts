@@ -2,37 +2,102 @@ import React from 'react';
 
 export type Option = {
   disabled?: boolean;
-  title?: string; // 选项上的原生 title 提示
+  title?: string;
   value?: string | number;
-  label?: string; // 选项显示文本
+  label?: string;
 };
 
+export interface ListboxProps {
+  isOpen: boolean;
+  triggerRef: React.RefObject<HTMLElement>;
+  onClose: () => void;
+  options?: Option[];
+  value?: string | number | (string | number)[];
+  listHeight?: number;
+  multiple?: boolean;
+  onOptionClick?: (option: Option) => void;
+  optionRender?: (option: Option) => React.ReactNode;
+  popupRender?: (originNode: React.ReactNode) => React.ReactNode;
+  prefixCls: string;
+}
+
+export interface SelectorProps {
+  value?: string | number | (string | number)[];
+  placeholder?: string;
+  disabled?: boolean;
+  selectedOptions?: Option[];
+  onClick?: () => void;
+  multiple?: boolean;
+  showSearch?: boolean;
+  searchValue?: string;
+  onSearchChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onSearchFocus?: () => void;
+  onSearchBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
+  inputRef?: React.RefObject<HTMLInputElement>;
+  isOpen?: boolean;
+  onTagRemove?: (tag: string, index: number) => void;
+  prefixCls: string;
+}
+
 export interface SelectProps {
-  // 基础属性
-  value?: string | number | (string | number)[]; // 单选时为单值，多选时为数组
+  value?: string | number | (string | number)[];
   defaultValue?: string | number | (string | number)[];
-  className?: string; // 自定义样式类
-  style?: React.CSSProperties; // 自定义样式
+  className?: string;
+  style?: React.CSSProperties;
   disabled?: boolean;
   placeholder?: string;
-
-  // 新增功能属性
-  multiple?: boolean; // 默认 false
-  showSearch?: boolean; // 默认 false
-
-  // 选项相关
+  multiple?: boolean;
+  showSearch?: boolean;
   options?: Option[];
-  listHeight?: number; // 设置弹窗滚动高度，默认 256
-  open?: boolean; // 是否展开下拉菜单
-
-  // 回调函数 - 根据模式动态类型
-  onChange?: (value: string | number | (string | number)[], option: Option) => void;
-
-  // 搜索相关
+  listHeight?: number;
+  open?: boolean;
+  onChange?: (value: string | number | (string | number)[], selectedOptions: Option | Option[] | null) => void;
   onSearch?: (value: string) => void;
   filterOption?: (input: string, option: Option) => boolean;
+  optionRender?: (option: Option) => React.ReactNode;
+  popupRender?: (originNode: React.ReactNode) => React.ReactNode;
+}
 
-  // 渲染相关
-  optionRender?: (option: Option) => React.ReactNode; // 自定义渲染下拉选项
-  popupRender?: (originNode: React.ReactNode) => React.ReactNode; // 自定义下拉框内容
+export interface MultipleSelectorProps {
+  selectedOptions: Option[];
+  disabled?: boolean;
+  placeholder?: string;
+  showSearch?: boolean;
+  searchValue?: string;
+  onClick?: () => void;
+  onTagRemove?: (tag: string, index: number) => void;
+  onSearchChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onSearchFocus?: () => void;
+  onSearchBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
+  inputRef?: React.RefObject<HTMLInputElement>;
+  prefixCls: string;
+}
+
+export interface OptionItemProps {
+  option: Option;
+  index: number;
+  isSelected: boolean;
+  multiple?: boolean;
+  onOptionClick?: (option: Option) => void;
+  optionRender?: (option: Option) => React.ReactNode;
+  prefixCls: string;
+}
+
+export interface SearchInputProps {
+  value: string;
+  placeholder: string;
+  disabled?: boolean;
+  inputRef?: React.RefObject<HTMLInputElement>;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onFocus?: () => void;
+  onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
+}
+
+export interface TextDisplayProps {
+  displayText: string;
+  isPlaceholder: boolean;
+  onClick?: () => void;
+  title?: string;
+  selectedOption?: Option;
+  prefixCls: string;
 }
