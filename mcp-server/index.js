@@ -111,116 +111,12 @@ async function analyzeComponent(componentName) {
   }
 }
 
-// 定义工具列表，告诉 copilot 我都能做什么，也就是在门口贴个菜单，告诉顾客【我有什么】
-server.setRequestHandler(ListToolsRequestSchema, async () => {
-  return {
-    tools: [
-      {
-        name: 'analyze_component',
-        description: '分析组件结构，获取 props 等信息',
-        inputSchema: {
-          type: 'object',
-          properties: {
-            name: {
-              type: 'string',
-              description: '组件名称',
-            },
-          },
-          required: ['name'],
-        },
-      },
-      {
-        name: 'create_smart_demo',
-        description: '基于组件分析，智能创建 Demo 文件',
-        inputSchema: {
-          type: 'object',
-          properties: {
-            name: {
-              type: 'string',
-              description: '组件名称',
-            },
-          },
-          required: ['name'],
-        },
-      },
-      {
-        name: 'create_test_file',
-        description: '基于组件分析，智能创建测试文件',
-        inputSchema: {
-          type: 'object',
-          properties: {
-            name: {
-              type: 'string',
-              description: '组件名称',
-            },
-          },
-          required: ['name'],
-        },
-      },
-      {
-        name: 'create_story_file',
-        description: '基于组件分析，智能创建 Storybook 文件',
-        inputSchema: {
-          type: 'object',
-          properties: {
-            name: {
-              type: 'string',
-              description: '组件名称',
-            },
-          },
-          required: ['name'],
-        },
-      },
-    ],
-  };
-});
-
-// 实现工具功能，也就是 copilot 调用的时候执行
-server.setRequestHandler(CallToolRequestSchema, async request => {
-  const { name: toolName, arguments: args } = request.params;
-
-  if (toolName === 'analyze_component') {
-    const componentInfo = await analyzeComponent(args.name);
-
+// 核心函数：创建智能 Demo
+async function createSmartDemoCore(componentName) {
+  try {
+    const componentInfo = await analyzeComponent(componentName);
     if (!componentInfo) {
-      return {
-        content: [
-          {
-            type: 'text',
-            text: `❌ 无法分析组件 ${args.name}，请确认组件文件存在`,
-          },
-        ],
-      };
-    }
-
-    return {
-      content: [
-        {
-          type: 'text',
-          text: `✅ 组件分析完成！
-
-组件名：${componentInfo.name}
-Props 数量：${componentInfo.props.length}
-${componentInfo.props.map(p => `- ${p.name}${p.required ? ' (必需)' : ' (可选)'}`).join('\n')}
-支持 children：${componentInfo.hasChildren ? '是' : '否'}`,
-        },
-      ],
-    };
-  }
-
-  if (toolName === 'create_smart_demo') {
-    // 调用函数分析组件
-    const componentInfo = await analyzeComponent(args.name);
-
-    if (!componentInfo) {
-      return {
-        content: [
-          {
-            type: 'text',
-            text: `❌ 无法创建 Demo，组件分析失败`,
-          },
-        ],
-      };
+      return { success: false, error: '组件分析失败' };
     }
 
     // 基于组件信息生成更智能的 Demo
@@ -258,35 +154,19 @@ export default ${componentInfo.name}Demo;`;
     const demoPath = path.join(demoDir, `${componentInfo.name}Demo.tsx`);
     await fs.writeFile(demoPath, demoContent);
 
-    return {
-      content: [
-        {
-          type: 'text',
-          text: `✅ 智能 Demo 文件已创建！
-
-基于分析结果：
-- 检测到 ${componentInfo.props.length} 个属性
-- ${componentInfo.hasChildren ? '支持 children' : '不支持 children'}
-- 为每个属性生成了示例
-
-文件位置：${demoPath}`,
-        },
-      ],
-    };
+    return { success: true, path: demoPath, componentInfo };
+  } catch (error) {
+    console.error('创建 Demo 失败:', error);
+    return { success: false, error: error.message };
   }
+}
 
-    if (toolName === 'create_test_file') {
-    // 获取组件详情
-    const componentInfo = await analyzeComponent(args.name);
+// 核心函数：创建测试文件
+async function createTestFileCore(componentName) {
+  try {
+    const componentInfo = await analyzeComponent(componentName);
     if (!componentInfo) {
-      return {
-        content: [
-          {
-            type: 'text',
-            text: `❌ 无法创建测试文件，组件分析失败`,
-          },
-        ],
-      };
+      return { success: false, error: '组件分析失败' };
     }
 
     // 生成测试内容
@@ -381,38 +261,19 @@ describe('${componentInfo.name} Component', () => {
     const testPath = path.join(testDir, `${componentInfo.name}.test.tsx`);
     await fs.writeFile(testPath, testContent);
 
-    return {
-      content: [
-        {
-          type: 'text',
-          text: `✅ 测试文件已创建！
-
-基于分析结果生成了：
-- 基础渲染测试
-- Props 测试 (${componentInfo.props.length} 个属性)
-- 交互测试模板
-${componentInfo.hasChildren ? '- Children 内容测试' : ''}
-
-文件位置：${testPath}
-
-💡 提示：生成的是测试骨架，你可能需要根据组件的具体行为调整测试逻辑。`,
-        },
-      ],
-    };
+    return { success: true, path: testPath, componentInfo };
+  } catch (error) {
+    console.error('创建测试文件失败:', error);
+    return { success: false, error: error.message };
   }
+}
 
-    if (toolName === 'create_story_file') {
-    // 获取组件详情
-    const componentInfo = await analyzeComponent(args.name);
+// 核心函数：创建 Storybook 文件
+async function createStoryFileCore(componentName) {
+  try {
+    const componentInfo = await analyzeComponent(componentName);
     if (!componentInfo) {
-      return {
-        content: [
-          {
-            type: 'text',
-            text: `❌ 无法创建 Story，组件分析失败`,
-          },
-        ],
-      };
+      return { success: false, error: '组件分析失败' };
     }
 
     // 生成 Storybook 内容
@@ -462,6 +323,203 @@ export const With${prop.name.charAt(0).toUpperCase() + prop.name.slice(1)}: Stor
     const storyPath = path.join(storiesDir, `${componentInfo.name}.stories.tsx`);
     await fs.writeFile(storyPath, storyContent);
 
+    return { success: true, path: storyPath, componentInfo };
+  } catch (error) {
+    console.error('创建 Storybook 文件失败:', error);
+    return { success: false, error: error.message };
+  }
+}
+
+// 定义工具列表，告诉 copilot 我都能做什么，也就是在门口贴个菜单，告诉顾客【我有什么】
+server.setRequestHandler(ListToolsRequestSchema, async () => {
+  return {
+    tools: [
+      {
+        name: 'analyze_component',
+        description: '分析组件结构，获取 props 等信息',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            name: {
+              type: 'string',
+              description: '组件名称',
+            },
+          },
+          required: ['name'],
+        },
+      },
+      {
+        name: 'create_smart_demo',
+        description: '基于组件分析，智能创建 Demo 文件',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            name: {
+              type: 'string',
+              description: '组件名称',
+            },
+          },
+          required: ['name'],
+        },
+      },
+      {
+        name: 'create_test_file',
+        description: '基于组件分析，智能创建测试文件',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            name: {
+              type: 'string',
+              description: '组件名称',
+            },
+          },
+          required: ['name'],
+        },
+      },
+      {
+        name: 'create_story_file',
+        description: '基于组件分析，智能创建 Storybook 文件',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            name: {
+              type: 'string',
+              description: '组件名称',
+            },
+          },
+          required: ['name'],
+        },
+      },
+      {
+        name: 'create_all_files',
+        description: '一键创建组件的所有配套文件（Demo、测试、Storybook）',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            name: {
+              type: 'string',
+              description: '组件名称',
+            },
+          },
+          required: ['name'],
+        },
+      },
+    ],
+  };
+});
+
+// 实现工具功能，也就是 copilot 调用的时候执行
+server.setRequestHandler(CallToolRequestSchema, async request => {
+  const { name: toolName, arguments: args } = request.params;
+
+  if (toolName === 'analyze_component') {
+    const componentInfo = await analyzeComponent(args.name);
+
+    if (!componentInfo) {
+      return {
+        content: [
+          {
+            type: 'text',
+            text: `❌ 无法分析组件 ${args.name}，请确认组件文件存在`,
+          },
+        ],
+      };
+    }
+
+    return {
+      content: [
+        {
+          type: 'text',
+          text: `✅ 组件分析完成！
+
+组件名：${componentInfo.name}
+Props 数量：${componentInfo.props.length}
+${componentInfo.props.map(p => `- ${p.name}${p.required ? ' (必需)' : ' (可选)'}`).join('\n')}
+支持 children：${componentInfo.hasChildren ? '是' : '否'}`,
+        },
+      ],
+    };
+  }
+
+  if (toolName === 'create_smart_demo') {
+    const result = await createSmartDemoCore(args.name);
+
+    if (!result.success) {
+      return {
+        content: [
+          {
+            type: 'text',
+            text: `❌ 无法创建 Demo，${result.error}`,
+          },
+        ],
+      };
+    }
+
+    return {
+      content: [
+        {
+          type: 'text',
+          text: `✅ 智能 Demo 文件已创建！
+
+基于分析结果：
+- 检测到 ${result.componentInfo.props.length} 个属性
+- ${result.componentInfo.hasChildren ? '支持 children' : '不支持 children'}
+- 为每个属性生成了示例
+
+文件位置：${result.path}`,
+        },
+      ],
+    };
+  }
+
+  if (toolName === 'create_test_file') {
+    const result = await createTestFileCore(args.name);
+
+    if (!result.success) {
+      return {
+        content: [
+          {
+            type: 'text',
+            text: `❌ 无法创建测试文件，${result.error}`,
+          },
+        ],
+      };
+    }
+
+    return {
+      content: [
+        {
+          type: 'text',
+          text: `✅ 测试文件已创建！
+
+基于分析结果生成了：
+- 基础渲染测试
+- Props 测试 (${result.componentInfo.props.length} 个属性)
+- 交互测试模板
+${result.componentInfo.hasChildren ? '- Children 内容测试' : ''}
+
+文件位置：${result.path}
+
+💡 提示：生成的是测试骨架，你可能需要根据组件的具体行为调整测试逻辑。`,
+        },
+      ],
+    };
+  }
+
+  if (toolName === 'create_story_file') {
+    const result = await createStoryFileCore(args.name);
+
+    if (!result.success) {
+      return {
+        content: [
+          {
+            type: 'text',
+            text: `❌ 无法创建 Story，${result.error}`,
+          },
+        ],
+      };
+    }
+
     return {
       content: [
         {
@@ -470,10 +528,73 @@ export const With${prop.name.charAt(0).toUpperCase() + prop.name.slice(1)}: Stor
 
 基于分析结果生成了：
 - 基础 Story (Default)
-- ${componentInfo.props.filter(p => p.name !== 'children' && p.name !== 'className' && p.name !== 'style').length} 个属性变体 Story
+- ${result.componentInfo.props.filter(p => p.name !== 'children' && p.name !== 'className' && p.name !== 'style').length} 个属性变体 Story
 - 自动配置了控制项
 
-文件位置：${storyPath}`,
+文件位置：${result.path}`,
+        },
+      ],
+    };
+  }
+
+  if (toolName === 'create_all_files') {
+    console.error('🔍 [DEBUG] create_all_files 开始执行');
+    console.error('🔍 [DEBUG] 组件名称:', args.name);
+
+    const results = {
+      demo: false,
+      test: false,
+      story: false,
+    };
+
+    // 先分析组件
+    const componentInfo = await analyzeComponent(args.name);
+    console.error('🔍 [DEBUG] 组件分析结果:', componentInfo ? '成功' : '失败');
+
+    if (!componentInfo) {
+      return {
+        content: [
+          {
+            type: 'text',
+            text: `❌ 无法执行批量创建，组件分析失败`,
+          },
+        ],
+      };
+    }
+
+    // 创建 Demo - 直接调用核心函数
+    console.error('🔍 [DEBUG] 开始创建 Demo...');
+    const demoResult = await createSmartDemoCore(args.name);
+    results.demo = demoResult.success;
+    console.error('🔍 [DEBUG] Demo 创建结果:', results.demo ? '成功' : '失败');
+
+    // 创建测试 - 直接调用核心函数
+    console.error('🔍 [DEBUG] 开始创建测试文件...');
+    const testResult = await createTestFileCore(args.name);
+    results.test = testResult.success;
+    console.error('🔍 [DEBUG] 测试文件创建结果:', results.test ? '成功' : '失败');
+
+    // 创建 Storybook - 直接调用核心函数
+    console.error('🔍 [DEBUG] 开始创建 Storybook...');
+    const storyResult = await createStoryFileCore(args.name);
+    results.story = storyResult.success;
+    console.error('🔍 [DEBUG] Storybook 创建结果:', results.story ? '成功' : '失败');
+
+    console.error('🔍 [DEBUG] 最终结果:', JSON.stringify(results));
+    console.error('🔍 [DEBUG] 准备返回最终响应');
+
+    return {
+      content: [
+        {
+          type: 'text',
+          text: `🎉 批量创建完成！
+
+组件：${componentInfo.name}
+✅ Demo 文件: ${results.demo ? '成功' : '失败'}
+✅ 测试文件: ${results.test ? '成功' : '失败'}
+✅ Storybook: ${results.story ? '成功' : '失败'}
+
+所有文件已准备就绪！`,
         },
       ],
     };
