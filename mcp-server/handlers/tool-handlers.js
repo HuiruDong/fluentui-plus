@@ -1,5 +1,5 @@
 import { ErrorCode, McpError } from '@modelcontextprotocol/sdk/types.js';
-import { analyzeComponent } from '../utils/ast-analyzer.js';
+import { analyzeComponent, smartAnalyzeComponent } from '../utils/smart-analyzer.js';
 import { createSmartDemoCore } from '../generators/demo-generator.js';
 import { createTestFileCore } from '../generators/test-generator.js';
 import { createStoryFileCore } from '../generators/story-generator.js';
@@ -8,7 +8,7 @@ import { createStoryFileCore } from '../generators/story-generator.js';
  * 工具处理器 - 分析组件
  */
 export async function handleAnalyzeComponent(args) {
-  const componentInfo = await analyzeComponent(args.name);
+  const componentInfo = await smartAnalyzeComponent(args.name);
 
   if (!componentInfo) {
     return {
@@ -21,16 +21,45 @@ export async function handleAnalyzeComponent(args) {
     };
   }
 
+  // 构建详细的分析报告
+  const structureInfo = componentInfo.structure;
+  const analysisReport = `✅ 智能组件分析完成！
+
+🏗️ **组件结构分析**
+组件名：${componentInfo.name}
+组件类型：${
+    componentInfo.analysisType === 'simple'
+      ? '简单组件'
+      : componentInfo.analysisType === 'moderate'
+        ? '中等复杂度组件'
+        : '复杂组件'
+  }
+主组件文件：${structureInfo.mainComponent}
+
+📁 **文件构成**
+- 子组件：${structureInfo.subComponents.length > 0 ? structureInfo.subComponents.join(', ') : '无'}
+- Hooks：${structureInfo.hooks.length > 0 ? structureInfo.hooks.join(', ') : '无'}
+- 工具函数：${structureInfo.utils.length > 0 ? structureInfo.utils.join(', ') : '无'}
+
+🎯 **主组件Props (${componentInfo.mainProps.length}个)**
+${componentInfo.mainProps.map(p => `- ${p.name}: ${p.type}${p.required ? ' (必需)' : ' (可选)'}`).join('\n')}
+
+👶 **Children支持：** ${componentInfo.hasChildren ? '✅ 是' : '❌ 否'}
+
+📊 **所有组件统计**
+${componentInfo.allComponents
+  .map(comp => `- ${comp.name}: ${comp.props.length}个props (${comp.isMain ? '主组件' : '子组件'})`)
+  .join('\n')}
+
+💡 **生成策略建议**
+- Demo/Storybook：关注主组件 (${componentInfo.mainProps.length}个props)
+- 测试文件：${componentInfo.analysisType === 'simple' ? '每个组件独立测试' : '主组件集成测试 + 子组件单元测试'}`;
+
   return {
     content: [
       {
         type: 'text',
-        text: `✅ 组件分析完成！
-
-组件名：${componentInfo.name}
-Props 数量：${componentInfo.props.length}
-${componentInfo.props.map(p => `- ${p.name}${p.required ? ' (必需)' : ' (可选)'}`).join('\n')}
-支持 children：${componentInfo.hasChildren ? '是' : '否'}`,
+        text: analysisReport,
       },
     ],
   };
