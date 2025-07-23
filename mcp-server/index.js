@@ -157,6 +157,20 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           required: ['name'],
         },
       },
+      {
+        name: 'create_story_file',
+        description: '基于组件分析，智能创建 Storybook 文件',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            name: {
+              type: 'string',
+              description: '组件名称',
+            },
+          },
+          required: ['name'],
+        },
+      },
     ],
   };
 });
@@ -382,6 +396,84 @@ ${componentInfo.hasChildren ? '- Children 内容测试' : ''}
 文件位置：${testPath}
 
 💡 提示：生成的是测试骨架，你可能需要根据组件的具体行为调整测试逻辑。`,
+        },
+      ],
+    };
+  }
+
+    if (toolName === 'create_story_file') {
+    // 获取组件详情
+    const componentInfo = await analyzeComponent(args.name);
+    if (!componentInfo) {
+      return {
+        content: [
+          {
+            type: 'text',
+            text: `❌ 无法创建 Story，组件分析失败`,
+          },
+        ],
+      };
+    }
+
+    // 生成 Storybook 内容
+    const storyContent = `import type { Meta, StoryObj } from '@storybook/react';
+import { ${componentInfo.name} } from '../src/components';
+
+const meta: Meta<typeof ${componentInfo.name}> = {
+  title: 'Components/${componentInfo.name}',
+  component: ${componentInfo.name},
+  parameters: {
+    layout: 'centered',
+  },
+  tags: ['autodocs'],
+  argTypes: {
+    // 自动生成的控制项
+    ${componentInfo.props
+      .filter(p => p.name !== 'children')
+      .map(prop => `${prop.name}: { control: 'text' },`)
+      .join('\n    ')}
+  },
+};
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+export const Default: Story = {
+  args: {
+    ${componentInfo.hasChildren ? "children: '默认内容'," : ''}
+  },
+};
+
+${componentInfo.props
+  .filter(p => p.name !== 'children' && p.name !== 'className' && p.name !== 'style')
+  .map(
+    prop => `
+export const With${prop.name.charAt(0).toUpperCase() + prop.name.slice(1)}: Story = {
+  args: {
+    ${prop.name}: '示例值',
+    ${componentInfo.hasChildren ? "children: '带 " + prop.name + " 的内容'," : ''}
+  },
+};`
+  )
+  .join('\n')}`;
+
+    const storiesDir = path.join(__dirname, '..', 'stories');
+    await fs.mkdir(storiesDir, { recursive: true });
+    const storyPath = path.join(storiesDir, `${componentInfo.name}.stories.tsx`);
+    await fs.writeFile(storyPath, storyContent);
+
+    return {
+      content: [
+        {
+          type: 'text',
+          text: `✅ Storybook 文件已创建！
+
+基于分析结果生成了：
+- 基础 Story (Default)
+- ${componentInfo.props.filter(p => p.name !== 'children' && p.name !== 'className' && p.name !== 'style').length} 个属性变体 Story
+- 自动配置了控制项
+
+文件位置：${storyPath}`,
         },
       ],
     };
