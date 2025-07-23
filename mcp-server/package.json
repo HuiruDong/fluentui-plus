@@ -11,6 +11,8 @@
   "description": "MCP server for Fluentui Plus automation",
   "type": "module",
   "dependencies": {
+    "@babel/parser": "^7.28.0",
+    "@babel/traverse": "^7.28.0",
     "@modelcontextprotocol/sdk": "^1.16.0"
   }
 }
