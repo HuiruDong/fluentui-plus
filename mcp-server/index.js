@@ -1,6 +1,6 @@
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import { CallToolRequestSchema, ListToolsResultSchemam, ErrorCode, McpError } from '@modelcontextprotocol/sdk/types.js';
+import { CallToolRequestSchema, ListToolsRequestSchema, ErrorCode, McpError } from '@modelcontextprotocol/sdk/types.js';
 // node 文件操作
 import { promises as fs } from 'fs';
 import path from 'path';
@@ -26,41 +26,83 @@ const server = new Server(
   }
 );
 
-// 组件分析的函数，因为生成 Demo、测试、Story 都需要知道组件的结构（有哪些 props、类型是什么等）
+// 辅助函数：从 AST 中提取 Props 信息，只负责解析 props，支持多种命名方式
+// 这里的解析不用 async ，是因为没有异步操作，不需要读取文件内容，ast 本身就是一个已经解析好的 js 对象
+function extractPropsFromAST(ast, componentName) {
+  const componentInfo = { name: componentName, props: [], hasChildren: false };
+
+  // 支持的 Props 命名模式
+  const possiblePropsNames = [
+    `${componentName}Props`, // SelectProps
+    'ComponentProps', // 统一命名
+    'Props', // 简化命名 (可选)
+  ];
+
+  traverse.default(ast, {
+    TSInterfaceDeclaration(path) {
+      // 检查是否匹配任何一种命名模式
+      if (possiblePropsNames.includes(path.node.id.name)) {
+        path.node.body.body.forEach(prop => {
+          if (prop.type === 'TSPropertySignature' && prop.key.name) {
+            componentInfo.props.push({
+              name: prop.key.name,
+              required: !prop.optional,
+              type: 'any',
+            });
+
+            if (prop.key.name === 'children') {
+              componentInfo.hasChildren = true;
+            }
+          }
+        });
+      }
+    },
+  });
+
+  return componentInfo;
+}
+
+// 组件分析的函数，因为生成 Demo、测试、Story 都需要知道组件的结构（有哪些 props、类型是什么等），只负责查找 props，支持在多个文件内查找，找到了之后会去调用 extractPropsFromAST 返回 ast 解析结果
 async function analyzeComponent(componentName) {
   try {
-    // 读取组件文件
-    const componentPath = path.join(__dirname, '..', 'src', 'components', componentName, `${componentName}.tsx`);
-    const code = await fs.readFile(componentPath, 'utf-8');
+    const componentDir = path.join(__dirname, '..', 'src', 'components', componentName);
 
-    // 解析代码
-    const ast = parse(code, { sourceType: 'module', plugins: ['typescript', 'jsx'] });
+    // 要尝试的文件列表（按优先级）
+    const filesToTry = [
+      `${componentName}.tsx`, // 主组件文件
+      'types.ts', // 类型定义文件
+      'index.ts', // 索引文件
+    ];
 
-    // 收集组件信息
-    const componentInfo = { name: componentName, props: [], hasChildren: false };
+    let componentInfo = { name: componentName, props: [], hasChildren: false };
 
-    // 遍历 AST 找到 props 接口
-    traverse.default(ast, {
-      TSInterfaceDeclaration(path) {
-        if (path.node.id.name === `${componentName}Props`) {
-          // 找到了 Props 定义
-          path.node.body.body.forEach(prop => {
-            if (prop.type === 'TSPropertySignature' && prop.key.name) {
-              componentInfo.props.push({
-                name: prop.key.name,
-                required: !prop.optional,
-                type: 'any', // 简化处理，实际可以解析具体类型
-              });
+    // 依次尝试每个文件
+    for (const fileName of filesToTry) {
+      try {
+        const filePath = path.join(componentDir, fileName);
+        const code = await fs.readFile(filePath, 'utf-8');
 
-              // 检查是否有 children prop
-              if (prop.key.name === 'children') {
-                componentInfo.hasChildren = true;
-              }
-            }
-          });
+        // 解析代码
+        const ast = parse(code, {
+          sourceType: 'module',
+          plugins: ['typescript', 'jsx'],
+        });
+
+        // 提取 Props 信息
+        const result = extractPropsFromAST(ast, componentName);
+
+        // 如果找到了 Props，就使用这个结果
+        if (result.props.length > 0) {
+          componentInfo = result;
+          console.log(`✅ 在 ${fileName} 中找到了 Props 定义`);
+          break; // 找到了就停止查找
         }
-      },
-    });
+      } catch (fileError) {
+        // 文件不存在或读取失败，继续尝试下一个
+        console.log(`⚠️  无法读取 ${fileName}:`, fileError.message);
+        continue;
+      }
+    }
 
     return componentInfo;
   } catch (error) {
@@ -70,7 +112,7 @@ async function analyzeComponent(componentName) {
 }
 
 // 定义工具列表，告诉 copilot 我都能做什么，也就是在门口贴个菜单，告诉顾客【我有什么】
-server.setRequestHandler(ListToolsResultSchemam, async () => {
+server.setRequestHandler(ListToolsRequestSchema, async () => {
   return {
     tools: [
       {
@@ -220,16 +262,3 @@ main().catch(error => {
   console.error('启动失败', error);
   process.exit(1);
 });
-
-/**
- * mcp.json
- *
- *     "fluentui-plus": {
-      "type": "stdio",
-      "command": "node",
-      "args": [
-        "C:/Users/j-huirudong/Projects/fluentui-plus/mcp-server/index.js" 文件路径
-      ],
-      "env": {}
-    }
- */
