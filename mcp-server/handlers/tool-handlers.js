@@ -1,5 +1,5 @@
 import { ErrorCode, McpError } from '@modelcontextprotocol/sdk/types.js';
-import { analyzeComponent, smartAnalyzeComponent } from '../utils/smart-analyzer.js';
+import { analyzeComponent } from '../utils/ast-analyzer.js';
 import { createSmartDemoCore } from '../generators/demo-generator.js';
 import { createTestFileCore } from '../generators/test-generator.js';
 import { createStoryFileCore } from '../generators/story-generator.js';
@@ -8,7 +8,7 @@ import { createStoryFileCore } from '../generators/story-generator.js';
  * 工具处理器 - 分析组件
  */
 export async function handleAnalyzeComponent(args) {
-  const componentInfo = await smartAnalyzeComponent(args.name);
+  const componentInfo = await analyzeComponent(args.name);
 
   if (!componentInfo) {
     return {
@@ -21,45 +21,74 @@ export async function handleAnalyzeComponent(args) {
     };
   }
 
-  // 构建详细的分析报告
-  const structureInfo = componentInfo.structure;
-  const analysisReport = `✅ 智能组件分析完成！
+  // 格式化 Props 信息
+  const propsInfo =
+    componentInfo.props.length > 0
+      ? componentInfo.props
+          .map(p => {
+            const typeInfo = p.type ? ` (${p.type})` : '';
+            const requiredMark = p.required ? ' ⭐' : '';
+            const defaultValue = p.defaultValue ? ` = ${p.defaultValue}` : '';
+            return `  • ${p.name}${typeInfo}${defaultValue}${requiredMark}`;
+          })
+          .join('\n')
+      : '  无';
 
-🏗️ **组件结构分析**
-组件名：${componentInfo.name}
-组件类型：${
-    componentInfo.analysisType === 'simple'
-      ? '简单组件'
-      : componentInfo.analysisType === 'moderate'
-        ? '中等复杂度组件'
-        : '复杂组件'
-  }
-主组件文件：${structureInfo.mainComponent}
+  // 格式化依赖信息
+  const depsInfo =
+    componentInfo.dependencies?.length > 0
+      ? componentInfo.dependencies.map(dep => `  • ${dep}`).join('\n')
+      : '  无外部依赖';
 
-📁 **文件构成**
-- 子组件：${structureInfo.subComponents.length > 0 ? structureInfo.subComponents.join(', ') : '无'}
-- Hooks：${structureInfo.hooks.length > 0 ? structureInfo.hooks.join(', ') : '无'}
-- 工具函数：${structureInfo.utils.length > 0 ? structureInfo.utils.join(', ') : '无'}
+  // 格式化场景信息
+  const scenariosInfo =
+    componentInfo.scenarios?.length > 0
+      ? componentInfo.scenarios.map(scenario => `  • ${scenario}`).join('\n')
+      : '  基础用法';
 
-🎯 **主组件Props (${componentInfo.mainProps.length}个)**
-${componentInfo.mainProps.map(p => `- ${p.name}: ${p.type}${p.required ? ' (必需)' : ' (可选)'}`).join('\n')}
-
-👶 **Children支持：** ${componentInfo.hasChildren ? '✅ 是' : '❌ 否'}
-
-📊 **所有组件统计**
-${componentInfo.allComponents
-  .map(comp => `- ${comp.name}: ${comp.props.length}个props (${comp.isMain ? '主组件' : '子组件'})`)
-  .join('\n')}
-
-💡 **生成策略建议**
-- Demo/Storybook：关注主组件 (${componentInfo.mainProps.length}个props)
-- 测试文件：${componentInfo.analysisType === 'simple' ? '每个组件独立测试' : '主组件集成测试 + 子组件单元测试'}`;
+  // 格式化复杂度信息
+  const complexityIcon =
+    {
+      simple: '🟢',
+      medium: '🟡',
+      complex: '🔴',
+    }[componentInfo.complexity] || '❓';
 
   return {
     content: [
       {
         type: 'text',
-        text: analysisReport,
+        text: `✅ 组件深度分析完成！
+
+📋 **基础信息**
+组件名称：${componentInfo.name}
+组件类别：${componentInfo.category || '未分类'}
+控制模式：${componentInfo.controlPattern || '未知'}
+复杂度：${complexityIcon} ${componentInfo.complexity || '未知'}
+
+🔧 **Props 分析** (${componentInfo.props.length} 个)
+${propsInfo}
+
+👶 **Children 支持**
+${componentInfo.hasChildren ? '✅ 支持 children 属性' : '❌ 不支持 children 属性'}
+
+📦 **依赖分析**
+${depsInfo}
+
+🎭 **推荐场景** (${componentInfo.scenarios?.length || 0} 个)
+${scenariosInfo}
+
+${
+  componentInfo.hooks?.length > 0
+    ? `🪝 **内置 Hooks**
+${componentInfo.hooks.map(hook => `  • ${hook}`).join('\n')}
+
+`
+    : ''
+}📊 **技术特征**
+• TypeScript 支持：${componentInfo.hasTypeScript ? '✅' : '❌'}
+• 样式系统：${componentInfo.styleSystem || '未知'}
+• 测试覆盖：${componentInfo.testCoverage ? '✅' : '❓'}`,
       },
     ],
   };
