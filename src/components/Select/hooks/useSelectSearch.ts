@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useInputValue } from '../../../hooks';
 import type { Option } from '../types';
+import { filterOptions } from '../utils';
 
 interface UseSelectSearchProps {
   showSearch?: boolean;
@@ -22,25 +23,13 @@ export const useSelectSearch = ({ showSearch = false, options = [], onSearch, fi
     },
   });
 
-  // 默认过滤逻辑
-  const defaultFilterOption = (input: string, option: Option): boolean => {
-    if (!input.trim()) return true;
-
-    const searchText = input.toLowerCase();
-    const label = (option.label || '').toLowerCase();
-    const value = String(option.value || '').toLowerCase();
-
-    return label.includes(searchText) || value.includes(searchText);
-  };
-
   // 过滤选项
   const filteredOptions = useMemo(() => {
-    if (!showSearch || !inputManager.inputValue.trim()) {
+    if (!showSearch) {
       return options;
     }
 
-    const filterFn = filterOption || defaultFilterOption;
-    return options.filter(option => filterFn(inputManager.inputValue, option));
+    return filterOptions(options, inputManager.inputValue, filterOption);
   }, [options, inputManager.inputValue, filterOption, showSearch]);
 
   return {

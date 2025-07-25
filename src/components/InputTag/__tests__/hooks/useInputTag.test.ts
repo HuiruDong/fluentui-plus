@@ -1,5 +1,5 @@
 import { renderHook, act } from '@testing-library/react';
-import { useInputTag } from '../hooks/useInputTag';
+import { useInputTag } from '../../hooks/useInputTag';
 
 describe('useInputTag Hook', () => {
   afterEach(() => {

@@ -1,7 +1,7 @@
 import { act } from '@testing-library/react';
 import { renderHook } from '@testing-library/react';
-import { useNavigation } from '../hooks/useNavigation';
-import { NavItemType } from '../types';
+import { useNavigation } from '../../hooks/useNavigation';
+import { NavItemType } from '../../types';
 
 describe('useNavigation hook', () => {
   const mockNavItems: NavItemType[] = [

@@ -1,6 +1,6 @@
 import React from 'react';
 import { renderHook, act } from '@testing-library/react';
-import { useInputHandlers } from '../hooks/useInputHandlers';
+import { useInputHandlers } from '../../hooks/useInputHandlers';
 
 describe('useInputHandlers Hook', () => {
   const mockProps = {
