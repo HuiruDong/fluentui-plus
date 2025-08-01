@@ -3,6 +3,7 @@ import { FluentProvider, webLightTheme } from '@fluentui/react-components';
 import TagDemo from './TagDemo';
 import InputTagDemo from './InputTagDemo';
 import NavDemo from './NavDemo';
+import SelectDemo from './SelectDemo';
 import './reset.css';
 
 const App = () => {
@@ -219,6 +220,71 @@ const App = () => {
             </span>
           </div>
         </div>
+
+        <div
+          style={{
+            padding: '20px',
+            border: '1px solid #d9d9d9',
+            borderRadius: '8px',
+            cursor: 'pointer',
+            transition: 'all 0.2s',
+            background: '#fff',
+          }}
+          onClick={() => setCurrentDemo('select')}
+          onMouseEnter={e => {
+            e.currentTarget.style.borderColor = '#fa8c16';
+            e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
+          }}
+          onMouseLeave={e => {
+            e.currentTarget.style.borderColor = '#d9d9d9';
+            e.currentTarget.style.boxShadow = 'none';
+          }}
+        >
+          <h3 style={{ margin: '0 0 10px 0', color: '#fa8c16', fontSize: '18px', fontWeight: '600' }}>Select 选择器</h3>
+          <p style={{ margin: 0, color: '#666', fontSize: '14px' }}>
+            功能强大的选择器组件，支持单选、多选、搜索、自定义等功能。
+          </p>
+          <div style={{ marginTop: '15px' }}>
+            <span
+              style={{
+                display: 'inline-block',
+                padding: '2px 8px',
+                background: '#fff7e6',
+                color: '#fa8c16',
+                borderRadius: '12px',
+                fontSize: '12px',
+                marginRight: '8px',
+              }}
+            >
+              单选多选
+            </span>
+            <span
+              style={{
+                display: 'inline-block',
+                padding: '2px 8px',
+                background: '#e6f7ff',
+                color: '#1890ff',
+                borderRadius: '12px',
+                fontSize: '12px',
+                marginRight: '8px',
+              }}
+            >
+              可搜索
+            </span>
+            <span
+              style={{
+                display: 'inline-block',
+                padding: '2px 8px',
+                background: '#f6ffed',
+                color: '#52c41a',
+                borderRadius: '12px',
+                fontSize: '12px',
+              }}
+            >
+              自定义
+            </span>
+          </div>
+        </div>
         {/* 预留其他组件的卡片 */}
         <div
           style={{
@@ -331,6 +397,20 @@ const App = () => {
           >
             Nav 导航
           </button>
+          <button
+            style={{
+              background: currentDemo === 'select' ? '#fa8c16' : 'transparent',
+              color: '#fff',
+              border: '1px solid #fa8c16',
+              padding: '8px 16px',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              fontSize: '14px',
+            }}
+            onClick={() => setCurrentDemo('select')}
+          >
+            Select 选择器
+          </button>
         </div>
       </nav>
 
@@ -340,6 +420,7 @@ const App = () => {
         {currentDemo === 'tag' && <TagDemo />}
         {currentDemo === 'inputTag' && <InputTagDemo />}
         {currentDemo === 'nav' && <NavDemo />}
+        {currentDemo === 'select' && <SelectDemo />}
       </main>
     </FluentProvider>
   );

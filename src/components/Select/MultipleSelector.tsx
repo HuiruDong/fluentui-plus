@@ -30,6 +30,7 @@ const MultipleSelector: React.FC<MultipleSelectorProps> = ({
     <div
       className={mergeClasses(`${prefixCls}__selector-inner`, `${prefixCls}__selector-inner--multiple`)}
       onClick={onClick}
+      tabIndex={showSearch ? undefined : 0}
     >
       <div className={mergeClasses(`${prefixCls}__tags-container`)}>
         <TagList tags={tags} disabled={disabled} onTagRemove={onTagRemove} />

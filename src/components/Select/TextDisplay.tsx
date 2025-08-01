@@ -11,7 +11,12 @@ const TextDisplay: React.FC<TextDisplayProps> = ({
   prefixCls,
 }) => {
   return (
-    <div className={mergeClasses(`${prefixCls}__selector-inner`)} onClick={onClick} title={selectedOption?.title}>
+    <div
+      className={mergeClasses(`${prefixCls}__selector-inner`)}
+      onClick={onClick}
+      title={selectedOption?.title}
+      tabIndex={0}
+    >
       <span
         className={mergeClasses(
           `${prefixCls}__selector-text`,
