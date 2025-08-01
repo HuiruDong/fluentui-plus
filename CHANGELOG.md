@@ -4,6 +4,21 @@
 
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，项目遵循 [语义化版本](https://semver.org/lang/zh-CN/) 规范。
 
+## [1.0.0](https://github.com/HuiruDong/fluentui-plus/compare/v0.3.0...v1.0.0) (2025-08-01)
+
+### Changed
+
+- add global mixins ([a0afe49](https://github.com/HuiruDong/fluentui-plus/commit/a0afe4907691487e86816ab3a49deb1b56e0069c))
+- **hooks:** refactor hooks ([f679f96](https://github.com/HuiruDong/fluentui-plus/commit/f679f961d461f9a268e5cfd1472bde20c0d2059a))
+- **select:** refactor select component hooks ([82538a1](https://github.com/HuiruDong/fluentui-plus/commit/82538a1feecb468350a4feb3e8a087ed17f44e7c))
+
+### Added
+
+- add Select docs ([ec5017c](https://github.com/HuiruDong/fluentui-plus/commit/ec5017cc3b00ba6eead25e36a15969a00485e59d))
+- **select:** Add search function ([39d7841](https://github.com/HuiruDong/fluentui-plus/commit/39d78416cb6eef02664b0a81c224252cd6ca0312))
+- **select:** add select component ([77242b5](https://github.com/HuiruDong/fluentui-plus/commit/77242b55c88201e0889783f7728b0f8081bbd57b))
+- **select:** support customer render option ([1617b30](https://github.com/HuiruDong/fluentui-plus/commit/1617b30d819833a1edae21a1146ae58c9f6181d2))
+
 ## [0.3.0](https://github.com/HuiruDong/fluentui-plus/compare/v0.2.0...v0.3.0) (2025-07-11)
 
 ## [0.2.0](https://github.com/HuiruDong/fluentui-plus/compare/v0.1.7...v0.2.0) (2025-07-10)
