@@ -4,6 +4,12 @@
 
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，项目遵循 [语义化版本](https://semver.org/lang/zh-CN/) 规范。
 
+## [2.0.0](https://github.com/HuiruDong/fluentui-plus/compare/v1.0.0...v2.0.0) (2025-08-04)
+
+### Added
+
+- update prefixCls ([7f7db7e](https://github.com/HuiruDong/fluentui-plus/commit/7f7db7ec3cb78bfe3e7089ad8a346500d946a5c7))
+
 ## [1.0.0](https://github.com/HuiruDong/fluentui-plus/compare/v0.3.0...v1.0.0) (2025-08-01)
 
 ### Changed
