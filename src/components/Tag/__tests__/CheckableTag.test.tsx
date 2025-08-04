@@ -49,7 +49,7 @@ describe('CheckableTag Component', () => {
       const content = screen.getByText('Checkable Tag');
       expect(content).toBeInTheDocument();
       const tag = content.closest('span')?.parentElement; // 获取外层 span
-      expect(tag).toHaveClass('mm-checkable-tag');
+      expect(tag).toHaveClass('fluentui-plus-checkable-tag');
     });
 
     it('should render content correctly', () => {
@@ -61,7 +61,7 @@ describe('CheckableTag Component', () => {
       render(<CheckableTag className='custom-class'>Custom Tag</CheckableTag>);
       const content = screen.getByText('Custom Tag');
       const tag = content.closest('span')?.parentElement; // 获取外层 span
-      expect(tag).toHaveClass('mm-checkable-tag');
+      expect(tag).toHaveClass('fluentui-plus-checkable-tag');
       expect(tag).toHaveClass('custom-class');
     });
   });
@@ -71,24 +71,24 @@ describe('CheckableTag Component', () => {
       render(<CheckableTag checked>Checked Tag</CheckableTag>);
       const content = screen.getByText('Checked Tag');
       const tag = content.closest('span')?.parentElement; // 获取外层 span
-      expect(tag).toHaveClass('mm-checkable-tag');
-      expect(tag).toHaveClass('mm-checkable-tag--checked');
+      expect(tag).toHaveClass('fluentui-plus-checkable-tag');
+      expect(tag).toHaveClass('fluentui-plus-checkable-tag--checked');
     });
 
     it('should not apply checked class when checked is false', () => {
       render(<CheckableTag checked={false}>Unchecked Tag</CheckableTag>);
       const content = screen.getByText('Unchecked Tag');
       const tag = content.closest('span')?.parentElement; // 获取外层 span
-      expect(tag).toHaveClass('mm-checkable-tag');
-      expect(tag).not.toHaveClass('mm-checkable-tag--checked');
+      expect(tag).toHaveClass('fluentui-plus-checkable-tag');
+      expect(tag).not.toHaveClass('fluentui-plus-checkable-tag--checked');
     });
 
     it('should not apply checked class when checked is undefined', () => {
       render(<CheckableTag>Default Tag</CheckableTag>);
       const content = screen.getByText('Default Tag');
       const tag = content.closest('span')?.parentElement; // 获取外层 span
-      expect(tag).toHaveClass('mm-checkable-tag');
-      expect(tag).not.toHaveClass('mm-checkable-tag--checked');
+      expect(tag).toHaveClass('fluentui-plus-checkable-tag');
+      expect(tag).not.toHaveClass('fluentui-plus-checkable-tag--checked');
     });
   });
 
@@ -180,8 +180,8 @@ describe('CheckableTag Component', () => {
       );
 
       const tag = screen.getByText('Merged Classes').closest('span')?.parentElement; // 获取外层 span
-      expect(tag).toHaveClass('mm-checkable-tag');
-      expect(tag).toHaveClass('mm-checkable-tag--checked');
+      expect(tag).toHaveClass('fluentui-plus-checkable-tag');
+      expect(tag).toHaveClass('fluentui-plus-checkable-tag--checked');
       expect(tag).toHaveClass('external-class');
     });
   });

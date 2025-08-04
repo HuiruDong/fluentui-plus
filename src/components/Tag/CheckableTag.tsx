@@ -4,7 +4,7 @@ import Tag from './Tag';
 import { mergeClasses } from '@fluentui/react-components';
 import './index.less';
 
-const prefixCls = 'mm-checkable-tag';
+const prefixCls = 'fluentui-plus-checkable-tag';
 
 const CheckableTag: React.FC<CheckableTagProps> = ({ checked, onChange, children, className, ...props }) => {
   const cs = useMemo(

@@ -20,8 +20,8 @@ describe('Tag Component', () => {
       const content = screen.getByText('Test Tag');
       expect(content).toBeInTheDocument();
       const tag = content.closest('span')?.parentElement;
-      expect(tag).toHaveClass('mm-tag');
-      expect(tag).toHaveClass('mm-tag--bordered');
+      expect(tag).toHaveClass('fluentui-plus-tag');
+      expect(tag).toHaveClass('fluentui-plus-tag--bordered');
     });
 
     it('should render content correctly', () => {
@@ -49,8 +49,8 @@ describe('Tag Component', () => {
       render(<Tag bordered={false}>Test Tag</Tag>);
       const content = screen.getByText('Test Tag');
       const tag = content.closest('span')?.parentElement;
-      expect(tag).toHaveClass('mm-tag--borderless');
-      expect(tag).not.toHaveClass('mm-tag--bordered');
+      expect(tag).toHaveClass('fluentui-plus-tag--borderless');
+      expect(tag).not.toHaveClass('fluentui-plus-tag--bordered');
     });
   });
 
@@ -74,14 +74,14 @@ describe('Tag Component', () => {
   describe('关闭功能', () => {
     it('should show close icon when closeIcon is true', () => {
       render(<Tag closeIcon>Closable Tag</Tag>);
-      const closeIcon = document.querySelector('.mm-tag__close');
+      const closeIcon = document.querySelector('.fluentui-plus-tag__close');
       expect(closeIcon).toBeInTheDocument();
       expect(screen.getByTestId('dismiss-icon')).toBeInTheDocument();
     });
 
     it('should not show close icon by default', () => {
       render(<Tag>Default Tag</Tag>);
-      const closeIcon = document.querySelector('.mm-tag__close');
+      const closeIcon = document.querySelector('.fluentui-plus-tag__close');
       expect(closeIcon).not.toBeInTheDocument();
     });
 
@@ -103,7 +103,7 @@ describe('Tag Component', () => {
         </Tag>
       );
 
-      const closeIcon = document.querySelector('.mm-tag__close');
+      const closeIcon = document.querySelector('.fluentui-plus-tag__close');
       await user.click(closeIcon!);
 
       expect(onClose).toHaveBeenCalledTimes(1);
@@ -120,7 +120,7 @@ describe('Tag Component', () => {
         </Tag>
       );
 
-      const closeIcon = document.querySelector('.mm-tag__close');
+      const closeIcon = document.querySelector('.fluentui-plus-tag__close');
       await user.click(closeIcon!);
 
       expect(onClose).toHaveBeenCalledTimes(1);

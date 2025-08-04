@@ -6,7 +6,7 @@ import Input from './Input';
 import type { InputTagProps } from './types';
 import './index.less';
 
-const prefixCls = 'mm-input-tag';
+const prefixCls = 'fluentui-plus-input-tag';
 
 const InputTag: React.FC<InputTagProps> = props => {
   const {

@@ -5,7 +5,7 @@ import CheckableTag from './CheckableTag';
 import type { TagProps, CheckableTagProps } from './types';
 import './index.less';
 
-const prefixCls = 'mm-tag';
+const prefixCls = 'fluentui-plus-tag';
 
 const Tag: React.FC<TagProps> & { CheckableTag?: typeof CheckableTag } = ({ children, ...props }) => {
   const { closeIcon = false, color, bordered = true, className, style, onClick, onClose } = props;

@@ -7,21 +7,21 @@ const darkNavStyles = `
   .dark-nav {
     background: #001529 !important;
   }
-  .dark-nav .mm-nav__item {
+  .dark-nav .fluentui-plus-nav__item {
     color: rgba(255, 255, 255, 0.65) !important;
   }
-  .dark-nav .mm-nav__item:hover {
+  .dark-nav .fluentui-plus-nav__item:hover {
     background: rgba(255, 255, 255, 0.1) !important;
     color: #fff !important;
   }
-  .dark-nav .mm-nav__item--selected {
+  .dark-nav .fluentui-plus-nav__item--selected {
     background: #1890ff !important;
     color: #fff !important;
   }
-  .dark-nav .mm-nav__group-title {
+  .dark-nav .fluentui-plus-nav__group-title {
     color: rgba(255, 255, 255, 0.45) !important;
   }
-  .dark-nav .mm-nav__divider {
+  .dark-nav .fluentui-plus-nav__divider {
     border-color: rgba(255, 255, 255, 0.12) !important;
   }
 `;

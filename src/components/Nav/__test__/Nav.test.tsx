@@ -82,7 +82,7 @@ describe('Nav Component', () => {
       render(<Nav items={mockNavItems} collapsed />);
 
       const nav = screen.getByRole('navigation');
-      expect(nav).toHaveClass('mm-nav--collapsed');
+      expect(nav).toHaveClass('fluentui-plus-nav--collapsed');
     });
 
     it('should render divider items', () => {
@@ -134,8 +134,8 @@ describe('Nav Component', () => {
     it('should display selected item correctly', () => {
       render(<Nav items={mockNavItems} selectedKeys={['menu2']} />);
 
-      const selectedItem = screen.getByText('Menu 2').closest('.mm-nav__item');
-      expect(selectedItem).toHaveClass('mm-nav__item--selected');
+      const selectedItem = screen.getByText('Menu 2').closest('.fluentui-plus-nav__item');
+      expect(selectedItem).toHaveClass('fluentui-plus-nav__item--selected');
     });
 
     it('should display open submenu correctly', () => {
@@ -150,13 +150,13 @@ describe('Nav Component', () => {
     it('should work as controlled component for selectedKeys', () => {
       const { rerender } = render(<Nav items={mockNavItems} selectedKeys={['menu1']} />);
 
-      let selectedItem = screen.getByText('Menu 1').closest('.mm-nav__item');
-      expect(selectedItem).toHaveClass('mm-nav__item--selected');
+      let selectedItem = screen.getByText('Menu 1').closest('.fluentui-plus-nav__item');
+      expect(selectedItem).toHaveClass('fluentui-plus-nav__item--selected');
 
       rerender(<Nav items={mockNavItems} selectedKeys={['menu2']} />);
 
-      selectedItem = screen.getByText('Menu 2').closest('.mm-nav__item');
-      expect(selectedItem).toHaveClass('mm-nav__item--selected');
+      selectedItem = screen.getByText('Menu 2').closest('.fluentui-plus-nav__item');
+      expect(selectedItem).toHaveClass('fluentui-plus-nav__item--selected');
     });
 
     it('should work as controlled component for openKeys', () => {
@@ -174,8 +174,8 @@ describe('Nav Component', () => {
     it('should use defaultSelectedKeys', () => {
       render(<Nav items={mockNavItems} defaultSelectedKeys={['menu2']} />);
 
-      const selectedItem = screen.getByText('Menu 2').closest('.mm-nav__item');
-      expect(selectedItem).toHaveClass('mm-nav__item--selected');
+      const selectedItem = screen.getByText('Menu 2').closest('.fluentui-plus-nav__item');
+      expect(selectedItem).toHaveClass('fluentui-plus-nav__item--selected');
     });
 
     it('should use defaultOpenKeys', () => {
@@ -225,14 +225,14 @@ describe('Nav Component', () => {
     it('should handle keyboard navigation', () => {
       render(<Nav items={mockNavItems} />);
 
-      const menuItem = screen.getByText('Menu 2').closest('.mm-nav__item');
+      const menuItem = screen.getByText('Menu 2').closest('.fluentui-plus-nav__item');
       expect(menuItem).toHaveAttribute('tabIndex', '0');
     });
 
     it('should disable tabIndex for disabled items', () => {
       render(<Nav items={mockNavItems} />);
 
-      const disabledItem = screen.getByText('Menu 3').closest('.mm-nav__item');
+      const disabledItem = screen.getByText('Menu 3').closest('.fluentui-plus-nav__item');
       expect(disabledItem).toHaveAttribute('tabIndex', '-1');
       expect(disabledItem).toHaveAttribute('aria-disabled', 'true');
     });

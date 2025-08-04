@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import { Tag } from '..';
 import type { TagListProps } from './types';
 
-const prefixCls = 'mm-input-tag__item';
+const prefixCls = 'fluentui-plus-input-tag__item';
 
 const TagList: React.FC<TagListProps> = ({ tags, disabled = false, tagClosable = true, onTagRemove, renderTag }) => {
   // 使用 useCallback 优化标签移除处理函数

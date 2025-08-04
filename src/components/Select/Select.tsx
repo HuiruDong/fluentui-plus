@@ -6,7 +6,7 @@ import Listbox from './Listbox';
 import { useSelect } from './hooks';
 import './index.less';
 
-const prefixCls = 'mm-select';
+const prefixCls = 'fluentui-plus-select';
 
 const Select: React.FC<SelectProps> = ({
   value,

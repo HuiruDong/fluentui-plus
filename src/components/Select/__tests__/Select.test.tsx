@@ -346,11 +346,11 @@ describe('Select', () => {
 
       render(<Select options={mockOptions} className='custom-class' disabled={true} multiple={true} />);
 
-      expect(mergeClasses).toHaveBeenCalledWith('mm-select', 'custom-class');
+      expect(mergeClasses).toHaveBeenCalledWith('fluentui-plus-select', 'custom-class');
       expect(mergeClasses).toHaveBeenCalledWith(
-        'mm-select__selector',
-        'mm-select__selector--disabled',
-        'mm-select__selector--multiple'
+        'fluentui-plus-select__selector',
+        'fluentui-plus-select__selector--disabled',
+        'fluentui-plus-select__selector--multiple'
       );
     });
   });

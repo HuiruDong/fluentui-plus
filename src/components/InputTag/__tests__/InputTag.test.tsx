@@ -31,7 +31,7 @@ jest.mock('../Input', () => {
     return (
       <input
         ref={inputRef}
-        className='mm-input-tag__input'
+        className='fluentui-plus-input-tag__input'
         onChange={onChange}
         onKeyDown={onKeyDown}
         onFocus={onFocus}
@@ -56,16 +56,16 @@ jest.mock('../TagList', () => {
     tagClosable?: boolean;
   }) {
     return (
-      <div className='mm-input-tag__tags'>
+      <div className='fluentui-plus-input-tag__tags'>
         {tags.map((tag: string, index: number) => {
           if (renderTag) {
             return renderTag(tag, index, () => onTagRemove?.(tag, index));
           }
           return (
-            <span key={index} className='mm-tag'>
+            <span key={index} className='fluentui-plus-tag'>
               {tag}
               {tagClosable && (
-                <span className='mm-tag__close' onClick={() => onTagRemove?.(tag, index)}>
+                <span className='fluentui-plus-tag__close' onClick={() => onTagRemove?.(tag, index)}>
                   ×
                 </span>
               )}
@@ -81,31 +81,31 @@ describe('InputTag Component', () => {
   describe('基础渲染', () => {
     it('should render correctly with default props', () => {
       render(<InputTag />);
-      const container = document.querySelector('.mm-input-tag');
+      const container = document.querySelector('.fluentui-plus-input-tag');
       expect(container).toBeInTheDocument();
-      expect(container).toHaveClass('mm-input-tag');
+      expect(container).toHaveClass('fluentui-plus-input-tag');
     });
 
     it('should apply custom className', () => {
       render(<InputTag className='custom-class' />);
-      const container = document.querySelector('.mm-input-tag');
+      const container = document.querySelector('.fluentui-plus-input-tag');
       expect(container).toHaveClass('custom-class');
     });
 
     it('should apply custom styles', () => {
       const customStyle = { width: '300px', margin: '10px' };
       render(<InputTag style={customStyle} />);
-      const container = document.querySelector('.mm-input-tag');
+      const container = document.querySelector('.fluentui-plus-input-tag');
       expect(container).toHaveStyle('width: 300px');
       expect(container).toHaveStyle('margin: 10px');
     });
 
     it('should render as disabled when disabled prop is true', () => {
       render(<InputTag disabled placeholder='Disabled input' />);
-      const container = document.querySelector('.mm-input-tag');
+      const container = document.querySelector('.fluentui-plus-input-tag');
       const input = screen.getByPlaceholderText('Disabled input');
 
-      expect(container).toHaveClass('mm-input-tag--disabled');
+      expect(container).toHaveClass('fluentui-plus-input-tag--disabled');
       expect(input).toBeDisabled();
     });
   });
@@ -162,7 +162,7 @@ describe('InputTag Component', () => {
       const handleChange = jest.fn();
       render(<InputTag defaultValue={['removable']} onChange={handleChange} />);
 
-      const closeIcon = document.querySelector('.mm-tag__close');
+      const closeIcon = document.querySelector('.fluentui-plus-tag__close');
       await user.click(closeIcon!);
 
       expect(handleChange).toHaveBeenCalledWith([]);
@@ -173,7 +173,7 @@ describe('InputTag Component', () => {
       const handleTagRemove = jest.fn();
       render(<InputTag defaultValue={['removable']} onTagRemove={handleTagRemove} />);
 
-      const closeIcon = document.querySelector('.mm-tag__close');
+      const closeIcon = document.querySelector('.fluentui-plus-tag__close');
       await user.click(closeIcon!);
 
       expect(handleTagRemove).toHaveBeenCalledWith('removable', 0);
@@ -184,7 +184,7 @@ describe('InputTag Component', () => {
       const handleChange = jest.fn();
       render(<InputTag disabled defaultValue={['tag1']} onChange={handleChange} />);
 
-      const input = document.querySelector('.mm-input-tag__input');
+      const input = document.querySelector('.fluentui-plus-input-tag__input');
       await user.type(input!, 'new tag');
       await user.keyboard('{Enter}');
 
@@ -197,27 +197,27 @@ describe('InputTag Component', () => {
       const user = userEvent.setup();
       render(<InputTag placeholder='Type here' />);
 
-      const container = document.querySelector('.mm-input-tag');
+      const container = document.querySelector('.fluentui-plus-input-tag');
       const input = screen.getByPlaceholderText('Type here');
 
-      expect(container).not.toHaveClass('mm-input-tag--focused');
+      expect(container).not.toHaveClass('fluentui-plus-input-tag--focused');
 
       await user.click(input);
-      expect(container).toHaveClass('mm-input-tag--focused');
+      expect(container).toHaveClass('fluentui-plus-input-tag--focused');
     });
 
     it('should handle blur events correctly', async () => {
       const user = userEvent.setup();
       render(<InputTag placeholder='Type here' />);
 
-      const container = document.querySelector('.mm-input-tag');
+      const container = document.querySelector('.fluentui-plus-input-tag');
       const input = screen.getByPlaceholderText('Type here');
 
       await user.click(input);
-      expect(container).toHaveClass('mm-input-tag--focused');
+      expect(container).toHaveClass('fluentui-plus-input-tag--focused');
 
       await user.click(document.body);
-      expect(container).not.toHaveClass('mm-input-tag--focused');
+      expect(container).not.toHaveClass('fluentui-plus-input-tag--focused');
     });
   });
 
@@ -236,7 +236,7 @@ describe('InputTag Component', () => {
       expect(screen.getByText('tag1')).toBeInTheDocument();
 
       // 确认关闭图标不存在
-      const closeIcon = document.querySelector('.mm-tag__close');
+      const closeIcon = document.querySelector('.fluentui-plus-tag__close');
       expect(closeIcon).not.toBeInTheDocument();
     });
 

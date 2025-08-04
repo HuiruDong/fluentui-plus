@@ -1,5 +1,5 @@
 // Nav 组件样式
-.mm-nav {
+.fluentui-plus-nav {
   background-color: @color-neutral-background-1;
   overflow: hidden;
 
@@ -10,7 +10,7 @@
   &--collapsed {
     width: 60px;
 
-    .mm-nav__item {
+    .fluentui-plus-nav__item {
       justify-content: center;
       padding: 12px;
 
@@ -24,7 +24,7 @@
       }
     }
 
-    .mm-nav__submenu {
+    .fluentui-plus-nav__submenu {
       display: none;
     }
   }
@@ -37,7 +37,7 @@
 }
 
 // 菜单项样式
-.mm-nav__item {
+.fluentui-plus-nav__item {
   display: flex;
   align-items: center;
   padding: 8px 16px;
@@ -138,7 +138,7 @@
 }
 
 // 子菜单样式
-.mm-nav__submenu {
+.fluentui-plus-nav__submenu {
   overflow: hidden;
   transform-origin: top;
   display: flex;
@@ -147,7 +147,7 @@
   padding: 4px 0;
 
   // 子菜单项样式调整
-  .mm-nav__item {
+  .fluentui-plus-nav__item {
     font-size: 14px;
     min-height: 32px;
     padding-top: 8px;
@@ -156,7 +156,7 @@
 }
 
 // 分组样式
-.mm-nav__group {
+.fluentui-plus-nav__group {
   margin: 8px 0;
 
   &__title {
@@ -177,14 +177,14 @@
     flex-direction: column;
     gap: 2px;
 
-    .mm-nav__item {
+    .fluentui-plus-nav__item {
       margin: 0 8px;
       border-radius: @border-radius-small;
     }
   }
 
   // 收起状态下的分组样式
-  .mm-nav--collapsed & {
+  .fluentui-plus-nav--collapsed & {
     margin: 4px 0;
 
     &__title {
@@ -194,7 +194,7 @@
     &__content {
       gap: 4px;
 
-      .mm-nav__item {
+      .fluentui-plus-nav__item {
         margin: 0;
         border-radius: @border-radius-medium;
       }
@@ -213,9 +213,9 @@
 }
 
 // 收起模式下的菜单优化
-.mm-nav--collapsed {
+.fluentui-plus-nav--collapsed {
   // 优化子菜单的展开效果
-  .mm-nav__submenu {
+  .fluentui-plus-nav__submenu {
     transition:
       opacity 0.1s ease-in-out,
       visibility 0s;

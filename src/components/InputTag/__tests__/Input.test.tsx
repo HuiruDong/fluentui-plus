@@ -23,7 +23,7 @@ describe('Input Component', () => {
     it('should render correctly with default props', () => {
       render(<Input {...defaultProps} />);
 
-      const input = document.querySelector('.mm-input-tag__input');
+      const input = document.querySelector('.fluentui-plus-input-tag__input');
       expect(input).toBeInTheDocument();
       expect(input).toHaveValue('');
     });
@@ -46,7 +46,7 @@ describe('Input Component', () => {
     it('should render as disabled when disabled is true', () => {
       render(<Input {...defaultProps} disabled />);
 
-      const input = document.querySelector('.mm-input-tag__input');
+      const input = document.querySelector('.fluentui-plus-input-tag__input');
       expect(input).toBeDisabled();
     });
   });
@@ -57,7 +57,7 @@ describe('Input Component', () => {
       const onChange = jest.fn();
 
       render(<Input {...defaultProps} onChange={onChange} />);
-      const input = document.querySelector('.mm-input-tag__input') as HTMLInputElement;
+      const input = document.querySelector('.fluentui-plus-input-tag__input') as HTMLInputElement;
 
       await user.type(input, 'test');
 
@@ -69,7 +69,7 @@ describe('Input Component', () => {
       const onKeyDown = jest.fn();
 
       render(<Input {...defaultProps} onKeyDown={onKeyDown} />);
-      const input = document.querySelector('.mm-input-tag__input') as HTMLInputElement;
+      const input = document.querySelector('.fluentui-plus-input-tag__input') as HTMLInputElement;
 
       await user.type(input, '{Enter}');
 
@@ -81,7 +81,7 @@ describe('Input Component', () => {
       const onFocus = jest.fn();
 
       render(<Input {...defaultProps} onFocus={onFocus} />);
-      const input = document.querySelector('.mm-input-tag__input') as HTMLInputElement;
+      const input = document.querySelector('.fluentui-plus-input-tag__input') as HTMLInputElement;
 
       await user.click(input);
 
@@ -93,7 +93,7 @@ describe('Input Component', () => {
       const onBlur = jest.fn();
 
       render(<Input {...defaultProps} onBlur={onBlur} />);
-      const input = document.querySelector('.mm-input-tag__input') as HTMLInputElement;
+      const input = document.querySelector('.fluentui-plus-input-tag__input') as HTMLInputElement;
 
       await user.click(input);
       await user.tab();
@@ -106,7 +106,7 @@ describe('Input Component', () => {
       const onPaste = jest.fn();
 
       render(<Input {...defaultProps} onPaste={onPaste} />);
-      const input = document.querySelector('.mm-input-tag__input') as HTMLInputElement;
+      const input = document.querySelector('.fluentui-plus-input-tag__input') as HTMLInputElement;
 
       await user.click(input);
       await user.paste('pasted content');
@@ -121,7 +121,7 @@ describe('Input Component', () => {
       render(<Input {...defaultProps} inputRef={inputRef} />);
 
       expect(inputRef.current).toBeInstanceOf(HTMLInputElement);
-      expect(inputRef.current).toHaveClass('mm-input-tag__input');
+      expect(inputRef.current).toHaveClass('fluentui-plus-input-tag__input');
     });
   });
 });

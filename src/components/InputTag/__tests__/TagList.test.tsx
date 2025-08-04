@@ -18,10 +18,10 @@ jest.mock('../../Tag', () => {
       onClose?: () => void;
       [key: string]: unknown;
     }) => (
-      <span className='mm-tag' {...props}>
-        <span className='mm-tag__content'>{children}</span>
+      <span className='fluentui-plus-tag' {...props}>
+        <span className='fluentui-plus-tag__content'>{children}</span>
         {closeIcon && (
-          <span className='mm-tag__close' onClick={onClose}>
+          <span className='fluentui-plus-tag__close' onClick={onClose}>
             ×
           </span>
         )}
@@ -44,7 +44,7 @@ describe('TagList Component', () => {
     it('should render empty list correctly', () => {
       render(<TagList {...defaultProps} />);
 
-      const tags = document.querySelectorAll('.mm-tag');
+      const tags = document.querySelectorAll('.fluentui-plus-tag');
       expect(tags).toHaveLength(0);
     });
 
@@ -65,7 +65,7 @@ describe('TagList Component', () => {
       const tags = ['closable'];
       render(<TagList {...defaultProps} tags={tags} />);
 
-      const closeIcons = document.querySelectorAll('.mm-tag__close');
+      const closeIcons = document.querySelectorAll('.fluentui-plus-tag__close');
       expect(closeIcons).toHaveLength(1);
     });
 
@@ -73,7 +73,7 @@ describe('TagList Component', () => {
       const tags = ['not-closable'];
       render(<TagList {...defaultProps} tags={tags} tagClosable={false} />);
 
-      const closeIcons = document.querySelectorAll('.mm-tag__close');
+      const closeIcons = document.querySelectorAll('.fluentui-plus-tag__close');
       expect(closeIcons).toHaveLength(0);
     });
 
@@ -81,7 +81,7 @@ describe('TagList Component', () => {
       const tags = ['disabled-tag'];
       render(<TagList {...defaultProps} tags={tags} disabled />);
 
-      const closeIcons = document.querySelectorAll('.mm-tag__close');
+      const closeIcons = document.querySelectorAll('.fluentui-plus-tag__close');
       expect(closeIcons).toHaveLength(0);
     });
   });
@@ -94,7 +94,7 @@ describe('TagList Component', () => {
 
       render(<TagList {...defaultProps} tags={tags} onTagRemove={onTagRemove} />);
 
-      const closeIcon = document.querySelector('.mm-tag__close');
+      const closeIcon = document.querySelector('.fluentui-plus-tag__close');
       await user.click(closeIcon!);
 
       expect(onTagRemove).toHaveBeenCalledWith('removable', 0);
@@ -107,7 +107,7 @@ describe('TagList Component', () => {
       render(<TagList {...defaultProps} tags={tags} disabled onTagRemove={onTagRemove} />);
 
       // Close icon should not be present when disabled
-      const closeIcon = document.querySelector('.mm-tag__close');
+      const closeIcon = document.querySelector('.fluentui-plus-tag__close');
       expect(closeIcon).not.toBeInTheDocument();
     });
 
@@ -118,7 +118,7 @@ describe('TagList Component', () => {
       render(<TagList {...defaultProps} tags={tags} tagClosable={false} onTagRemove={onTagRemove} />);
 
       // Close icon should not be present when tagClosable is false
-      const closeIcon = document.querySelector('.mm-tag__close');
+      const closeIcon = document.querySelector('.fluentui-plus-tag__close');
       expect(closeIcon).not.toBeInTheDocument();
     });
   });

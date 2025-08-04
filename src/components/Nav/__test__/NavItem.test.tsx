@@ -60,7 +60,7 @@ describe('NavItem Component', () => {
     openKeys: [],
     onItemClick: mockOnItemClick,
     onToggleExpand: mockOnToggleExpand,
-    prefixCls: 'mm-nav',
+    prefixCls: 'fluentui-plus-nav',
   };
 
   beforeEach(() => {
@@ -95,7 +95,7 @@ describe('NavItem Component', () => {
       render(<NavItem {...defaultProps} item={normalItem} selectedKeys={['menu1']} />);
 
       const menuItem = screen.getByRole('menuitem');
-      expect(menuItem).toHaveClass('mm-nav__item--selected');
+      expect(menuItem).toHaveClass('fluentui-plus-nav__item--selected');
     });
 
     it('should apply disabled state', () => {
@@ -103,7 +103,7 @@ describe('NavItem Component', () => {
       render(<NavItem {...defaultProps} item={disabledItem} />);
 
       const menuItem = screen.getByRole('menuitem');
-      expect(menuItem).toHaveClass('mm-nav__item--disabled');
+      expect(menuItem).toHaveClass('fluentui-plus-nav__item--disabled');
       expect(menuItem).toHaveAttribute('aria-disabled', 'true');
       expect(menuItem).toHaveAttribute('tabIndex', '-1');
 
@@ -164,7 +164,7 @@ describe('NavItem Component', () => {
       render(<NavItem {...defaultProps} item={itemWithChildren} openKeys={['parent']} />);
 
       const arrow = screen.getByTestId('chevron-icon').parentElement;
-      expect(arrow).toHaveClass('mm-nav__item__arrow--expanded');
+      expect(arrow).toHaveClass('fluentui-plus-nav__item__arrow--expanded');
     });
   });
 
@@ -202,7 +202,7 @@ describe('NavItem Component', () => {
 
       // Label should not be visible in collapsed mode
       const wrapper = screen.getByRole('menuitem');
-      expect(wrapper).toHaveClass('mm-nav__item--collapsed');
+      expect(wrapper).toHaveClass('fluentui-plus-nav__item--collapsed');
     });
 
     it('should show menu for items with children when collapsed', () => {
@@ -256,7 +256,7 @@ describe('NavItem Component', () => {
       expect(screen.getByText('Group Child 1')).toBeInTheDocument();
       expect(screen.getByText('Group Child 2')).toBeInTheDocument();
 
-      const group = screen.getByText('Group Title').closest('.mm-nav__group');
+      const group = screen.getByText('Group Title').closest('.fluentui-plus-nav__group');
       expect(group).toHaveClass('custom-group');
       expect(group).toHaveStyle('padding: 10px');
     });
@@ -288,7 +288,7 @@ describe('NavItem Component', () => {
       render(<NavItem {...defaultProps} item={normalItem} level={2} />);
 
       const menuItem = screen.getByRole('menuitem');
-      expect(menuItem).toHaveClass('mm-nav__item--level-2');
+      expect(menuItem).toHaveClass('fluentui-plus-nav__item--level-2');
     });
 
     it('should pass correct level to children', () => {
@@ -300,8 +300,8 @@ describe('NavItem Component', () => {
 
       render(<NavItem {...defaultProps} item={itemWithChildren} level={1} openKeys={['parent']} />);
 
-      const submenu = screen.getByText('Child').closest('.mm-nav__submenu');
-      expect(submenu).toHaveClass('mm-nav__submenu--level-2');
+      const submenu = screen.getByText('Child').closest('.fluentui-plus-nav__submenu');
+      expect(submenu).toHaveClass('fluentui-plus-nav__submenu--level-2');
     });
   });
 
@@ -317,7 +317,7 @@ describe('NavItem Component', () => {
 
       render(<NavItem {...defaultProps} item={itemWithChildren} collapsed />);
 
-      const wrapper = screen.getByRole('menuitem').closest('.mm-nav__item__wrapper');
+      const wrapper = screen.getByRole('menuitem').closest('.fluentui-plus-nav__item__wrapper');
 
       // Mouse enter should open menu immediately
       fireEvent.mouseEnter(wrapper!);

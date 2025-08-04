@@ -5,7 +5,7 @@ import { useNavigation } from './hooks/useNavigation';
 import NavItem from './NavItem';
 import './index.less';
 
-const prefixCls = 'mm-nav';
+const prefixCls = 'fluentui-plus-nav';
 
 // 主导航组件
 const Nav: React.FC<NavProps> = ({
