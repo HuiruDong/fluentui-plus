@@ -1,11 +1,11 @@
 import { useMemo } from 'react';
 import { useInputValue } from '../../../hooks';
-import type { Option } from '../types';
-import { filterOptions } from '../utils';
+import type { Option, GroupedOption } from '../types';
+import { filterGroupedOptions } from '../utils';
 
 interface UseSelectSearchProps {
   showSearch?: boolean;
-  options?: Option[];
+  options?: GroupedOption[];
   onSearch?: (value: string) => void;
   filterOption?: (input: string, option: Option) => boolean;
 }
@@ -29,7 +29,7 @@ export const useSelectSearch = ({ showSearch = false, options = [], onSearch, fi
       return options;
     }
 
-    return filterOptions(options, inputManager.inputValue, filterOption);
+    return filterGroupedOptions(options, inputManager.inputValue, filterOption);
   }, [options, inputManager.inputValue, filterOption, showSearch]);
 
   return {

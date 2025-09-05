@@ -10,6 +10,12 @@ type Option = {
   label?: string;
 };
 
+// 定义 GroupOption 类型
+type GroupOption = {
+  label: string;
+  options: Option[];
+};
+
 const useStyles = makeStyles({
   container: {
     padding: '40px',
@@ -95,7 +101,7 @@ const SelectPage: React.FC = () => {
   const [disabledValue, setDisabledValue] = useState<string | number>('option1');
 
   // 自定义选项
-  const [customValue, setCustomValue] = useState<string | number>('option2');
+  const [customValue, setCustomValue] = useState<string | number>('frontend');
 
   // 基础选项
   const basicOptions: Option[] = [
@@ -126,14 +132,29 @@ const SelectPage: React.FC = () => {
   ];
 
   // 分组选项
-  const groupedOptions: Option[] = [
-    { value: 'frontend', label: '前端开发', title: '技术栈' },
-    { value: 'backend', label: '后端开发', title: '技术栈' },
-    { value: 'mobile', label: '移动开发', title: '技术栈' },
-    { value: 'design', label: 'UI设计', title: '设计' },
-    { value: 'ux', label: 'UX设计', title: '设计' },
-    { value: 'product', label: '产品经理', title: '产品' },
-    { value: 'operation', label: '运营', title: '产品' },
+  const groupedOptions: GroupOption[] = [
+    {
+      label: '技术栈',
+      options: [
+        { value: 'frontend', label: '前端开发' },
+        { value: 'backend', label: '后端开发' },
+        { value: 'mobile', label: '移动开发' },
+      ],
+    },
+    {
+      label: '设计',
+      options: [
+        { value: 'design', label: 'UI设计' },
+        { value: 'ux', label: 'UX设计' },
+      ],
+    },
+    {
+      label: '产品',
+      options: [
+        { value: 'product', label: '产品经理' },
+        { value: 'operation', label: '运营' },
+      ],
+    },
   ];
 
   return (

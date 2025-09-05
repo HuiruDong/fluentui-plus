@@ -196,6 +196,26 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
+
+  // 分组样式
+  &__group {
+    &:not(:last-child) {
+      margin-bottom: @spacing-vertical-xs;
+    }
+  }
+
+  &__group-label {
+    padding: @spacing-vertical-s-nudge @spacing-horizontal-s;
+    font-size: @font-size-200;
+    font-weight: @font-weight-semibold;
+    color: @color-neutral-foreground-disabled;
+  }
+
+  &__group-options {
+    .fluentui-plus-select__option {
+      padding-left: calc(@spacing-horizontal-s + @spacing-horizontal-m);
+    }
+  }
 }
 
 .fluentui-plus-select__popover-surface {

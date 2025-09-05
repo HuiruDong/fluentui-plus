@@ -27,4 +27,4 @@ export type { NavProps, NavItemType } from './Nav';
 
 // Select 组件
 export { Select } from './Select';
-export type { SelectProps } from './Select';
+export type { SelectProps, Option, GroupedOption } from './Select';

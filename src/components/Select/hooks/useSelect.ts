@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import type { Option } from '../types';
+import type { Option, GroupedOption } from '../types';
 import { useSelectState } from './useSelectState';
 import { useOptionSelection } from './useOptionSelection';
 import { useSelectSearch } from './useSelectSearch';
@@ -10,7 +10,7 @@ interface UseSelectProps {
   multiple?: boolean;
   showSearch?: boolean;
   open?: boolean;
-  options?: Option[];
+  options?: GroupedOption[];
   onChange?: (value: string | number | (string | number)[], selectedOptions: Option | Option[] | null) => void;
   onSearch?: (value: string) => void;
   filterOption?: (input: string, option: Option) => boolean;

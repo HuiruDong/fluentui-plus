@@ -1,12 +1,13 @@
 import { useState, useCallback, useMemo } from 'react';
 import { useTagManager } from '../../../hooks';
-import type { Option } from '../types';
+import type { Option, GroupedOption } from '../types';
+import { flattenOptions } from '../utils';
 
 interface UseOptionSelectionProps {
   value?: string | number | (string | number)[];
   defaultValue?: string | number | (string | number)[];
   multiple?: boolean;
-  options?: Option[];
+  options?: GroupedOption[];
   onChange?: (value: string | number | (string | number)[], selectedOptions: Option | Option[] | null) => void;
 }
 
@@ -21,6 +22,9 @@ export const useOptionSelection = ({
   options = [],
   onChange,
 }: UseOptionSelectionProps) => {
+  // 扁平化选项，以便处理分组选项
+  const flatOptions = useMemo(() => flattenOptions(options), [options]);
+
   // 处理单选和多选的默认值
   const normalizedDefaultValue = useMemo(() => {
     if (multiple) {
@@ -42,13 +46,13 @@ export const useOptionSelection = ({
       if (multiple && onChange) {
         const convertedValues = tags
           .map(tag => {
-            const originalOption = options.find((opt: Option) => String(opt.value) === tag);
+            const originalOption = flatOptions.find((opt: Option) => String(opt.value) === tag);
             return originalOption?.value;
           })
           .filter(v => v !== undefined) as (string | number)[];
 
         const selectedOptions = convertedValues
-          .map(val => options.find((opt: Option) => opt.value === val))
+          .map(val => flatOptions.find((opt: Option) => opt.value === val))
           .filter(Boolean) as Option[];
 
         onChange(convertedValues, selectedOptions);
@@ -63,7 +67,7 @@ export const useOptionSelection = ({
         return value;
       }
       return tagManager.getCurrentTags().map(tag => {
-        const originalOption = options.find((opt: Option) => String(opt.value) === tag);
+        const originalOption = flatOptions.find((opt: Option) => String(opt.value) === tag);
         return originalOption?.value || tag;
       });
     }
@@ -74,11 +78,11 @@ export const useOptionSelection = ({
   const getSelectedOptions = useCallback(() => {
     const currentValue = getCurrentValue();
     if (multiple && Array.isArray(currentValue)) {
-      return currentValue.map(val => options.find((opt: Option) => opt.value === val)).filter(Boolean) as Option[];
+      return currentValue.map(val => flatOptions.find((opt: Option) => opt.value === val)).filter(Boolean) as Option[];
     }
-    const option = options.find((opt: Option) => opt.value === currentValue);
+    const option = flatOptions.find((opt: Option) => opt.value === currentValue);
     return option ? [option] : [];
-  }, [getCurrentValue, multiple, options]);
+  }, [getCurrentValue, multiple, flatOptions]);
 
   // 检查选项是否被选中
   const isOptionSelected = useCallback(
@@ -121,7 +125,7 @@ export const useOptionSelection = ({
         onChange?.(option.value, option);
       }
     },
-    [multiple, value, onChange, tagManager, options]
+    [multiple, value, onChange, tagManager, flatOptions]
   );
 
   // 处理标签删除（多选模式）

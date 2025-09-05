@@ -2,7 +2,9 @@ import React from 'react';
 import { mergeClasses } from '@fluentui/react-components';
 import type { ListboxProps } from './types';
 import OptionItem from './OptionItem';
+import OptionGroup from './OptionGroup';
 import { useFloatingPosition, useOptionSelection } from './hooks';
+import { isOptionGroup } from './utils';
 
 const Listbox: React.FC<ListboxProps> = ({
   isOpen,
@@ -40,18 +42,37 @@ const Listbox: React.FC<ListboxProps> = ({
       {options.length === 0 ? (
         <div className={mergeClasses(`${prefixCls}__option`, `${prefixCls}__option--empty`)}>暂无数据</div>
       ) : (
-        options.map((option, index) => (
-          <OptionItem
-            key={option.value !== undefined ? option.value : index}
-            option={option}
-            index={index}
-            isSelected={isOptionSelected(option)}
-            multiple={multiple}
-            onOptionClick={onOptionClick}
-            optionRender={optionRender}
-            prefixCls={prefixCls}
-          />
-        ))
+        options.map((item, index) => {
+          if (isOptionGroup(item)) {
+            // 渲染分组
+            const selectedValues = Array.isArray(value) ? value : value !== undefined ? [value] : [];
+            return (
+              <OptionGroup
+                key={`group-${item.label}-${index}`}
+                group={item}
+                multiple={multiple}
+                selectedValues={selectedValues}
+                onOptionClick={onOptionClick}
+                optionRender={optionRender}
+                prefixCls={prefixCls}
+              />
+            );
+          } else {
+            // 渲染普通选项
+            return (
+              <OptionItem
+                key={item.value !== undefined ? item.value : `option-${index}`}
+                option={item}
+                index={index}
+                isSelected={isOptionSelected(item)}
+                multiple={multiple}
+                onOptionClick={onOptionClick}
+                optionRender={optionRender}
+                prefixCls={prefixCls}
+              />
+            );
+          }
+        })
       )}
     </div>
   );

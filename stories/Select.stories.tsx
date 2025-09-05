@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Select } from '../src/components';
-import type { Option } from '../src/components/Select/types';
+import type { Option, GroupedOption } from '../src/components/Select/types';
 
 const meta: Meta<typeof Select> = {
   title: '数据录入/Select 选择器',
@@ -661,6 +661,108 @@ export const WithCallbacks: Story = {
             ))
           )}
         </div>
+      </div>
+    );
+  },
+};
+
+// 分组选项示例
+export const GroupedOptions: Story = {
+  render: () => {
+    const groupedOptions: GroupedOption[] = [
+      {
+        label: 'manager',
+        options: [
+          { value: 'jack', label: 'Jack' },
+          { value: 'lucy', label: 'Lucy' },
+        ],
+      },
+      {
+        label: 'engineer',
+        options: [
+          { value: 'chloe', label: 'Chloe' },
+          { value: 'lucas', label: 'Lucas' },
+        ],
+      },
+    ];
+
+    return (
+      <div style={{ width: '300px' }}>
+        <Select placeholder='请选择员工' options={groupedOptions} />
+      </div>
+    );
+  },
+};
+
+// 分组多选示例
+export const GroupedMultiple: Story = {
+  render: () => {
+    const groupedCityOptions: GroupedOption[] = [
+      {
+        label: '一线城市',
+        options: [
+          { value: 'beijing', label: '北京' },
+          { value: 'shanghai', label: '上海' },
+          { value: 'guangzhou', label: '广州' },
+          { value: 'shenzhen', label: '深圳' },
+        ],
+      },
+      {
+        label: '新一线城市',
+        options: [
+          { value: 'chengdu', label: '成都' },
+          { value: 'hangzhou', label: '杭州' },
+          { value: 'wuhan', label: '武汉' },
+          { value: 'suzhou', label: '苏州' },
+          { value: 'xian', label: '西安' },
+        ],
+      },
+      {
+        label: '二线城市',
+        options: [
+          { value: 'jinan', label: '济南' },
+          { value: 'qingdao', label: '青岛' },
+          { value: 'dalian', label: '大连' },
+          { value: 'kunming', label: '昆明' },
+        ],
+      },
+    ];
+
+    return (
+      <div style={{ width: '350px' }}>
+        <Select placeholder='请选择城市' options={groupedCityOptions} multiple showSearch />
+      </div>
+    );
+  },
+};
+
+// 混合选项（分组 + 普通选项）
+export const MixedOptions: Story = {
+  render: () => {
+    const mixedOptions: GroupedOption[] = [
+      { value: 'all', label: '全部' },
+      { value: 'recent', label: '最近使用' },
+      {
+        label: '水果类',
+        options: [
+          { value: 'apple', label: '苹果' },
+          { value: 'banana', label: '香蕉' },
+          { value: 'orange', label: '橙子' },
+        ],
+      },
+      {
+        label: '蔬菜类',
+        options: [
+          { value: 'tomato', label: '番茄' },
+          { value: 'potato', label: '土豆' },
+          { value: 'carrot', label: '胡萝卜' },
+        ],
+      },
+    ];
+
+    return (
+      <div style={{ width: '250px' }}>
+        <Select placeholder='请选择食物' options={mixedOptions} showSearch />
       </div>
     );
   },

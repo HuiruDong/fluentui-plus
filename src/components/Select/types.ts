@@ -7,11 +7,18 @@ export type Option = {
   label?: string;
 };
 
+export type OptionGroup = {
+  label: string;
+  options: Option[];
+};
+
+export type GroupedOption = Option | OptionGroup;
+
 export interface ListboxProps {
   isOpen: boolean;
   triggerRef: React.RefObject<HTMLElement>;
   onClose: () => void;
-  options?: Option[];
+  options?: GroupedOption[];
   value?: string | number | (string | number)[];
   listHeight?: number;
   multiple?: boolean;
@@ -48,7 +55,7 @@ export interface SelectProps {
   placeholder?: string;
   multiple?: boolean;
   showSearch?: boolean;
-  options?: Option[];
+  options?: GroupedOption[];
   listHeight?: number;
   open?: boolean;
   onChange?: (value: string | number | (string | number)[], selectedOptions: Option | Option[] | null) => void;
@@ -101,3 +108,16 @@ export interface TextDisplayProps {
   selectedOption?: Option;
   prefixCls: string;
 }
+
+export interface OptionGroupProps {
+  group: OptionGroup;
+  multiple?: boolean;
+  selectedValues?: (string | number)[];
+  onOptionClick?: (option: Option) => void;
+  optionRender?: (option: Option) => React.ReactNode;
+  prefixCls: string;
+}
+
+// 辅助函数类型
+export type isOptionGroup = (item: GroupedOption) => item is OptionGroup;
+export type isOption = (item: GroupedOption) => item is Option;
