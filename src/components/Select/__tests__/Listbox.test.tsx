@@ -37,6 +37,8 @@ jest.mock('../OptionItem', () => {
 jest.mock('../hooks', () => ({
   useFloatingPosition: jest.fn(() => ({
     floatingRef: { current: null },
+    floatingStyles: {},
+    getFloatingProps: jest.fn(() => ({})),
   })),
   useOptionSelection: jest.fn(() => ({
     isOptionSelected: jest.fn(() => false),
@@ -76,6 +78,8 @@ describe('Listbox', () => {
 
     mockUseFloatingPosition.mockReturnValue({
       floatingRef: { current: null },
+      floatingStyles: {},
+      getFloatingProps: jest.fn(() => ({})),
     });
 
     mockUseOptionSelection.mockReturnValue({
@@ -204,12 +208,12 @@ describe('Listbox', () => {
 
     expect(mergeClasses).toHaveBeenCalledWith('test-select__popover-surface');
 
-    // Check inline styles
-    const popupElement = screen.getByTestId('option-item-0').closest('div[style*="position: absolute"]');
+    // Check that the popup surface is rendered with the expected class
+    const popupElement = screen.getByTestId('option-item-0').closest('.test-select__popover-surface');
+    expect(popupElement).toBeInTheDocument();
+
+    // Check z-index and visibility are still applied
     expect(popupElement).toHaveStyle({
-      position: 'absolute',
-      top: '0',
-      left: '0',
       zIndex: '1000',
       visibility: 'visible',
     });
@@ -310,6 +314,8 @@ describe('Listbox', () => {
       const mockFloatingRef = { current: document.createElement('div') };
       mockUseFloatingPosition.mockReturnValue({
         floatingRef: mockFloatingRef,
+        floatingStyles: {},
+        getFloatingProps: jest.fn(() => ({})),
       });
 
       render(<Listbox {...defaultProps} options={mockOptions} />);
@@ -325,12 +331,14 @@ describe('Listbox', () => {
       const mockFloatingRef = { current: null };
       mockUseFloatingPosition.mockReturnValue({
         floatingRef: mockFloatingRef,
+        floatingStyles: {},
+        getFloatingProps: jest.fn(() => ({})),
       });
 
       render(<Listbox {...defaultProps} options={mockOptions} />);
 
       // The ref should be attached to the popup surface
-      expect(screen.getByTestId('option-item-0').closest('[style*="position: absolute"]')).toBeInTheDocument();
+      expect(screen.getByTestId('option-item-0').closest('.test-select__popover-surface')).toBeInTheDocument();
     });
   });
 });

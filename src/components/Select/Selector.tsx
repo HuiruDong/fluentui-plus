@@ -102,7 +102,7 @@ const renderSingleSelector = ({
   return (
     <TextDisplay
       displayText={displayText}
-      isPlaceholder={!selectedOption && !value}
+      isPlaceholder={!selectedOption && (value === undefined || value === null)}
       onClick={onClick}
       selectedOption={selectedOption}
       prefixCls={prefixCls}
@@ -164,7 +164,7 @@ const renderSearchableSelector = ({
   return (
     <TextDisplay
       displayText={displayText}
-      isPlaceholder={!selectedOption}
+      isPlaceholder={!selectedOption || selectedOption.value === undefined || selectedOption.value === null}
       onClick={onClick}
       selectedOption={selectedOption}
       prefixCls={prefixCls}
@@ -173,16 +173,16 @@ const renderSearchableSelector = ({
 };
 
 // 获取显示文本的工具函数
-const getDisplayText = (selectedOption?: Option, value?: string | number, placeholder?: string): string => {
+const getDisplayText = (selectedOption?: Option, value?: string | number | null, placeholder?: string): string => {
   if (selectedOption?.label) {
     return selectedOption.label;
   }
 
-  if (selectedOption?.value !== undefined) {
+  if (selectedOption?.value !== undefined && selectedOption?.value !== null) {
     return String(selectedOption.value);
   }
 
-  if (value !== undefined) {
+  if (value !== undefined && value !== null) {
     return String(value);
   }
 

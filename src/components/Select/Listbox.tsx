@@ -18,7 +18,7 @@ const Listbox: React.FC<ListboxProps> = ({
   prefixCls,
 }) => {
   // 使用浮动定位 hook
-  const { floatingRef } = useFloatingPosition({
+  const { floatingRef, floatingStyles, getFloatingProps } = useFloatingPosition({
     isOpen,
     triggerRef,
     onClickOutside: onClose,
@@ -61,12 +61,11 @@ const Listbox: React.FC<ListboxProps> = ({
       ref={floatingRef}
       className={mergeClasses(`${prefixCls}__popover-surface`)}
       style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
+        ...floatingStyles,
         zIndex: 1000,
         visibility: 'visible',
       }}
+      {...getFloatingProps()}
     >
       {popupRender ? popupRender(optionsNode) : optionsNode}
     </div>
