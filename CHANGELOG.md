@@ -4,6 +4,23 @@
 
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，项目遵循 [语义化版本](https://semver.org/lang/zh-CN/) 规范。
 
+## [2.1.0](https://github.com/HuiruDong/fluentui-plus/compare/v2.0.0...v2.1.0) (2025-09-09)
+
+### Fixed
+
+- fix mixins error ([0694f46](https://github.com/HuiruDong/fluentui-plus/commit/0694f4651942b19f3e99f9a2f3094ee82eb9adb3))
+
+### Added
+
+- add demo pages with React Router navigation ([6c3c6e7](https://github.com/HuiruDong/fluentui-plus/commit/6c3c6e76e5663a4be188778d4b771237f083af91))
+- **Select:** add clear functionality with allowClear prop ([1a918b4](https://github.com/HuiruDong/fluentui-plus/commit/1a918b4305f5800dd5b5e0629bd9ff994f75a59e))
+- **Select:** add option group support ([7f1e95a](https://github.com/HuiruDong/fluentui-plus/commit/7f1e95ac38b5c5c27769187724c47d88c897b618))
+- **Select:** migrate to @floating-ui/react and improve positioning system ([1f8215e](https://github.com/HuiruDong/fluentui-plus/commit/1f8215e88d81670d9e0bd100dddf125379c62ab0))
+
+### Changed
+
+- enhance API documentation ([f09d7fb](https://github.com/HuiruDong/fluentui-plus/commit/f09d7fbf62ea50e4456992aa47b0e602ff8de2f9))
+
 ## [2.0.0](https://github.com/HuiruDong/fluentui-plus/compare/v1.0.0...v2.0.0) (2025-08-04)
 
 ### Added
