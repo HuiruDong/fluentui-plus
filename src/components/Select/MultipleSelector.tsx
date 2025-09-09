@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { mergeClasses } from '@fluentui/react-components';
-import { ChevronDownRegular } from '@fluentui/react-icons';
+import { ChevronDownRegular, DismissCircleFilled } from '@fluentui/react-icons';
 import TagList from '../InputTag/TagList';
 import SearchInput from './SearchInput';
 import type { MultipleSelectorProps } from './types';
@@ -13,6 +13,8 @@ const MultipleSelector: React.FC<MultipleSelectorProps> = ({
   searchValue = '',
   onClick,
   onTagRemove,
+  onClear,
+  showClear = false,
   onSearchChange,
   onSearchFocus,
   onSearchBlur,
@@ -53,7 +55,12 @@ const MultipleSelector: React.FC<MultipleSelectorProps> = ({
           </span>
         )}
       </div>
-      <ChevronDownRegular className={mergeClasses(`${prefixCls}__selector-arrow`)} />
+      <div className={mergeClasses(`${prefixCls}__selector-suffix`)}>
+        {showClear && (
+          <DismissCircleFilled className={mergeClasses(`${prefixCls}__selector-clear`)} onClick={onClear} />
+        )}
+        <ChevronDownRegular className={mergeClasses(`${prefixCls}__selector-arrow`)} />
+      </div>
     </div>
   );
 };

@@ -11,7 +11,10 @@ interface UseSelectProps {
   showSearch?: boolean;
   open?: boolean;
   options?: GroupedOption[];
-  onChange?: (value: string | number | (string | number)[], selectedOptions: Option | Option[] | null) => void;
+  onChange?: (
+    value: string | number | (string | number)[] | undefined,
+    selectedOptions: Option | Option[] | null
+  ) => void;
   onSearch?: (value: string) => void;
   filterOption?: (input: string, option: Option) => boolean;
 }
@@ -77,6 +80,11 @@ export const useSelect = ({
     [selectionManager]
   );
 
+  // 处理清除所有选中项
+  const handleClear = useCallback(() => {
+    selectionManager.handleClear();
+  }, [selectionManager]);
+
   // 处理失焦
   const handleBlur = useCallback(() => {
     stateManager.closeDropdown();
@@ -107,6 +115,7 @@ export const useSelect = ({
     // 事件处理（组合多个管理器）
     handleOptionSelect,
     handleTagRemove,
+    handleClear,
     handleBlur,
     handleSelectorClick,
 

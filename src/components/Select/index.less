@@ -9,6 +9,13 @@
     .form-control-base();
     overflow: hidden;
 
+    &:hover {
+      .fluentui-plus-select__selector-clear {
+        opacity: 1;
+        visibility: visible;
+      }
+    }
+
     &--disabled {
       .form-control-disabled();
 
@@ -66,6 +73,30 @@
 
     &--placeholder {
       color: @color-neutral-foreground-4;
+    }
+  }
+
+  &__selector-suffix {
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+
+  &__selector-clear {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    color: @color-brand-shadow-key;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background-color: #fff;
+    opacity: 0;
+    visibility: hidden;
+
+    &:hover {
+      color: @color-background-overlay;
     }
   }
 

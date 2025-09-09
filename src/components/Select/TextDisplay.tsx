@@ -1,6 +1,6 @@
 import React from 'react';
 import { mergeClasses } from '@fluentui/react-components';
-import { ChevronDownRegular } from '@fluentui/react-icons';
+import { ChevronDownRegular, DismissCircleFilled } from '@fluentui/react-icons';
 import type { TextDisplayProps } from './types';
 
 const TextDisplay: React.FC<TextDisplayProps> = ({
@@ -8,6 +8,8 @@ const TextDisplay: React.FC<TextDisplayProps> = ({
   isPlaceholder,
   onClick,
   selectedOption,
+  onClear,
+  showClear = false,
   prefixCls,
 }) => {
   return (
@@ -25,7 +27,12 @@ const TextDisplay: React.FC<TextDisplayProps> = ({
       >
         {displayText}
       </span>
-      <ChevronDownRegular className={mergeClasses(`${prefixCls}__selector-arrow`)} />
+      <div className={mergeClasses(`${prefixCls}__selector-suffix`)}>
+        {showClear && (
+          <DismissCircleFilled className={mergeClasses(`${prefixCls}__selector-clear`)} onClick={onClear} />
+        )}
+        <ChevronDownRegular className={mergeClasses(`${prefixCls}__selector-arrow`)} />
+      </div>
     </div>
   );
 };

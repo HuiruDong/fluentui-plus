@@ -25,6 +25,8 @@ const Select: React.FC<SelectProps> = ({
   filterOption,
   optionRender,
   popupRender,
+  onClear,
+  allowClear = false,
 }) => {
   // 使用重构后的新 hook 管理状态
   const selectState = useSelect({
@@ -114,6 +116,19 @@ const Select: React.FC<SelectProps> = ({
     [selectState]
   );
 
+  // 处理清除按钮点击
+  const handleClear = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation(); // 阻止事件冒泡，避免触发选择器点击
+      selectState.handleClear();
+      onClear?.();
+    },
+    [selectState, onClear]
+  );
+
+  // 判断是否显示清除按钮
+  const showClear = allowClear && !disabled && selectedOptions.length > 0;
+
   // 使用重构后的过滤选项
   const displayOptions = selectState.filteredOptions;
 
@@ -140,6 +155,8 @@ const Select: React.FC<SelectProps> = ({
           onSearchFocus={handleSearchFocus}
           onSearchBlur={handleSearchBlur}
           onTagRemove={handleTagRemove}
+          onClear={handleClear}
+          showClear={showClear}
           inputRef={showSearch ? inputRef : undefined}
           isOpen={currentOpen}
           prefixCls={prefixCls}

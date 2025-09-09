@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { makeStyles } from '@fluentui/react-components';
 import { Select } from '../../src';
 
@@ -89,19 +89,23 @@ const SelectPage: React.FC = () => {
   const styles = useStyles();
 
   // 基础用法状态
-  const [basicValue, setBasicValue] = useState<string | number>('option2');
+  const [basicValue, setBasicValue] = useState<string | number | undefined>('option2');
 
   // 多选状态
   const [multipleValue, setMultipleValue] = useState<(string | number)[]>(['option1', 'option3']);
 
   // 可搜索状态
-  const [searchableValue, setSearchableValue] = useState<string | number>('');
+  const [searchableValue, setSearchableValue] = useState<string | number | undefined>('');
 
   // 禁用状态
-  const [disabledValue, setDisabledValue] = useState<string | number>('option1');
+  const [disabledValue, setDisabledValue] = useState<string | number | undefined>('option1');
 
   // 自定义选项
-  const [customValue, setCustomValue] = useState<string | number>('frontend');
+  const [customValue, setCustomValue] = useState<string | number | undefined>('frontend');
+
+  // 清除功能状态
+  const [clearableValue, setClearableValue] = useState<string | number | undefined>('option2');
+  const [clearableMultipleValue, setClearableMultipleValue] = useState<(string | number)[]>(['option1', 'option3']);
 
   // 基础选项
   const basicOptions: Option[] = [
@@ -172,7 +176,7 @@ const SelectPage: React.FC = () => {
           <div className={styles.demo}>
             <Select
               value={basicValue}
-              onChange={value => setBasicValue(value as string)}
+              onChange={value => setBasicValue(value as string | number | undefined)}
               options={basicOptions}
               placeholder='请选择选项'
             />
@@ -207,7 +211,7 @@ const SelectPage: React.FC = () => {
           <div className={styles.demo}>
             <Select
               value={searchableValue}
-              onChange={value => setSearchableValue(value as string)}
+              onChange={value => setSearchableValue(value as string | number | undefined)}
               options={searchableOptions}
               placeholder='搜索城市'
               showSearch
@@ -229,20 +233,58 @@ const SelectPage: React.FC = () => {
               <h4 style={{ marginBottom: '12px', color: '#374151' }}>禁用整个组件</h4>
               <Select
                 value={disabledValue}
-                onChange={value => setDisabledValue(value as string)}
+                onChange={value => setDisabledValue(value as string | number | undefined)}
                 options={basicOptions}
                 placeholder='禁用状态'
                 disabled
+                allowClear
               />
             </div>
             <div>
               <h4 style={{ marginBottom: '12px', color: '#374151' }}>禁用特定选项</h4>
               <Select
-                value=''
+                value={undefined}
                 onChange={value => console.log(value)}
                 options={disabledOptions}
                 placeholder='部分选项禁用'
               />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className={styles.section}>
+        <div className={styles.sectionTitle}>清除功能</div>
+        <div className={styles.sectionDescription}>
+          通过设置 allowClear 属性可以显示清除按钮，点击清除按钮可以清空当前选中的内容。
+        </div>
+        <div className={styles.demoContainer}>
+          <div className={styles.demoTitle}>可清除选择器</div>
+          <div className={styles.twoColumnDemo}>
+            <div>
+              <h4 style={{ marginBottom: '12px', color: '#374151' }}>单选模式清除</h4>
+              <Select
+                value={clearableValue}
+                onChange={value => setClearableValue(value as string | number | undefined)}
+                options={basicOptions}
+                placeholder='请选择选项'
+                allowClear
+                onClear={() => console.log('单选清除按钮被点击')}
+              />
+              <div className={styles.valueDisplay}>当前选中值: {JSON.stringify(clearableValue)}</div>
+            </div>
+            <div>
+              <h4 style={{ marginBottom: '12px', color: '#374151' }}>多选模式清除</h4>
+              <Select
+                value={clearableMultipleValue}
+                onChange={value => setClearableMultipleValue(value as (string | number)[])}
+                options={basicOptions}
+                placeholder='请选择多个选项'
+                multiple
+                allowClear
+                onClear={() => console.log('多选清除按钮被点击')}
+              />
+              <div className={styles.valueDisplay}>当前选中值: {JSON.stringify(clearableMultipleValue)}</div>
             </div>
           </div>
         </div>
@@ -256,9 +298,10 @@ const SelectPage: React.FC = () => {
           <div className={styles.demo}>
             <Select
               value={customValue}
-              onChange={value => setCustomValue(value as string)}
+              onChange={value => setCustomValue(value as string | number | undefined)}
               options={groupedOptions}
               placeholder='选择岗位类型'
+              allowClear
             />
             <div className={styles.valueDisplay}>当前选中值: {JSON.stringify(customValue)}</div>
           </div>
@@ -320,6 +363,20 @@ const SelectPage: React.FC = () => {
                 <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>是否禁用</td>
                 <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>boolean</td>
                 <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>false</td>
+              </tr>
+              <tr>
+                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>allowClear</td>
+                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>是否显示清除按钮</td>
+                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>
+                  boolean | {'{'} clearIcon?: ReactNode {'}'}
+                </td>
+                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>false</td>
+              </tr>
+              <tr>
+                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>onClear</td>
+                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>清除按钮点击回调</td>
+                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>() =&gt; void</td>
+                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>-</td>
               </tr>
             </tbody>
           </table>

@@ -114,7 +114,8 @@ describe('TextDisplay', () => {
     render(<TextDisplay {...defaultProps} displayText='' />);
 
     // The text element should still exist even if empty
-    const textElement = screen.getByTestId('chevron-down').parentElement?.querySelector('.test-select__selector-text');
+    const chevronParent = screen.getByTestId('chevron-down').parentElement;
+    const textElement = chevronParent?.parentElement?.querySelector('.test-select__selector-text');
     expect(textElement).toBeInTheDocument();
     expect(textElement).toHaveTextContent('');
   });

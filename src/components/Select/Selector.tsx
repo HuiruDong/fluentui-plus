@@ -1,7 +1,7 @@
 import React from 'react';
 import { mergeClasses } from '@fluentui/react-components';
 import type { SelectorProps, Option } from './types';
-import { ChevronDownRegular } from '@fluentui/react-icons';
+import { ChevronDownRegular, DismissRegular } from '@fluentui/react-icons';
 import SearchInput from './SearchInput';
 import TextDisplay from './TextDisplay';
 import MultipleSelector from './MultipleSelector';
@@ -20,6 +20,8 @@ const Selector: React.FC<SelectorProps> = ({
   onSearchBlur,
   inputRef,
   onTagRemove,
+  onClear,
+  showClear = false,
   isOpen = false,
   prefixCls,
 }) => {
@@ -34,6 +36,8 @@ const Selector: React.FC<SelectorProps> = ({
         searchValue={searchValue}
         onClick={onClick}
         onTagRemove={onTagRemove}
+        onClear={onClear}
+        showClear={showClear}
         onSearchChange={onSearchChange}
         onSearchFocus={onSearchFocus}
         onSearchBlur={onSearchBlur}
@@ -55,6 +59,8 @@ const Selector: React.FC<SelectorProps> = ({
     onSearchChange,
     onSearchFocus,
     onSearchBlur,
+    onClear,
+    showClear,
     inputRef,
     isOpen,
     prefixCls,
@@ -73,6 +79,8 @@ const renderSingleSelector = ({
   onSearchChange,
   onSearchFocus,
   onSearchBlur,
+  onClear,
+  showClear,
   inputRef,
   isOpen,
   prefixCls,
@@ -90,6 +98,8 @@ const renderSingleSelector = ({
       onSearchChange,
       onSearchFocus,
       onSearchBlur,
+      onClear,
+      showClear,
       inputRef,
       isOpen,
       prefixCls,
@@ -105,6 +115,8 @@ const renderSingleSelector = ({
       isPlaceholder={!selectedOption && (value === undefined || value === null)}
       onClick={onClick}
       selectedOption={selectedOption}
+      onClear={onClear}
+      showClear={showClear}
       prefixCls={prefixCls}
     />
   );
@@ -120,6 +132,8 @@ const renderSearchableSelector = ({
   onSearchChange,
   onSearchFocus,
   onSearchBlur,
+  onClear,
+  showClear,
   inputRef,
   isOpen,
   prefixCls,
@@ -132,6 +146,8 @@ const renderSearchableSelector = ({
   onSearchChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onSearchFocus?: () => void;
   onSearchBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
+  onClear?: (e: React.MouseEvent) => void;
+  showClear?: boolean;
   inputRef?: React.RefObject<HTMLInputElement>;
   isOpen?: boolean;
   prefixCls: string;
@@ -153,7 +169,10 @@ const renderSearchableSelector = ({
           onFocus={onSearchFocus}
           onBlur={onSearchBlur}
         />
-        <ChevronDownRegular className={mergeClasses(`${prefixCls}__selector-arrow`)} />
+        <div className={mergeClasses(`${prefixCls}__selector-suffix`)}>
+          {showClear && <DismissRegular className={mergeClasses(`${prefixCls}__selector-clear`)} onClick={onClear} />}
+          <ChevronDownRegular className={mergeClasses(`${prefixCls}__selector-arrow`)} />
+        </div>
       </div>
     );
   }
@@ -167,6 +186,8 @@ const renderSearchableSelector = ({
       isPlaceholder={!selectedOption || selectedOption.value === undefined || selectedOption.value === null}
       onClick={onClick}
       selectedOption={selectedOption}
+      onClear={onClear}
+      showClear={showClear}
       prefixCls={prefixCls}
     />
   );

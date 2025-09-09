@@ -8,7 +8,10 @@ interface UseOptionSelectionProps {
   defaultValue?: string | number | (string | number)[];
   multiple?: boolean;
   options?: GroupedOption[];
-  onChange?: (value: string | number | (string | number)[], selectedOptions: Option | Option[] | null) => void;
+  onChange?: (
+    value: string | number | (string | number)[] | undefined,
+    selectedOptions: Option | Option[] | null
+  ) => void;
 }
 
 /**
@@ -139,6 +142,18 @@ export const useOptionSelection = ({
     [multiple, tagManager]
   );
 
+  // 处理清除所有选中项
+  const handleClear = useCallback(() => {
+    if (multiple) {
+      // 多选模式：调用 onChange 传递空数组
+      onChange?.([], []);
+    } else {
+      // 单选模式：更新内部状态并调用 onChange 传递 undefined
+      setSingleValue(undefined);
+      onChange?.(undefined, null);
+    }
+  }, [multiple, onChange]);
+
   return {
     // 值相关
     getCurrentValue,
@@ -148,6 +163,7 @@ export const useOptionSelection = ({
     // 事件处理
     handleOptionSelect,
     handleTagRemove,
+    handleClear,
 
     // 标签管理（多选模式）
     tagManager,

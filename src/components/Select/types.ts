@@ -43,6 +43,8 @@ export interface SelectorProps {
   inputRef?: React.RefObject<HTMLInputElement>;
   isOpen?: boolean;
   onTagRemove?: (tag: string, index: number) => void;
+  onClear?: (e: React.MouseEvent) => void;
+  showClear?: boolean;
   prefixCls: string;
 }
 
@@ -58,11 +60,16 @@ export interface SelectProps {
   options?: GroupedOption[];
   listHeight?: number;
   open?: boolean;
-  onChange?: (value: string | number | (string | number)[], selectedOptions: Option | Option[] | null) => void;
+  onChange?: (
+    value: string | number | (string | number)[] | undefined,
+    selectedOptions: Option | Option[] | null
+  ) => void;
   onSearch?: (value: string) => void;
   filterOption?: (input: string, option: Option) => boolean;
   optionRender?: (option: Option) => React.ReactNode;
   popupRender?: (originNode: React.ReactNode) => React.ReactNode;
+  onClear?: () => void;
+  allowClear?: boolean | { clearIcon?: React.ReactNode };
 }
 
 export interface MultipleSelectorProps {
@@ -73,6 +80,8 @@ export interface MultipleSelectorProps {
   searchValue?: string;
   onClick?: () => void;
   onTagRemove?: (tag: string, index: number) => void;
+  onClear?: (e: React.MouseEvent) => void;
+  showClear?: boolean;
   onSearchChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onSearchFocus?: () => void;
   onSearchBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
@@ -106,6 +115,8 @@ export interface TextDisplayProps {
   onClick?: () => void;
   title?: string;
   selectedOption?: Option;
+  onClear?: (e: React.MouseEvent) => void;
+  showClear?: boolean;
   prefixCls: string;
 }
 
