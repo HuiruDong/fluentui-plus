@@ -15,8 +15,8 @@
 | `bordered` | `boolean` | `true` | 是否显示边框 |
 | `className` | `string` | - | 自定义样式类名 |
 | `style` | `React.CSSProperties` | - | 自定义内联样式 |
-| `onClose` | `(e: React.MouseEvent) => void` | - | 关闭回调函数 |
-| `onClick` | `(e: React.MouseEvent) => void` | - | 点击回调函数 |
+| `onClose` | `(e: React.MouseEvent<HTMLElement>) => void` | - | 关闭回调函数 |
+| `onClick` | `(e: React.MouseEvent<HTMLElement>) => void` | - | 点击回调函数 |
 | `children` | `React.ReactNode` | - | 标签内容 |
 
 #### 示例
@@ -52,9 +52,11 @@ import { Tag } from '@luoluoyu/fluentui-plus';
 | `checked` | `boolean` | - | 是否选中 |
 | `onChange` | `(checked: boolean) => void` | - | 选中状态变化回调 |
 | `color` | `string` | - | 标签颜色，支持任意颜色值 |
+| `closeIcon` | `boolean \| React.ReactNode` | `false` | 是否显示关闭图标，可自定义图标 |
 | `bordered` | `boolean` | `true` | 是否显示边框 |
 | `className` | `string` | - | 自定义样式类名 |
 | `style` | `React.CSSProperties` | - | 自定义内联样式 |
+| `onClose` | `(e: React.MouseEvent<HTMLElement>) => void` | - | 关闭回调函数 |
 | `children` | `React.ReactNode` | - | 标签内容 |
 
 #### 示例
@@ -88,7 +90,7 @@ const [checked, setChecked] = useState(false);
 | `disabled` | `boolean` | `false` | 是否禁用 |
 | `maxTags` | `number` | - | 最大标签数量 |
 | `allowDuplicates` | `boolean` | `true` | 是否允许重复标签 |
-| `delimiter` | `string \| RegExp` | - | 自定义分隔符，用于自动分割输入内容为标签 |
+| `delimiter` | `string \| RegExp` | - | 自定义分隔符，支持字符串或正则表达式，用于自动分割输入内容为标签 |
 | `tagClosable` | `boolean` | `true` | 标签是否可关闭 |
 | `renderTag` | `(tag: string, index: number, onClose: () => void) => React.ReactNode` | - | 自定义标签渲染 |
 | `onTagRemove` | `(tag: string, index: number) => void` | - | 标签被移除时的回调 |
@@ -178,12 +180,136 @@ const navItems = [
 />
 ```
 
+### Select 选择器
+
+用于从多个选项中进行单选或多选的下拉组件。
+
+#### 属性
+
+| 属性 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `value` | `string \| number \| (string \| number)[]` | - | 受控模式的选中值 |
+| `defaultValue` | `string \| number \| (string \| number)[]` | - | 非受控模式的默认选中值 |
+| `className` | `string` | - | 自定义样式类名 |
+| `style` | `React.CSSProperties` | - | 自定义内联样式 |
+| `disabled` | `boolean` | `false` | 是否禁用 |
+| `placeholder` | `string` | - | 选择框占位符 |
+| `multiple` | `boolean` | `false` | 是否支持多选 |
+| `showSearch` | `boolean` | `false` | 是否显示搜索框 |
+| `options` | `GroupedOption[]` | `[]` | 选项数据 |
+| `listHeight` | `number` | `256` | 下拉列表的最大高度 |
+| `open` | `boolean` | - | 是否展开下拉菜单（受控） |
+| `onChange` | `(value, selectedOptions) => void` | - | 选中选项时的回调函数 |
+| `onSearch` | `(value: string) => void` | - | 搜索时的回调函数 |
+| `filterOption` | `(input: string, option: Option) => boolean` | - | 自定义过滤函数 |
+| `optionRender` | `(option: Option) => React.ReactNode` | - | 自定义选项渲染 |
+| `popupRender` | `(originNode: React.ReactNode) => React.ReactNode` | - | 自定义下拉容器渲染 |
+| `onClear` | `() => void` | - | 清除时的回调函数 |
+| `allowClear` | `boolean \| { clearIcon?: React.ReactNode }` | `false` | 是否支持清除，可自定义清除图标 |
+
+#### Option 类型
+
+```typescript
+type Option = {
+  disabled?: boolean;
+  title?: string;
+  value?: string | number;
+  label?: string;
+};
+
+type OptionGroup = {
+  label: string;
+  options: Option[];
+};
+
+type GroupedOption = Option | OptionGroup;
+```
+
+#### 示例
+
+```jsx
+import { Select } from '@luoluoyu/fluentui-plus';
+
+// 基础用法
+const options = [
+  { label: '选项一', value: 'option1' },
+  { label: '选项二', value: 'option2' },
+  { label: '选项三', value: 'option3', disabled: true }
+];
+
+<Select 
+  placeholder="请选择"
+  options={options}
+  onChange={(value, option) => console.log('选中:', value, option)}
+/>
+
+// 多选模式
+<Select 
+  multiple
+  placeholder="请选择多个选项"
+  options={options}
+  onChange={(values, options) => console.log('选中:', values, options)}
+/>
+
+// 支持搜索
+<Select 
+  showSearch
+  placeholder="搜索并选择"
+  options={options}
+  onSearch={(value) => console.log('搜索:', value)}
+  filterOption={(input, option) => 
+    option.label?.toLowerCase().includes(input.toLowerCase())
+  }
+/>
+
+// 分组选项
+const groupedOptions = [
+  {
+    label: '水果',
+    options: [
+      { label: '苹果', value: 'apple' },
+      { label: '香蕉', value: 'banana' }
+    ]
+  },
+  {
+    label: '蔬菜',
+    options: [
+      { label: '胡萝卜', value: 'carrot' },
+      { label: '西兰花', value: 'broccoli' }
+    ]
+  }
+];
+
+<Select 
+  placeholder="请选择"
+  options={groupedOptions}
+  onChange={(value, option) => console.log('选中:', value, option)}
+/>
+
+// 支持清除
+<Select 
+  allowClear
+  placeholder="请选择"
+  options={options}
+  onClear={() => console.log('已清除')}
+/>
+```
+
 ## TypeScript 支持
 
 所有组件都提供完整的 TypeScript 类型定义。你可以从组件库导入类型：
 
 ```typescript
-import type { TagProps, CheckableTagProps, InputTagProps, NavProps, NavItemType } from '@luoluoyu/fluentui-plus';
+import type { 
+  TagProps, 
+  CheckableTagProps, 
+  InputTagProps, 
+  NavProps, 
+  NavItemType,
+  SelectProps,
+  Option,
+  GroupedOption
+} from '@luoluoyu/fluentui-plus';
 
 // 使用类型
 const tagProps: TagProps = {
@@ -197,6 +323,17 @@ const navItem: NavItemType = {
   label: '示例',
   icon: '📝',
   title: '示例菜单'
+};
+
+const selectOptions: Option[] = [
+  { label: '选项一', value: 'option1' },
+  { label: '选项二', value: 'option2' }
+];
+
+const selectProps: SelectProps = {
+  placeholder: '请选择',
+  options: selectOptions,
+  allowClear: true
 };
 ```
 
@@ -234,10 +371,139 @@ const navItem: NavItemType = {
 @import '~@luoluoyu/fluentui-plus/dist/styles/index.less';
 ```
 
+## 通用 Hooks
+
+组件库还提供了一些通用的 React Hooks，可以在自定义组件开发中使用：
+
+### useTagManager
+
+用于管理标签列表的状态，提供标签的添加、删除、批量操作等功能。
+
+#### 参数
+
+| 属性 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `value` | `string[]` | - | 受控模式的标签数组 |
+| `defaultValue` | `string[]` | `[]` | 非受控模式的默认标签数组 |
+| `onChange` | `(tags: string[]) => void` | - | 标签变化回调 |
+| `maxTags` | `number` | - | 最大标签数量 |
+| `allowDuplicates` | `boolean` | `true` | 是否允许重复标签 |
+
+#### 返回值
+
+```typescript
+{
+  getCurrentTags: () => string[];  // 获取当前标签数组
+  addTag: (tag: string) => boolean;  // 添加单个标签
+  removeTag: (index: number) => boolean;  // 删除指定位置的标签
+  addMultipleTags: (tags: string[]) => number;  // 批量添加标签，返回实际添加的数量
+}
+```
+
+#### 示例
+
+```typescript
+import { useTagManager } from '@luoluoyu/fluentui-plus';
+
+const MyComponent = () => {
+  const {
+    getCurrentTags,
+    addTag,
+    removeTag,
+    addMultipleTags
+  } = useTagManager({
+    defaultValue: ['React', 'TypeScript'],
+    maxTags: 10,
+    allowDuplicates: false,
+    onChange: (tags) => console.log('标签变化:', tags)
+  });
+
+  const handleAddTag = () => {
+    const success = addTag('JavaScript');
+    console.log('添加成功:', success);
+  };
+
+  const tags = getCurrentTags();
+  
+  return (
+    <div>
+      {tags.map((tag, index) => (
+        <span key={index} onClick={() => removeTag(index)}>
+          {tag} ×
+        </span>
+      ))}
+      <button onClick={handleAddTag}>添加标签</button>
+      <button onClick={() => addMultipleTags(['Vue', 'Angular'])}>
+        批量添加
+      </button>
+    </div>
+  );
+};
+```
+
+### useInputValue
+
+用于管理输入框的值状态和焦点状态。
+
+#### 参数
+
+| 属性 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `initialValue` | `string` | `''` | 初始输入值 |
+| `onInputChange` | `(value: string) => void` | - | 输入值变化回调 |
+
+#### 返回值
+
+```typescript
+{
+  inputValue: string;  // 当前输入值
+  setInputValue: (value: string) => void;  // 设置输入值
+  isFocused: boolean;  // 是否处于焦点状态
+  setIsFocused: (focused: boolean) => void;  // 设置焦点状态
+  handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;  // 处理输入变化事件
+  clearInput: () => void;  // 清空输入
+}
+```
+
+#### 示例
+
+```typescript
+import { useInputValue } from '@luoluoyu/fluentui-plus';
+
+const MyInput = () => {
+  const {
+    inputValue,
+    setInputValue,
+    isFocused,
+    setIsFocused,
+    handleInputChange,
+    clearInput
+  } = useInputValue({
+    initialValue: '',
+    onInputChange: (value) => console.log('输入变化:', value)
+  });
+
+  return (
+    <div>
+      <input 
+        value={inputValue}
+        onChange={handleInputChange}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
+        placeholder="请输入内容"
+      />
+      <button onClick={clearInput}>清空</button>
+      <p>当前值: {inputValue}</p>
+      <p>焦点状态: {isFocused ? '有焦点' : '无焦点'}</p>
+    </div>
+  );
+};
+```
+
 ## 浏览器兼容性
 
 - ✅ Chrome >= 80
-- ✅ Firefox >= 78
+- ✅ Firefox >= 78  
 - ✅ Safari >= 13
 - ✅ Edge >= 80
 - ⚠️ IE 11 (需要 polyfill)
