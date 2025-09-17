@@ -11,7 +11,10 @@ const TextDisplay: React.FC<TextDisplayProps> = ({
   onClear,
   showClear = false,
   prefixCls,
+  labelRender,
 }) => {
+  // 如果有 labelRender 且有选中的选项，使用 labelRender 来生成显示文本
+  const finalDisplayText = labelRender && selectedOption && !isPlaceholder ? labelRender(selectedOption) : displayText;
   return (
     <div
       className={mergeClasses(`${prefixCls}__selector-inner`)}
@@ -25,7 +28,7 @@ const TextDisplay: React.FC<TextDisplayProps> = ({
           isPlaceholder && `${prefixCls}__selector-text--placeholder`
         )}
       >
-        {displayText}
+        {finalDisplayText}
       </span>
       <div className={mergeClasses(`${prefixCls}__selector-suffix`)}>
         {showClear && (

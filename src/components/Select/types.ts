@@ -46,6 +46,7 @@ export interface SelectorProps {
   onClear?: (e: React.MouseEvent) => void;
   showClear?: boolean;
   prefixCls: string;
+  labelRender?: (selectedOptions: Option | Option[] | null) => string;
 }
 
 export interface SelectProps {
@@ -70,6 +71,7 @@ export interface SelectProps {
   popupRender?: (originNode: React.ReactNode) => React.ReactNode;
   onClear?: () => void;
   allowClear?: boolean | { clearIcon?: React.ReactNode };
+  labelRender?: (selectedOptions: Option | Option[] | null) => string;
 }
 
 export interface MultipleSelectorProps {
@@ -87,6 +89,7 @@ export interface MultipleSelectorProps {
   onSearchBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
   inputRef?: React.RefObject<HTMLInputElement>;
   prefixCls: string;
+  labelRender?: (selectedOptions: Option | Option[] | null) => string;
 }
 
 export interface OptionItemProps {
@@ -118,6 +121,7 @@ export interface TextDisplayProps {
   onClear?: (e: React.MouseEvent) => void;
   showClear?: boolean;
   prefixCls: string;
+  labelRender?: (selectedOptions: Option | Option[] | null) => string;
 }
 
 export interface OptionGroupProps {

@@ -20,11 +20,16 @@ const MultipleSelector: React.FC<MultipleSelectorProps> = ({
   onSearchBlur,
   inputRef,
   prefixCls,
+  labelRender,
 }) => {
   // 使用 useMemo 优化 tags 数组的创建
   const tags = useMemo(() => {
+    // 如果有 labelRender，对每个选项单独调用 labelRender
+    if (labelRender) {
+      return selectedOptions.map(option => labelRender(option));
+    }
     return selectedOptions.map(option => option.label || String(option.value));
-  }, [selectedOptions]);
+  }, [selectedOptions, labelRender]);
 
   const hasSelectedItems = tags.length > 0;
 

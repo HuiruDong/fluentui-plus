@@ -103,6 +103,10 @@ const SelectPage: React.FC = () => {
   // 自定义选项
   const [customValue, setCustomValue] = useState<string | number | undefined>('frontend');
 
+  // labelRender 状态
+  const [labelRenderValue, setLabelRenderValue] = useState<string | number | undefined>('user1');
+  const [labelRenderMultipleValue, setLabelRenderMultipleValue] = useState<(string | number)[]>(['user1', 'user2']);
+
   // 清除功能状态
   const [clearableValue, setClearableValue] = useState<string | number | undefined>('option2');
   const [clearableMultipleValue, setClearableMultipleValue] = useState<(string | number)[]>(['option1', 'option3']);
@@ -160,6 +164,29 @@ const SelectPage: React.FC = () => {
       ],
     },
   ];
+
+  // labelRender 示例选项
+  const userOptions: Option[] = [
+    { value: 'user1', label: 'John Doe', title: 'Senior Developer' },
+    { value: 'user2', label: 'Jane Smith', title: 'Product Manager' },
+    { value: 'user3', label: 'Bob Johnson', title: 'Designer' },
+    { value: 'user4', label: 'Alice Wilson', title: 'Tech Lead' },
+  ];
+
+  // 自定义单选显示格式
+  const singleLabelRender = (selectedOptions: Option | Option[] | null) => {
+    if (!selectedOptions || Array.isArray(selectedOptions)) return '';
+    return `${selectedOptions.label} (${selectedOptions.title})`;
+  };
+
+  // 自定义多选显示格式
+  const multipleLabelRender = (selectedOptions: Option | Option[] | null) => {
+    if (!selectedOptions) return '';
+    if (!Array.isArray(selectedOptions)) {
+      return `👤 ${selectedOptions.label}`;
+    }
+    return `${selectedOptions.length} users selected`;
+  };
 
   return (
     <div className={styles.container}>
@@ -309,6 +336,70 @@ const SelectPage: React.FC = () => {
       </div>
 
       <div className={styles.section}>
+        <div className={styles.sectionTitle}>自定义标签显示 (labelRender)</div>
+        <div className={styles.sectionDescription}>
+          通过 labelRender 属性可以自定义选中项的显示格式，支持单选和多选模式。
+        </div>
+        <div className={styles.demoContainer}>
+          <div className={styles.demoTitle}>单选模式 - 显示格式：姓名 (职位)</div>
+          <div className={styles.demo}>
+            <Select
+              value={labelRenderValue}
+              onChange={value => setLabelRenderValue(value as string | number | undefined)}
+              options={userOptions}
+              labelRender={singleLabelRender}
+              placeholder='选择用户'
+              allowClear
+            />
+            <div className={styles.valueDisplay}>当前选中值: {JSON.stringify(labelRenderValue)}</div>
+          </div>
+        </div>
+        <div className={styles.demoContainer}>
+          <div className={styles.demoTitle}>多选模式 - 显示格式：👤 姓名</div>
+          <div className={styles.demo}>
+            <Select
+              value={labelRenderMultipleValue}
+              onChange={value => setLabelRenderMultipleValue(value as (string | number)[])}
+              options={userOptions}
+              multiple
+              labelRender={multipleLabelRender}
+              placeholder='选择多个用户'
+              allowClear
+            />
+            <div className={styles.valueDisplay}>当前选中值: {JSON.stringify(labelRenderMultipleValue)}</div>
+          </div>
+        </div>
+        <div className={styles.demoContainer}>
+          <div className={styles.demoTitle}>搜索模式 - labelRender 也影响搜索占位符</div>
+          <div className={styles.demo}>
+            <Select
+              value={labelRenderValue}
+              onChange={value => setLabelRenderValue(value as string | number | undefined)}
+              options={userOptions}
+              showSearch
+              labelRender={singleLabelRender}
+              placeholder='搜索用户'
+              allowClear
+            />
+            <div className={styles.valueDisplay}>当前选中值: {JSON.stringify(labelRenderValue)}</div>
+          </div>
+        </div>
+        <div className={styles.demoContainer}>
+          <div className={styles.demoTitle}>对比：默认显示（不使用 labelRender）</div>
+          <div className={styles.demo}>
+            <Select
+              value={labelRenderValue}
+              onChange={value => setLabelRenderValue(value as string | number | undefined)}
+              options={userOptions}
+              placeholder='选择用户（默认显示）'
+              allowClear
+            />
+            <div className={styles.valueDisplay}>当前选中值: {JSON.stringify(labelRenderValue)}</div>
+          </div>
+        </div>
+      </div>
+
+      <div className={styles.section}>
         <div className={styles.sectionTitle}>API 参数</div>
         <div className={styles.sectionDescription}>Select 组件支持的所有参数配置。</div>
         <div className={styles.demoContainer}>
@@ -376,6 +467,14 @@ const SelectPage: React.FC = () => {
                 <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>onClear</td>
                 <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>清除按钮点击回调</td>
                 <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>() =&gt; void</td>
+                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>-</td>
+              </tr>
+              <tr>
+                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>labelRender</td>
+                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>自定义选中项显示内容</td>
+                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>
+                  (selectedOptions: Option | Option[] | null) =&gt; string
+                </td>
                 <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>-</td>
               </tr>
             </tbody>

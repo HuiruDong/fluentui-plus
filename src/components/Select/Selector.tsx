@@ -24,6 +24,7 @@ const Selector: React.FC<SelectorProps> = ({
   showClear = false,
   isOpen = false,
   prefixCls,
+  labelRender,
 }) => {
   // 多选模式 - 早期返回
   if (multiple) {
@@ -43,6 +44,7 @@ const Selector: React.FC<SelectorProps> = ({
         onSearchBlur={onSearchBlur}
         inputRef={inputRef}
         prefixCls={prefixCls}
+        labelRender={labelRender}
       />
     );
   }
@@ -64,6 +66,7 @@ const Selector: React.FC<SelectorProps> = ({
     inputRef,
     isOpen,
     prefixCls,
+    labelRender,
   });
 };
 
@@ -84,6 +87,7 @@ const renderSingleSelector = ({
   inputRef,
   isOpen,
   prefixCls,
+  labelRender,
 }: Omit<SelectorProps, 'multiple' | 'onTagRemove'>) => {
   const selectedOption = selectedOptions?.[0];
 
@@ -103,11 +107,17 @@ const renderSingleSelector = ({
       inputRef,
       isOpen,
       prefixCls,
+      labelRender,
     });
   }
 
   // 普通显示模式
-  const displayText = getDisplayText(selectedOption, Array.isArray(value) ? undefined : value, placeholder);
+  const displayText = getDisplayText(
+    selectedOption,
+    Array.isArray(value) ? undefined : value,
+    placeholder,
+    labelRender
+  );
 
   return (
     <TextDisplay
@@ -118,6 +128,7 @@ const renderSingleSelector = ({
       onClear={onClear}
       showClear={showClear}
       prefixCls={prefixCls}
+      labelRender={labelRender}
     />
   );
 };
@@ -137,6 +148,7 @@ const renderSearchableSelector = ({
   inputRef,
   isOpen,
   prefixCls,
+  labelRender,
 }: {
   selectedOption?: Option;
   placeholder?: string;
@@ -151,12 +163,17 @@ const renderSearchableSelector = ({
   inputRef?: React.RefObject<HTMLInputElement>;
   isOpen?: boolean;
   prefixCls: string;
+  labelRender?: (selectedOptions: Option | Option[] | null) => string;
 }) => {
   const inputActivated = isOpen || searchValue !== '';
 
   // 输入框激活状态 - 显示搜索输入框
   if (inputActivated) {
-    const searchPlaceholder = selectedOption ? selectedOption.label || String(selectedOption.value) : placeholder || '';
+    const searchPlaceholder = selectedOption
+      ? labelRender
+        ? labelRender(selectedOption)
+        : selectedOption.label || String(selectedOption.value)
+      : placeholder || '';
 
     return (
       <div className={mergeClasses(`${prefixCls}__selector-inner`)} onClick={onClick}>
@@ -178,7 +195,7 @@ const renderSearchableSelector = ({
   }
 
   // 输入框未激活状态 - 显示文本
-  const displayText = getDisplayText(selectedOption, undefined, placeholder);
+  const displayText = getDisplayText(selectedOption, undefined, placeholder, labelRender);
 
   return (
     <TextDisplay
@@ -189,12 +206,23 @@ const renderSearchableSelector = ({
       onClear={onClear}
       showClear={showClear}
       prefixCls={prefixCls}
+      labelRender={labelRender}
     />
   );
 };
 
 // 获取显示文本的工具函数
-const getDisplayText = (selectedOption?: Option, value?: string | number | null, placeholder?: string): string => {
+const getDisplayText = (
+  selectedOption?: Option,
+  value?: string | number | null,
+  placeholder?: string,
+  labelRender?: (selectedOptions: Option | Option[] | null) => string
+): string => {
+  // 如果有自定义 labelRender，优先使用
+  if (labelRender && selectedOption) {
+    return labelRender(selectedOption);
+  }
+
   if (selectedOption?.label) {
     return selectedOption.label;
   }

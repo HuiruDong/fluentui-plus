@@ -27,6 +27,7 @@ const Select: React.FC<SelectProps> = ({
   popupRender,
   onClear,
   allowClear = false,
+  labelRender,
 }) => {
   // 使用重构后的新 hook 管理状态
   const selectState = useSelect({
@@ -160,6 +161,7 @@ const Select: React.FC<SelectProps> = ({
           inputRef={showSearch ? inputRef : undefined}
           isOpen={currentOpen}
           prefixCls={prefixCls}
+          labelRender={labelRender}
         />
       </div>
 
