@@ -28,3 +28,7 @@ export type { NavProps, NavItemType } from './Nav';
 // Select 组件
 export { Select } from './Select';
 export type { SelectProps, Option, GroupedOption } from './Select';
+
+// Cascader 组件
+export { Cascader } from './Cascader';
+export type { CascaderProps, CascaderOption, CascaderValue } from './Cascader';

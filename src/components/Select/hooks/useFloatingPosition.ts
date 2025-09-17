@@ -8,6 +8,7 @@ interface UseFloatingPositionProps {
   placement?: 'bottom-start' | 'bottom-end' | 'top-start' | 'top-end';
   offsetDistance?: number;
   shiftPadding?: number;
+  matchTriggerWidth?: boolean;
 }
 
 export const useFloatingPosition = ({
@@ -17,6 +18,7 @@ export const useFloatingPosition = ({
   placement = 'bottom-start',
   offsetDistance = 4,
   shiftPadding = 8,
+  matchTriggerWidth = true,
 }: UseFloatingPositionProps) => {
   const { refs, floatingStyles, context, update } = useFloating({
     open: isOpen,
@@ -27,12 +29,17 @@ export const useFloatingPosition = ({
       shift({ padding: shiftPadding }),
       size({
         apply({ availableWidth, availableHeight, elements, rects }) {
-          Object.assign(elements.floating.style, {
+          const styles: Record<string, string> = {
             maxWidth: `${availableWidth}px`,
             maxHeight: `${availableHeight}px`,
-            // 设置浮动元素宽度与触发器宽度一致
-            width: `${rects.reference.width}px`,
-          });
+          };
+
+          // 根据 matchTriggerWidth 参数决定是否设置宽度与触发器一致
+          if (matchTriggerWidth) {
+            styles.width = `${rects.reference.width}px`;
+          }
+
+          Object.assign(elements.floating.style, styles);
         },
       }),
     ],

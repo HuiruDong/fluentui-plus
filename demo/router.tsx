@@ -6,6 +6,7 @@ import TagPage from './pages/TagPage';
 import NavPage from './pages/NavPage';
 import InputTagPage from './pages/InputTagPage';
 import SelectPage from './pages/SelectPage';
+import CascaderPage from './pages/CascaderPage';
 
 const router = createBrowserRouter([
   {
@@ -31,6 +32,10 @@ const router = createBrowserRouter([
       {
         path: '/select',
         element: <SelectPage />,
+      },
+      {
+        path: '/cascader',
+        element: <CascaderPage />,
       },
     ],
   },

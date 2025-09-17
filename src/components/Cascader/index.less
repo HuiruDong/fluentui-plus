@@ -1,0 +1,308 @@
+// 继承 Select 的基础样式，并扩展 Cascader 特有样式
+
+.fluentui-plus-cascader {
+  position: relative;
+  display: inline-block;
+  min-width: 120px;
+  width: 100%;
+  font-size: @font-size-300;
+
+  // 继承 Select 的选择器样式
+  &__selector {
+    .form-control-base();
+    overflow: hidden;
+
+    &:hover {
+      .fluentui-plus-cascader__selector-clear {
+        opacity: 1;
+        visibility: visible;
+      }
+    }
+
+    &--disabled {
+      .form-control-disabled();
+
+      .fluentui-plus-cascader__selector-inner {
+        cursor: not-allowed;
+        color: @color-neutral-foreground-disabled;
+      }
+
+      .fluentui-plus-cascader__selector-text {
+        color: @color-neutral-foreground-disabled;
+      }
+
+      .fluentui-plus-cascader__selector-arrow {
+        color: @color-neutral-foreground-disabled;
+      }
+    }
+
+    &--multiple {
+      .fluentui-plus-cascader__selector-inner {
+        min-height: auto;
+        padding: 3px @spacing-horizontal-m-nudge 3px calc(@spacing-horizontal-m-nudge + @spacing-horizontal-xxs);
+      }
+    }
+  }
+
+  &__selector-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px @spacing-horizontal-m-nudge 5px calc(@spacing-horizontal-m-nudge + @spacing-horizontal-xxs);
+    background-color: @color-neutral-background-1;
+    cursor: pointer;
+    min-height: 32px;
+    box-sizing: border-box;
+    flex-wrap: nowrap;
+    gap: @spacing-horizontal-xxs;
+
+    &--multiple {
+      align-items: center;
+      min-height: 32px;
+      padding: 3px @spacing-horizontal-m-nudge 3px calc(@spacing-horizontal-m-nudge + @spacing-horizontal-xxs);
+
+      .fluentui-plus-cascader__selector-arrow {
+        margin-top: 0;
+      }
+    }
+  }
+
+  &__selector-text {
+    flex: 1;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    &--placeholder {
+      color: @color-neutral-foreground-4;
+    }
+  }
+
+  &__selector-suffix {
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+
+  &__selector-clear {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    color: @color-brand-shadow-key;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background-color: #fff;
+    opacity: 0;
+    visibility: hidden;
+
+    &:hover {
+      color: @color-background-overlay;
+    }
+  }
+
+  &__selector-arrow {
+    color: @color-neutral-foreground-2;
+    font-size: 20px;
+  }
+
+  &__search-input {
+    background: transparent;
+    border: none;
+    outline: none;
+    padding: 0;
+    margin: 0;
+    font-size: inherit;
+    color: inherit;
+    width: 100%;
+    flex: 1;
+    text-overflow: ellipsis;
+
+    &::placeholder {
+      color: @color-neutral-foreground-4;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  // Cascader 特有的面板样式
+  &__panel {
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    // min-width: 180px;
+    // max-width: 600px;
+  }
+
+  &__columns {
+    display: flex;
+    flex-direction: row;
+    // min-height: 200px;
+    // width: 100%;
+  }
+
+  &__column {
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid @color-neutral-stroke-1;
+    overflow-y: auto;
+    max-height: inherit;
+    flex: 0 0 auto;
+    min-width: min-content;
+    padding: @spacing-horizontal-xs;
+    box-sizing: border-box;
+
+    &:last-child {
+      border-right: none;
+    }
+  }
+
+  &__option {
+    padding: @spacing-vertical-s-nudge @spacing-horizontal-s;
+    cursor: pointer;
+    color: @color-neutral-foreground-1;
+    position: relative;
+    min-height: 32px;
+    box-sizing: border-box;
+    min-width: 111px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: @spacing-horizontal-xs;
+    transition: background-color 0.2s ease;
+    border-radius: @border-radius-medium;
+
+    &:hover {
+      background-color: @color-brand-background-inverted-hover;
+    }
+
+    &--selected {
+      background-color: @color-brand-background-inverted-hover;
+    }
+
+    // &--active {
+    //   background-color: @color-brand-background-inverted-hover;
+    // }
+
+    &--disabled {
+      color: @color-neutral-foreground-disabled;
+      cursor: not-allowed;
+
+      &:hover {
+        background-color: transparent;
+      }
+    }
+
+    // &--has-children {
+    //   padding-right: calc(@spacing-horizontal-s + 20px);
+    // }
+  }
+
+  &__option-label {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: @font-size-300;
+    line-height: 1.5;
+  }
+
+  &__option-arrow {
+    color: @color-neutral-foreground-3;
+    font-size: 12px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+
+  // 搜索相关样式
+  &__search-results {
+    display: flex;
+    flex-direction: column;
+    // min-width: 200px;
+    max-height: inherit;
+    overflow-y: auto;
+  }
+
+  &__search-item {
+    padding: @spacing-vertical-s-nudge @spacing-horizontal-s;
+    cursor: pointer;
+    color: @color-neutral-foreground-1;
+    min-height: 32px;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background-color: @color-neutral-background-2-hover;
+    }
+  }
+
+  &__search-empty {
+    padding: @spacing-vertical-l @spacing-horizontal-s;
+    text-align: center;
+    color: @color-neutral-foreground-3;
+    font-size: @font-size-300;
+  }
+
+  &__empty {
+    padding: @spacing-vertical-l @spacing-horizontal-s;
+    text-align: center;
+    color: @color-neutral-foreground-3;
+    font-size: @font-size-300;
+    min-width: 120px;
+    min-height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  // 多选模式特殊样式
+  &__tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px;
+    flex: 1;
+    align-items: center;
+    min-height: 26px;
+    overflow: hidden;
+
+    .fluentui-plus-input-tag__input {
+      background: transparent;
+      border: none;
+      outline: none;
+      padding: 0;
+      margin: 0;
+      font-size: inherit;
+      color: inherit;
+      min-width: 60px;
+      flex-shrink: 0;
+      width: 100%;
+      text-overflow: ellipsis;
+
+      &::placeholder {
+        color: @color-neutral-foreground-4;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+  }
+
+  // 浮动面板样式
+  .fluentui-plus-cascader__popover-surface {
+    box-sizing: border-box;
+    background-color: @color-neutral-background-1;
+    box-shadow: @shadow16;
+
+    // 覆盖最小宽度
+    // min-width: 180px;
+  }
+}
