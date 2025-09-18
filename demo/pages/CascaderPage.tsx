@@ -87,6 +87,10 @@ const CascaderPage: React.FC = () => {
   // changeOnSelect 状态
   const [changeOnSelectValue, setChangeOnSelectValue] = useState<CascaderValue>([]);
 
+  // expandTrigger 状态
+  const [clickTriggerValue, setClickTriggerValue] = useState<CascaderValue>([]);
+  const [hoverTriggerValue, setHoverTriggerValue] = useState<CascaderValue>([]);
+
   // 基础选项数据
   const basicOptions: CascaderOption[] = [
     {
@@ -266,6 +270,47 @@ const CascaderPage: React.FC = () => {
       </div>
 
       <div className={styles.section}>
+        <div className={styles.sectionTitle}>展开触发方式</div>
+        <div className={styles.sectionDescription}>
+          通过 expandTrigger
+          控制有子节点的选项的展开方式：点击展开（click）或悬停展开（hover）。注意：最终选择行为始终通过点击完成。
+        </div>
+        <div className={styles.demoContainer}>
+          <div className={styles.demoTitle}>展开触发方式对比</div>
+          <div className={styles.twoColumnDemo}>
+            <div>
+              <h4 style={{ marginBottom: '12px', color: '#374151' }}>点击展开（click）</h4>
+              <p style={{ marginBottom: '12px', fontSize: '14px', color: '#6b7280' }}>
+                默认方式，需要点击有子节点的选项才会展开下一级，点击叶子节点进行选择
+              </p>
+              <Cascader
+                value={clickTriggerValue}
+                onChange={value => setClickTriggerValue(value || [])}
+                options={basicOptions}
+                placeholder='点击展开下级选项'
+                expandTrigger='click'
+              />
+              <div className={styles.valueDisplay}>当前选中值: {JSON.stringify(clickTriggerValue)}</div>
+            </div>
+            <div>
+              <h4 style={{ marginBottom: '12px', color: '#374151' }}>悬停展开（hover）</h4>
+              <p style={{ marginBottom: '12px', fontSize: '14px', color: '#6b7280' }}>
+                悬停有子节点的选项即可展开下一级，但选择仍需点击。叶子节点悬停不会被选中
+              </p>
+              <Cascader
+                value={hoverTriggerValue}
+                onChange={value => setHoverTriggerValue(value || [])}
+                options={basicOptions}
+                placeholder='悬停展开下级选项'
+                expandTrigger='hover'
+              />
+              <div className={styles.valueDisplay}>当前选中值: {JSON.stringify(hoverTriggerValue)}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className={styles.section}>
         <div className={styles.sectionTitle}>可搜索</div>
         <div className={styles.sectionDescription}>通过设置 showSearch 属性开启搜索功能，支持搜索选项路径。</div>
         <div className={styles.demoContainer}>
@@ -416,7 +461,7 @@ const CascaderPage: React.FC = () => {
               </tr>
               <tr>
                 <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>expandTrigger</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>展开方式</td>
+                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>有子节点选项的展开方式</td>
                 <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>'click' | 'hover'</td>
                 <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>'click'</td>
               </tr>

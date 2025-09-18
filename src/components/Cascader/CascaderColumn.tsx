@@ -22,7 +22,8 @@ const CascaderColumn: React.FC<CascaderColumnProps> = ({
 
   const handleOptionHover = useCallback(
     (option: CascaderOptionType) => {
-      if (expandTrigger === 'hover') {
+      // 只有当 expandTrigger 为 hover 且选项有子节点时，才触发展开
+      if (expandTrigger === 'hover' && hasChildren(option)) {
         onSelect(option, level);
       }
     },
