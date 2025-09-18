@@ -8,11 +8,11 @@ jest.mock('../../hooks/useOptionSelection');
 jest.mock('../../hooks/useSelectSearch');
 
 describe('useSelect', () => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   let mockStateManager: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   let mockSelectionManager: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   let mockSearchManager: any;
 
   const mockOptions: Option[] = [

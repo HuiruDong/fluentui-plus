@@ -9,7 +9,7 @@ jest.mock('../../../../hooks', () => ({
 
 describe('useSelectSearch', () => {
   let mockUseInputValue: jest.Mock;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   let mockInputManager: any;
 
   const mockOptions: Option[] = [

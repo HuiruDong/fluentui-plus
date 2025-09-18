@@ -296,7 +296,7 @@ describe('Selector', () => {
 
   describe('edge cases', () => {
     it('should handle array value in single mode', () => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+       
       render(<Selector {...defaultProps} multiple={false} value={['array', 'value'] as any} selectedOptions={[]} />);
 
       // Should render without crashing
@@ -304,7 +304,7 @@ describe('Selector', () => {
     });
 
     it('should handle undefined selectedOptions', () => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+       
       render(<Selector {...defaultProps} multiple={false} selectedOptions={undefined as any} />);
 
       expect(screen.getByTestId('text-display')).toBeInTheDocument();

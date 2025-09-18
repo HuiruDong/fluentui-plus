@@ -81,7 +81,7 @@ jest.mock('@fluentui/react-components', () => ({
 
 describe('Select', () => {
   let mockUseSelect: jest.Mock;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   let mockSelectState: any;
 
   const mockOptions: Option[] = [

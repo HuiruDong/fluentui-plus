@@ -39,7 +39,8 @@ export default [
         version: 'detect',
       },
     },
-  }, // TypeScript 配置
+  },
+  // TypeScript 配置
   {
     files: ['src/**/*.{ts,tsx}'],
     rules: {
@@ -55,7 +56,8 @@ export default [
         project: './tsconfig.json',
       },
     },
-  }, // React 配置
+  },
+  // React 配置
   {
     files: ['src/**/*.{jsx,tsx}'],
     rules: {
@@ -65,7 +67,8 @@ export default [
       'react-hooks/rules-of-hooks': 'error',
       'react-hooks/exhaustive-deps': 'warn',
     },
-  }, // Jest 测试文件配置
+  },
+  // Jest 测试文件配置
   {
     files: ['src/**/*.{spec,test}.{js,ts,jsx,tsx}', '**/setupTests.ts'],
     languageOptions: {
@@ -74,7 +77,19 @@ export default [
     rules: {
       'no-undef': 'off', // 测试文件中允许使用jest全局变量
     },
-  }, // Demo 目录配置 - 宽松的规则用于开发和示例
+  },
+  // __tests__ 目录配置
+  {
+    files: ['**/__tests__/**/*.{js,ts,jsx,tsx}'],
+    languageOptions: {
+      globals: globals.jest,
+    },
+    rules: {
+      '@typescript-eslint/no-explicit-any': 'off', // 测试文件中允许使用 any 类型
+      'no-undef': 'off', // 测试文件中允许使用jest全局变量
+    },
+  },
+  // Demo 目录配置 - 宽松的规则用于开发和示例
   {
     files: ['demo/**/*.{js,jsx,ts,tsx}'],
     languageOptions: {
@@ -118,7 +133,8 @@ export default [
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/ban-ts-comment': 'off',
     },
-  }, // Utils 目录配置
+  },
+  // Utils 目录配置
   {
     files: ['**/utils/**/*.ts'],
     languageOptions: {
