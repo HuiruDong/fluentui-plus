@@ -1,6 +1,7 @@
 import React, { useCallback, useRef } from 'react';
 import { mergeClasses } from '@fluentui/react-components';
 import type { CascaderProps, CascaderOption } from './types';
+import type { Option } from '../Select/types';
 import CascaderPanel from './CascaderPanel';
 import Selector from '../Select/Selector';
 import { useSelectState } from '../Select/hooks';
@@ -29,6 +30,7 @@ const Cascader: React.FC<CascaderProps> = ({
   popupRender,
   onClear,
   allowClear = false,
+  labelRender,
 }) => {
   // 使用下拉状态管理（复用 Select 的）
   const stateManager = useSelectState({ open });
@@ -125,33 +127,74 @@ const Cascader: React.FC<CascaderProps> = ({
   );
 
   // 判断是否显示清除按钮
-  const showClear = allowClear && !disabled && cascaderState.selectedPath.length > 0;
+  const showClear =
+    allowClear && !disabled && (multiple ? cascaderState.checkedKeys.size > 0 : cascaderState.selectedPath.length > 0);
 
-  // 构建 Selector 的 props
-  const selectorProps = {
-    // 确保当没有选中值时，value 为 undefined 以正确显示 placeholder
-    value: cascaderState.currentValue && cascaderState.currentValue.length > 0 ? cascaderState.currentValue : undefined,
-    placeholder,
-    disabled,
-    selectedOptions: cascaderState.selectedPath,
-    onClick: handleSelectorClick,
-    multiple,
-    showSearch,
-    searchValue: cascaderState.searchValue,
-    onSearchChange: handleSearchChange,
-    onSearchFocus: handleSearchFocus,
-    onSearchBlur: handleSearchBlur,
-    onClear: handleClear,
-    showClear,
-    inputRef: showSearch ? inputRef : undefined,
-    isOpen: currentOpen,
-    prefixCls,
-  };
+  // 准备给 Selector 的选项数据
+  const selectorSelectedOptions = React.useMemo(() => {
+    if (multiple) {
+      // 多选模式：返回选中的选项
+      return cascaderState.selectedPath.map(option => ({
+        value: option.value,
+        label: option.label || option.value?.toString() || '',
+      }));
+    } else {
+      // 单选模式：返回选中路径的最后一个选项
+      const lastOption = cascaderState.selectedPath[cascaderState.selectedPath.length - 1];
+      return lastOption
+        ? [
+            {
+              value: lastOption.value,
+              label: lastOption.label || lastOption.value?.toString() || '',
+            },
+          ]
+        : [];
+    }
+  }, [multiple, cascaderState.selectedPath]);
 
-  // 自定义 labelRender 函数：确保显示 Cascader 的完整路径文本
-  const labelRender = useCallback(() => {
-    return cascaderState.displayText || '';
-  }, [cascaderState.displayText]);
+  // 处理 tag 移除（多选模式）
+  const handleTagRemove = useCallback(
+    (tag: string, index: number) => {
+      if (multiple && cascaderState.selectedPath[index]) {
+        const optionToRemove = cascaderState.selectedPath[index];
+        if (optionToRemove.value !== undefined) {
+          cascaderState.handleMultipleSelect(optionToRemove, false);
+        }
+      }
+    },
+    [multiple, cascaderState]
+  );
+
+  // 自定义 labelRender 函数
+  const selectorLabelRender = useCallback(
+    (selectedOptions: Option | Option[] | null) => {
+      if (multiple) {
+        // 多选模式：Selector 期望 labelRender 返回字符串，但多选模式下会对每个选项单独调用
+        // 这里我们需要返回单个选项的显示文本
+        if (selectedOptions && !Array.isArray(selectedOptions)) {
+          const cascaderOption = cascaderState.selectedPath.find(item => item.value === selectedOptions.value);
+          if (cascaderOption && labelRender) {
+            return labelRender(cascaderOption);
+          }
+          return selectedOptions.label || selectedOptions.value?.toString() || '';
+        }
+        return '';
+      } else {
+        // 单选模式：显示完整路径
+        if (cascaderState.selectedPath.length > 0) {
+          if (labelRender) {
+            // 如果有自定义 labelRender，对最后一个选项调用
+            const lastOption = cascaderState.selectedPath[cascaderState.selectedPath.length - 1];
+            return labelRender(lastOption);
+          }
+          // 否则显示完整路径
+          return cascaderState.displayText;
+        }
+        return '';
+      }
+    },
+    [multiple, cascaderState.selectedPath, cascaderState.displayText, labelRender]
+  );
 
   return (
     <div className={mergeClasses(prefixCls, className)} style={style}>
@@ -164,9 +207,24 @@ const Cascader: React.FC<CascaderProps> = ({
         )}
       >
         <Selector
-          {...selectorProps}
-          // 重写显示文本逻辑：使用 labelRender 确保显示 Cascader 生成的完整路径文本
-          labelRender={labelRender}
+          value={undefined} // 不传递 value，通过 selectedOptions 和 labelRender 控制显示
+          placeholder={placeholder}
+          disabled={disabled}
+          selectedOptions={selectorSelectedOptions}
+          onClick={handleSelectorClick}
+          multiple={multiple}
+          showSearch={showSearch}
+          searchValue={cascaderState.searchValue}
+          onSearchChange={handleSearchChange}
+          onSearchFocus={handleSearchFocus}
+          onSearchBlur={handleSearchBlur}
+          onTagRemove={handleTagRemove}
+          onClear={handleClear}
+          showClear={showClear}
+          inputRef={showSearch ? inputRef : undefined}
+          isOpen={currentOpen}
+          prefixCls={prefixCls}
+          labelRender={selectorLabelRender}
         />
       </div>
 
@@ -181,6 +239,9 @@ const Cascader: React.FC<CascaderProps> = ({
         multiple={multiple}
         onPathChange={handlePathChange}
         onFinalSelect={handleFinalSelect}
+        onMultipleSelect={(option, checked) => {
+          cascaderState.handleMultipleSelect(option, checked);
+        }}
         optionRender={optionRender}
         popupRender={popupRender}
         expandTrigger={expandTrigger}
@@ -190,6 +251,8 @@ const Cascader: React.FC<CascaderProps> = ({
         searchResults={cascaderState.searchResults}
         onSearch={cascaderState.handleSearchChange}
         prefixCls={prefixCls}
+        checkedKeys={cascaderState.checkedKeys}
+        halfCheckedKeys={cascaderState.halfCheckedKeys}
       />
     </div>
   );

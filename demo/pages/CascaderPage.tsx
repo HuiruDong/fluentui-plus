@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { makeStyles } from '@fluentui/react-components';
 import { Cascader } from '../../src';
-import type { CascaderOption, CascaderValue } from '../../src';
+import type { CascaderOption, CascaderValue, CascaderMultipleValue } from '../../src';
 
 const useStyles = makeStyles({
   container: {
@@ -91,6 +91,10 @@ const CascaderPage: React.FC = () => {
   const [clickTriggerValue, setClickTriggerValue] = useState<CascaderValue>([]);
   const [hoverTriggerValue, setHoverTriggerValue] = useState<CascaderValue>([]);
 
+  // 多选模式状态
+  const [multipleValue, setMultipleValue] = useState<CascaderMultipleValue>([]);
+  const [multipleSearchValue, setMultipleSearchValue] = useState<CascaderMultipleValue>([]);
+
   // 基础选项数据
   const basicOptions: CascaderOption[] = [
     {
@@ -177,7 +181,7 @@ const CascaderPage: React.FC = () => {
         },
         {
           value: 'chaoyang',
-          label: '朝阳区（禁用）朝阳区（禁用）朝阳区（禁用）朝阳区（禁用）',
+          label: '朝阳区（禁用）',
           disabled: true,
           children: [
             { value: 'sanlitun', label: '三里屯' },
@@ -218,7 +222,7 @@ const CascaderPage: React.FC = () => {
             <Cascader
               value={basicValue}
               onChange={(value, selectedOptions) => {
-                setBasicValue(value || []);
+                setBasicValue((value as CascaderValue) || []);
                 console.log('Basic cascader change:', value, selectedOptions);
               }}
               options={basicOptions}
@@ -244,7 +248,7 @@ const CascaderPage: React.FC = () => {
               </p>
               <Cascader
                 value={searchableValue}
-                onChange={value => setSearchableValue(value || [])}
+                onChange={value => setSearchableValue((value as CascaderValue) || [])}
                 options={basicOptions}
                 placeholder='搜索地址 (只显示叶子节点)'
                 showSearch
@@ -258,7 +262,7 @@ const CascaderPage: React.FC = () => {
               </p>
               <Cascader
                 value={changeOnSelectValue}
-                onChange={value => setChangeOnSelectValue(value || [])}
+                onChange={value => setChangeOnSelectValue((value as CascaderValue) || [])}
                 options={basicOptions}
                 placeholder='搜索地址 (显示所有层级)'
                 showSearch
@@ -285,7 +289,7 @@ const CascaderPage: React.FC = () => {
               </p>
               <Cascader
                 value={clickTriggerValue}
-                onChange={value => setClickTriggerValue(value || [])}
+                onChange={value => setClickTriggerValue((value as CascaderValue) || [])}
                 options={basicOptions}
                 placeholder='点击展开下级选项'
                 expandTrigger='click'
@@ -299,7 +303,7 @@ const CascaderPage: React.FC = () => {
               </p>
               <Cascader
                 value={hoverTriggerValue}
-                onChange={value => setHoverTriggerValue(value || [])}
+                onChange={value => setHoverTriggerValue((value as CascaderValue) || [])}
                 options={basicOptions}
                 placeholder='悬停展开下级选项'
                 expandTrigger='hover'
@@ -318,7 +322,7 @@ const CascaderPage: React.FC = () => {
           <div className={styles.demo}>
             <Cascader
               value={searchableValue}
-              onChange={value => setSearchableValue(value || [])}
+              onChange={value => setSearchableValue((value as CascaderValue) || [])}
               options={basicOptions}
               placeholder='搜索地址'
               showSearch
@@ -336,7 +340,7 @@ const CascaderPage: React.FC = () => {
           <div className={styles.demo}>
             <Cascader
               value={changeOnSelectValue}
-              onChange={value => setChangeOnSelectValue(value || [])}
+              onChange={value => setChangeOnSelectValue((value as CascaderValue) || [])}
               options={basicOptions}
               placeholder='可选择任意级别'
               changeOnSelect
@@ -358,7 +362,7 @@ const CascaderPage: React.FC = () => {
               <h4 style={{ marginBottom: '12px', color: '#374151' }}>禁用整个组件</h4>
               <Cascader
                 value={disabledValue}
-                onChange={value => setDisabledValue(value || [])}
+                onChange={value => setDisabledValue((value as CascaderValue) || [])}
                 options={basicOptions}
                 placeholder='禁用状态'
                 disabled
@@ -379,6 +383,54 @@ const CascaderPage: React.FC = () => {
       </div>
 
       <div className={styles.section}>
+        <div className={styles.sectionTitle}>多选模式</div>
+        <div className={styles.sectionDescription}>
+          通过设置 multiple 属性启用多选模式，支持父子节点关联选择和半选状态。
+        </div>
+        <div className={styles.demoContainer}>
+          <div className={styles.demoTitle}>多选级联选择</div>
+          <div className={styles.demo}>
+            <Cascader
+              value={multipleValue}
+              onChange={(value, selectedOptions) => {
+                setMultipleValue((value as CascaderMultipleValue) || []);
+                console.log('Multiple cascader change:', value, selectedOptions);
+              }}
+              options={basicOptions}
+              placeholder='请选择地址（多选）'
+              multiple
+            />
+            <div className={styles.valueDisplay}>当前选中值: {JSON.stringify(multipleValue)}</div>
+          </div>
+        </div>
+      </div>
+
+      <div className={styles.section}>
+        <div className={styles.sectionTitle}>多选 + 搜索</div>
+        <div className={styles.sectionDescription}>
+          多选模式下支持搜索功能，可以快速定位和选择选项。自定义 labelRender 用于控制每个标签的显示文本。
+        </div>
+        <div className={styles.demoContainer}>
+          <div className={styles.demoTitle}>多选 + 搜索级联选择</div>
+          <div className={styles.demo}>
+            <Cascader
+              value={multipleSearchValue}
+              onChange={(value, selectedOptions) => {
+                setMultipleSearchValue((value as CascaderMultipleValue) || []);
+                console.log('Multiple search cascader change:', value, selectedOptions);
+              }}
+              options={basicOptions}
+              placeholder='搜索并选择地址（多选）'
+              multiple
+              showSearch
+              labelRender={option => `${option.label}（自定义）`}
+            />
+            <div className={styles.valueDisplay}>当前选中值: {JSON.stringify(multipleSearchValue)}</div>
+          </div>
+        </div>
+      </div>
+
+      <div className={styles.section}>
         <div className={styles.sectionTitle}>清除功能</div>
         <div className={styles.sectionDescription}>通过设置 allowClear 属性可以显示清除按钮。</div>
         <div className={styles.demoContainer}>
@@ -386,7 +438,7 @@ const CascaderPage: React.FC = () => {
           <div className={styles.demo}>
             <Cascader
               value={basicValue}
-              onChange={value => setBasicValue(value || [])}
+              onChange={value => setBasicValue((value as CascaderValue) || [])}
               options={basicOptions}
               placeholder='可清除选择'
               allowClear
@@ -464,6 +516,18 @@ const CascaderPage: React.FC = () => {
                 <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>有子节点选项的展开方式</td>
                 <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>'click' | 'hover'</td>
                 <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>'click'</td>
+              </tr>
+              <tr>
+                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>multiple</td>
+                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>是否启用多选模式</td>
+                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>boolean</td>
+                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>false</td>
+              </tr>
+              <tr>
+                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>labelRender</td>
+                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>自定义标签渲染函数（多选模式）</td>
+                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>function</td>
+                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>-</td>
               </tr>
             </tbody>
           </table>

@@ -1,8 +1,8 @@
 import React, { useCallback } from 'react';
 import { mergeClasses } from '@fluentui/react-components';
-import type { CascaderColumnProps, CascaderOption as CascaderOptionType } from './types';
+import type { CascaderColumnProps, CascaderOption as CascaderOptionType, CheckedStatus } from './types';
 import CascaderOption from './CascaderOption';
-import { hasChildren } from './utils';
+import { hasChildren, getNodeCheckedStatus } from './utils';
 
 const CascaderColumn: React.FC<CascaderColumnProps> = ({
   options,
@@ -12,6 +12,9 @@ const CascaderColumn: React.FC<CascaderColumnProps> = ({
   expandTrigger = 'click',
   optionRender,
   prefixCls,
+  multiple = false,
+  checkedKeys = new Set(),
+  onCheckChange,
 }) => {
   const handleOptionClick = useCallback(
     (option: CascaderOptionType) => {
@@ -30,6 +33,13 @@ const CascaderColumn: React.FC<CascaderColumnProps> = ({
     [expandTrigger, onSelect, level]
   );
 
+  const handleCheckChange = useCallback(
+    (option: CascaderOptionType, checked: boolean) => {
+      onCheckChange?.(option, checked);
+    },
+    [onCheckChange]
+  );
+
   return (
     <div className={mergeClasses(`${prefixCls}__column`)}>
       {options.map((option, index) => {
@@ -38,6 +48,12 @@ const CascaderColumn: React.FC<CascaderColumnProps> = ({
         const isSelected = optionValue === selectedValue;
         const isActive = isSelected; // 在当前列中，选中即活跃
         const hasChildrenFlag = hasChildren(option);
+
+        // 计算多选状态
+        let checkedStatus: CheckedStatus = 'unchecked';
+        if (multiple && optionValue !== undefined) {
+          checkedStatus = getNodeCheckedStatus(option, checkedKeys);
+        }
 
         return (
           <CascaderOption
@@ -51,6 +67,9 @@ const CascaderColumn: React.FC<CascaderColumnProps> = ({
             onHover={() => handleOptionHover(option)}
             optionRender={optionRender}
             prefixCls={prefixCls}
+            multiple={multiple}
+            checked={checkedStatus}
+            onCheckChange={checked => handleCheckChange(option, checked)}
           />
         );
       })}

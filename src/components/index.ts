@@ -31,4 +31,4 @@ export type { SelectProps, Option, GroupedOption } from './Select';
 
 // Cascader 组件
 export { Cascader } from './Cascader';
-export type { CascaderProps, CascaderOption, CascaderValue } from './Cascader';
+export type { CascaderProps, CascaderOption, CascaderValue, CascaderMultipleValue } from './Cascader';

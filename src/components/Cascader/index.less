@@ -183,10 +183,6 @@
       background-color: @color-brand-background-inverted-hover;
     }
 
-    // &--active {
-    //   background-color: @color-brand-background-inverted-hover;
-    // }
-
     &--disabled {
       color: @color-neutral-foreground-disabled;
       cursor: not-allowed;
@@ -196,9 +192,20 @@
       }
     }
 
-    // &--has-children {
-    //   padding-right: calc(@spacing-horizontal-s + 20px);
-    // }
+    // 多选模式样式
+    &--multiple {
+      gap: @spacing-horizontal-s;
+      padding-left: @spacing-horizontal-xs;
+
+      .fluentui-plus-cascader__option-checkbox {
+        flex-shrink: 0;
+      }
+    }
+  }
+
+  &__option-checkbox {
+    --spacingVerticalS: 0px;
+    --spacingHorizontalS: 2px;
   }
 
   &__option-label {
