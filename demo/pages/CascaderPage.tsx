@@ -226,6 +226,46 @@ const CascaderPage: React.FC = () => {
       </div>
 
       <div className={styles.section}>
+        <div className={styles.sectionTitle}>搜索行为对比 (changeOnSelect 影响)</div>
+        <div className={styles.sectionDescription}>
+          当 changeOnSelect 为 true 时，搜索结果包含所有匹配的路径层级；为 false 时，只显示叶子节点。
+        </div>
+        <div className={styles.demoContainer}>
+          <div className={styles.demoTitle}>搜索行为对比</div>
+          <div className={styles.twoColumnDemo}>
+            <div>
+              <h4 style={{ marginBottom: '12px', color: '#374151' }}>changeOnSelect=false (默认)</h4>
+              <p style={{ marginBottom: '12px', fontSize: '14px', color: '#6b7280' }}>
+                搜索"北京"只显示叶子节点：中关村、五道口、三里屯、国贸
+              </p>
+              <Cascader
+                value={searchableValue}
+                onChange={value => setSearchableValue(value || [])}
+                options={basicOptions}
+                placeholder='搜索地址 (只显示叶子节点)'
+                showSearch
+                changeOnSelect={false}
+              />
+            </div>
+            <div>
+              <h4 style={{ marginBottom: '12px', color: '#374151' }}>changeOnSelect=true</h4>
+              <p style={{ marginBottom: '12px', fontSize: '14px', color: '#6b7280' }}>
+                搜索"北京"显示所有层级：北京、北京/海淀区、北京/海淀区/中关村等
+              </p>
+              <Cascader
+                value={changeOnSelectValue}
+                onChange={value => setChangeOnSelectValue(value || [])}
+                options={basicOptions}
+                placeholder='搜索地址 (显示所有层级)'
+                showSearch
+                changeOnSelect={true}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className={styles.section}>
         <div className={styles.sectionTitle}>可搜索</div>
         <div className={styles.sectionDescription}>通过设置 showSearch 属性开启搜索功能，支持搜索选项路径。</div>
         <div className={styles.demoContainer}>

@@ -66,8 +66,8 @@ export const useCascader = ({
     if (!isSearching) {
       return [];
     }
-    return filterCascaderOptions(options, searchValue);
-  }, [isSearching, options, searchValue]);
+    return filterCascaderOptions(options, searchValue, changeOnSelect);
+  }, [isSearching, options, searchValue, changeOnSelect]);
 
   // 处理路径变化
   const handlePathChange = useCallback(

@@ -187,6 +187,7 @@ const Cascader: React.FC<CascaderProps> = ({
         changeOnSelect={changeOnSelect}
         showSearch={showSearch}
         searchValue={cascaderState.searchValue}
+        searchResults={cascaderState.searchResults}
         onSearch={cascaderState.handleSearchChange}
         prefixCls={prefixCls}
       />

@@ -30,6 +30,7 @@ export interface CascaderPanelProps {
   changeOnSelect?: boolean;
   showSearch?: boolean;
   searchValue?: string;
+  searchResults?: CascaderSearchResult[];
   onSearch?: (value: string) => void;
   prefixCls: string;
 }

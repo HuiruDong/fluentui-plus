@@ -19,6 +19,7 @@ const CascaderPanel: React.FC<CascaderPanelProps> = ({
   expandTrigger = 'click',
   showSearch = false,
   searchValue = '',
+  searchResults = [],
   prefixCls,
 }) => {
   // 使用浮动定位 hook（复用 Select 的）
@@ -83,6 +84,7 @@ const CascaderPanel: React.FC<CascaderPanelProps> = ({
   // 处理搜索结果选择
   const handleSearchResultSelect = useCallback(
     (searchResult: CascaderSearchResult) => {
+      // 搜索结果选择时，直接调用最终选择回调
       onFinalSelect?.(searchResult.option, searchResult.path.slice(0, -1));
     },
     [onFinalSelect]
@@ -90,10 +92,6 @@ const CascaderPanel: React.FC<CascaderPanelProps> = ({
 
   // 渲染搜索结果
   const renderSearchResults = () => {
-    // 这里需要从 useCascader Hook 获取搜索结果
-    // 暂时返回空的搜索结果
-    const searchResults: CascaderSearchResult[] = [];
-
     if (searchResults.length === 0) {
       return <div className={`${prefixCls}__search-empty`}>暂无数据</div>;
     }
