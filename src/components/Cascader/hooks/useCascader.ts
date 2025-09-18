@@ -1,9 +1,9 @@
 import { useState, useCallback, useMemo, useEffect } from 'react';
+import _ from 'lodash';
 import type { CascaderOption, CascaderValue, CascaderMultipleValue, UseCascaderProps, CheckedStatus } from '../types';
 import {
   findPathByValue,
   getValueFromPath,
-  isValueEqual,
   generateDisplayText,
   filterCascaderOptions,
   getNodeCheckedStatus,
@@ -258,7 +258,7 @@ export const useCascader = ({
     (targetValue: CascaderValue): boolean => {
       if (multiple) return false;
       const current = currentValue as CascaderValue | undefined;
-      return isValueEqual(current, targetValue);
+      return _.isEqual(current, targetValue);
     },
     [multiple, currentValue]
   );
