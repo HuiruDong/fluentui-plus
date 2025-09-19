@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
 import { mergeClasses, Checkbox } from '@fluentui/react-components';
+import { ChevronRightFilled } from '@fluentui/react-icons';
 import type { CascaderOptionProps } from './types';
 
 const CascaderOption: React.FC<CascaderOptionProps> = ({
@@ -96,13 +97,7 @@ const CascaderOption: React.FC<CascaderOptionProps> = ({
         />
       )}
       <span className={`${prefixCls}__option-label`}>{renderContent()}</span>
-      {hasChildrenProp && (
-        <span className={`${prefixCls}__option-arrow`}>
-          <svg width='16' height='16' viewBox='0 0 16 16' fill='currentColor'>
-            <path d='M6 4L10 8L6 12' stroke='currentColor' strokeWidth='1.5' fill='none' />
-          </svg>
-        </span>
-      )}
+      {hasChildrenProp && <ChevronRightFilled className={`${prefixCls}__option-arrow`} />}
     </div>
   );
 };

@@ -23,6 +23,15 @@ jest.mock('@fluentui/react-components', () => ({
   ),
 }));
 
+// Mock FluentUI icons
+jest.mock('@fluentui/react-icons', () => ({
+  ChevronRightFilled: ({ className }: any) => (
+    <svg className={className} data-testid='chevron-right-icon'>
+      <path d='M8.293 4.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L11.586 9 8.293 5.707a1 1 0 010-1.414z' />
+    </svg>
+  ),
+}));
+
 // 测试数据
 const mockOption: CascaderOptionType = {
   value: '1',
@@ -101,9 +110,8 @@ describe('CascaderOption Component', () => {
       const arrow = document.querySelector('.fluentui-plus-cascader__option-arrow');
       expect(arrow).toBeInTheDocument();
 
-      // 检查 SVG 元素
-      const svg = arrow?.querySelector('svg');
-      expect(svg).toBeInTheDocument();
+      // 检查 SVG 元素 - 由于我们 mock 了 ChevronRightFilled，它本身就是 SVG
+      expect(arrow?.tagName.toLowerCase()).toBe('svg');
     });
 
     it('should not show arrow for leaf options', () => {
