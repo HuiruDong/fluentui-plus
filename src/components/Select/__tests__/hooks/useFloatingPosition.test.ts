@@ -7,6 +7,8 @@ jest.mock('@floating-ui/react', () => ({
     refs: {
       setReference: jest.fn(),
       setFloating: jest.fn(),
+      floating: { current: document.createElement('div') },
+      reference: { current: document.createElement('div') },
     },
     floatingStyles: {
       position: 'absolute',
@@ -86,6 +88,24 @@ describe('useFloatingPosition', () => {
 
   it('should handle missing trigger refs gracefully', async () => {
     const nullTriggerRef = { current: null };
+
+    // For this specific test, we need a mock where floating and reference refs are null
+    const mockUseFloating = jest.requireMock('@floating-ui/react').useFloating;
+    mockUseFloating.mockReturnValueOnce({
+      refs: {
+        setReference: jest.fn(),
+        setFloating: jest.fn(),
+        floating: { current: null },
+        reference: { current: null },
+      },
+      floatingStyles: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+      },
+      context: {},
+      update: jest.fn(),
+    });
 
     const { result } = renderHook(() =>
       useFloatingPosition({

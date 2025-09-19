@@ -28,23 +28,34 @@ export const useFloatingPosition = ({
       flip(),
       shift({ padding: shiftPadding }),
       size({
-        apply({ availableWidth, availableHeight, elements, rects }) {
+        apply({ availableWidth, availableHeight, elements }) {
           const styles: Record<string, string> = {
             maxWidth: `${availableWidth}px`,
             maxHeight: `${availableHeight}px`,
           };
 
-          // 根据 matchTriggerWidth 参数决定是否设置宽度与触发器一致
-          if (matchTriggerWidth) {
-            styles.width = `${rects.reference.width}px`;
-          }
-
+          // 不在这里设置 width，改为在外部手动控制
           Object.assign(elements.floating.style, styles);
         },
       }),
     ],
     whileElementsMounted: autoUpdate,
   });
+
+  // 手动控制宽度
+  React.useEffect(() => {
+    if (isOpen && refs.floating.current && refs.reference.current) {
+      const floatingEl = refs.floating.current;
+      const referenceEl = refs.reference.current;
+
+      if (matchTriggerWidth) {
+        const referenceWidth = referenceEl.getBoundingClientRect().width;
+        floatingEl.style.width = `${referenceWidth}px`;
+      } else {
+        floatingEl.style.width = 'auto';
+      }
+    }
+  }, [isOpen, matchTriggerWidth, refs.floating, refs.reference]);
 
   // 处理点击外部关闭
   const dismiss = useDismiss(context, {

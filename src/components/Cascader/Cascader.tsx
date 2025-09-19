@@ -113,8 +113,11 @@ const Cascader: React.FC<CascaderProps> = ({
 
   // 处理搜索失焦
   const handleSearchBlur = useCallback(() => {
-    // 可以在此处添加失焦逻辑
-  }, []);
+    // 与 Select 组件保持一致：失焦时清空搜索值
+    if (showSearch) {
+      cascaderState.handleSearchChange('');
+    }
+  }, [showSearch, cascaderState]);
 
   // 处理清除按钮点击
   const handleClear = useCallback(
