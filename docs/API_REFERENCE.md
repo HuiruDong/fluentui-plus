@@ -182,46 +182,50 @@ const navItems = [
 
 ### Select 选择器
 
-用于从多个选项中进行单选或多选的下拉组件。
+高度可定制的选择器组件，支持单选、多选、搜索、分组、自定义渲染等功能。基于 FluentUI 设计系统，提供企业级的用户体验和完整的无障碍支持。
 
 #### 属性
 
 | 属性 | 类型 | 默认值 | 说明 |
 |------|------|--------|------|
-| `value` | `string \| number \| (string \| number)[]` | - | 受控模式的选中值 |
+| `value` | `string \| number \| (string \| number)[]` | - | 受控模式的选中值，单选时为单个值，多选时为值数组 |
 | `defaultValue` | `string \| number \| (string \| number)[]` | - | 非受控模式的默认选中值 |
 | `className` | `string` | - | 自定义样式类名 |
 | `style` | `React.CSSProperties` | - | 自定义内联样式 |
-| `disabled` | `boolean` | `false` | 是否禁用 |
-| `placeholder` | `string` | - | 选择框占位符 |
-| `multiple` | `boolean` | `false` | 是否支持多选 |
-| `showSearch` | `boolean` | `false` | 是否显示搜索框 |
-| `options` | `GroupedOption[]` | `[]` | 选项数据 |
-| `listHeight` | `number` | `256` | 下拉列表的最大高度 |
-| `open` | `boolean` | - | 是否展开下拉菜单（受控） |
-| `onChange` | `(value, selectedOptions) => void` | - | 选中选项时的回调函数 |
-| `onSearch` | `(value: string) => void` | - | 搜索时的回调函数 |
-| `filterOption` | `(input: string, option: Option) => boolean` | - | 自定义过滤函数 |
-| `optionRender` | `(option: Option) => React.ReactNode` | - | 自定义选项渲染 |
-| `popupRender` | `(originNode: React.ReactNode) => React.ReactNode` | - | 自定义下拉容器渲染 |
-| `onClear` | `() => void` | - | 清除时的回调函数 |
-| `allowClear` | `boolean \| { clearIcon?: React.ReactNode }` | `false` | 是否支持清除，可自定义清除图标 |
+| `disabled` | `boolean` | `false` | 是否禁用选择器 |
+| `placeholder` | `string` | - | 选择框占位符文本 |
+| `multiple` | `boolean` | `false` | 是否支持多选模式 |
+| `showSearch` | `boolean` | `false` | 是否显示搜索输入框，支持过滤选项 |
+| `options` | `GroupedOption[]` | `[]` | 选项数据，支持分组选项和普通选项混合使用 |
+| `listHeight` | `number` | `256` | 下拉列表的最大高度（像素），超出时显示滚动条 |
+| `open` | `boolean` | - | 是否展开下拉菜单（受控模式） |
+| `onChange` | `(value, selectedOptions) => void` | - | 选中选项时的回调函数，参数为选中值和选中选项对象 |
+| `onSearch` | `(value: string) => void` | - | 搜索输入变化时的回调函数，用于异步搜索场景 |
+| `filterOption` | `(input: string, option: Option) => boolean` | - | 自定义过滤逻辑函数，返回 true 表示选项匹配 |
+| `optionRender` | `(option: Option) => React.ReactNode` | - | 自定义选项渲染函数，可实现复杂的选项样式 |
+| `popupRender` | `(originNode: React.ReactNode) => React.ReactNode` | - | 自定义下拉容器渲染函数，可添加头部/尾部内容 |
+| `onClear` | `() => void` | - | 点击清除按钮时的回调函数 |
+| `allowClear` | `boolean \| { clearIcon?: React.ReactNode }` | `false` | 是否显示清除按钮，支持自定义清除图标 |
+| `labelRender` | `(selectedOptions: Option \| Option[] \| null) => string` | - | 自定义已选中标签的渲染函数，用于个性化显示选中内容 |
 
 #### Option 类型
 
 ```typescript
+// 基础选项类型
 type Option = {
-  disabled?: boolean;
-  title?: string;
-  value?: string | number;
-  label?: string;
+  disabled?: boolean;    // 是否禁用该选项
+  title?: string;        // 鼠标悬停时显示的提示文本
+  value?: string | number; // 选项的值，作为 onChange 回调的参数
+  label?: string;        // 选项显示的文本
 };
 
+// 分组选项类型
 type OptionGroup = {
-  label: string;
-  options: Option[];
+  label: string;         // 分组标题
+  options: Option[];     // 该分组下的选项列表
 };
 
+// 组合选项类型（支持普通选项和分组选项混合使用）
 type GroupedOption = Option | OptionGroup;
 ```
 
@@ -248,10 +252,11 @@ const options = [
   multiple
   placeholder="请选择多个选项"
   options={options}
+  allowClear
   onChange={(values, options) => console.log('选中:', values, options)}
 />
 
-// 支持搜索
+// 支持搜索和过滤
 <Select 
   showSearch
   placeholder="搜索并选择"
@@ -262,17 +267,30 @@ const options = [
   }
 />
 
+// 自定义清除图标
+<Select 
+  allowClear={{ clearIcon: <span>✗</span> }}
+  placeholder="自定义清除图标"
+  options={options}
+  defaultValue="option1"
+  onClear={() => console.log('已清除')}
+/>
+
 // 分组选项
 const groupedOptions = [
+  // 普通选项（与分组混合使用）
+  { label: '全部', value: 'all' },
+  
+  // 分组选项
   {
-    label: '水果',
+    label: '水果类',
     options: [
       { label: '苹果', value: 'apple' },
       { label: '香蕉', value: 'banana' }
     ]
   },
   {
-    label: '蔬菜',
+    label: '蔬菜类',
     options: [
       { label: '胡萝卜', value: 'carrot' },
       { label: '西兰花', value: 'broccoli' }
@@ -281,17 +299,94 @@ const groupedOptions = [
 ];
 
 <Select 
-  placeholder="请选择"
+  placeholder="请选择食物"
   options={groupedOptions}
+  showSearch
   onChange={(value, option) => console.log('选中:', value, option)}
 />
 
-// 支持清除
+// 自定义选项渲染
 <Select 
-  allowClear
-  placeholder="请选择"
+  placeholder="自定义选项样式"
   options={options}
-  onClear={() => console.log('已清除')}
+  optionRender={option => (
+    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+      <span>{option.label}</span>
+      <span style={{ color: '#999', fontSize: '12px' }}>{option.value}</span>
+    </div>
+  )}
+/>
+
+// 自定义弹窗内容
+<Select 
+  placeholder="自定义弹窗"
+  options={options}
+  popupRender={originNode => (
+    <div>
+      <div style={{ padding: '8px', borderBottom: '1px solid #f0f0f0' }}>
+        选择您需要的选项
+      </div>
+      {originNode}
+      <div style={{ padding: '8px', textAlign: 'center', color: '#999' }}>
+        共 {options.length} 个选项
+      </div>
+    </div>
+  )}
+/>
+
+// 自定义标签渲染
+<Select 
+  multiple
+  placeholder="自定义标签显示"
+  options={options}
+  defaultValue={['option1', 'option2']}
+  labelRender={selectedOptions => {
+    if (Array.isArray(selectedOptions)) {
+      return `已选择 ${selectedOptions.length} 项: ${selectedOptions.map(opt => opt.label).join(', ')}`;
+    }
+    return selectedOptions?.label || '';
+  }}
+/>
+
+// 受控模式
+const [value, setValue] = useState();
+<Select 
+  value={value}
+  onChange={setValue}
+  placeholder="受控模式"
+  options={options}
+/>
+
+// 受控展开状态
+const [open, setOpen] = useState(false);
+<Select 
+  open={open}
+  placeholder="受控展开"
+  options={options}
+  onChange={(value) => {
+    console.log('选中:', value);
+    setOpen(false); // 选择后自动关闭
+  }}
+/>
+
+// 异步搜索
+const [loading, setLoading] = useState(false);
+const [searchOptions, setSearchOptions] = useState([]);
+
+<Select 
+  showSearch
+  placeholder={loading ? "搜索中..." : "异步搜索"}
+  options={searchOptions}
+  disabled={loading}
+  onSearch={async (searchText) => {
+    if (searchText) {
+      setLoading(true);
+      // 模拟异步搜索
+      const results = await fetchSearchResults(searchText);
+      setSearchOptions(results);
+      setLoading(false);
+    }
+  }}
 />
 ```
 
@@ -308,6 +403,7 @@ import type {
   NavItemType,
   SelectProps,
   Option,
+  OptionGroup,
   GroupedOption
 } from '@luoluoyu/fluentui-plus';
 
@@ -330,10 +426,28 @@ const selectOptions: Option[] = [
   { label: '选项二', value: 'option2' }
 ];
 
+// 分组选项示例
+const groupedSelectOptions: GroupedOption[] = [
+  { label: '全部', value: 'all' },
+  {
+    label: '水果类',
+    options: [
+      { label: '苹果', value: 'apple' },
+      { label: '香蕉', value: 'banana' }
+    ]
+  }
+];
+
 const selectProps: SelectProps = {
   placeholder: '请选择',
   options: selectOptions,
-  allowClear: true
+  allowClear: true,
+  showSearch: true,
+  multiple: false,
+  onChange: (value, selectedOptions) => {
+    console.log('选中值:', value);
+    console.log('选中选项:', selectedOptions);
+  }
 };
 ```
 

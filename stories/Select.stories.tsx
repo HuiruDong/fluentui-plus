@@ -10,7 +10,8 @@ const meta: Meta<typeof Select> = {
     layout: 'centered',
     docs: {
       description: {
-        component: '选择器组件，支持单选、多选、搜索等功能，适用于各种选择场景。提供丰富的配置选项和自定义能力。',
+        component:
+          '高度可定制的选择器组件，支持单选、多选、搜索、分组、自定义渲染等功能。基于 FluentUI 设计系统，提供企业级的用户体验和完整的无障碍支持。',
       },
     },
   },
@@ -18,7 +19,7 @@ const meta: Meta<typeof Select> = {
   argTypes: {
     value: {
       control: 'text',
-      description: '受控模式的选中值',
+      description: '受控模式的选中值，支持单个值或值数组（多选模式）',
     },
     defaultValue: {
       control: 'text',
@@ -26,23 +27,27 @@ const meta: Meta<typeof Select> = {
     },
     placeholder: {
       control: 'text',
-      description: '输入框占位符',
+      description: '输入框占位符文本',
     },
     disabled: {
       control: 'boolean',
-      description: '是否禁用',
+      description: '是否禁用选择器',
     },
     multiple: {
       control: 'boolean',
-      description: '是否支持多选',
+      description: '是否支持多选模式',
     },
     showSearch: {
       control: 'boolean',
-      description: '是否支持搜索',
+      description: '是否显示搜索输入框',
+    },
+    allowClear: {
+      control: 'boolean',
+      description: '是否显示清除按钮',
     },
     listHeight: {
       control: 'number',
-      description: '下拉列表最大高度',
+      description: '下拉列表最大高度（像素）',
     },
     open: {
       control: 'boolean',
@@ -50,15 +55,31 @@ const meta: Meta<typeof Select> = {
     },
     options: {
       control: 'object',
-      description: '选项数据',
+      description: '选项数据，支持分组选项',
     },
     onChange: {
       action: 'onChange',
-      description: '选中值变化时的回调',
+      description: '选中值变化时的回调函数',
     },
     onSearch: {
       action: 'onSearch',
-      description: '搜索时的回调',
+      description: '搜索输入变化时的回调函数',
+    },
+    onClear: {
+      action: 'onClear',
+      description: '点击清除按钮时的回调函数',
+    },
+    filterOption: {
+      description: '自定义过滤逻辑函数',
+    },
+    optionRender: {
+      description: '自定义选项渲染函数',
+    },
+    popupRender: {
+      description: '自定义弹窗内容渲染函数',
+    },
+    labelRender: {
+      description: '自定义已选中标签的渲染函数',
     },
   },
   args: {
@@ -66,6 +87,7 @@ const meta: Meta<typeof Select> = {
     disabled: false,
     multiple: false,
     showSearch: false,
+    allowClear: false,
     listHeight: 256,
     options: [
       { value: 'option1', label: '选项1' },
@@ -114,16 +136,118 @@ export const Default: Story = {
   ),
 };
 
-// 带默认值
-export const WithDefaultValue: Story = {
+// 带清除功能
+export const AllowClear: Story = {
   args: {
-    placeholder: '请选择水果',
+    placeholder: '支持清除选择',
     options: fruitOptions,
+    allowClear: true,
     defaultValue: 'apple',
   },
   render: args => (
     <div style={{ width: '200px' }}>
       <Select {...args} />
+    </div>
+  ),
+};
+
+// 自定义清除图标
+export const CustomClearIcon: Story = {
+  render: () => (
+    <div style={{ display: 'flex', gap: '16px', alignItems: 'flex-start' }}>
+      <div>
+        <div style={{ marginBottom: '8px', fontSize: '14px', fontWeight: '500' }}>默认清除图标</div>
+        <div style={{ width: '180px' }}>
+          <Select placeholder='默认图标' options={fruitOptions} allowClear defaultValue='apple' />
+        </div>
+      </div>
+      <div>
+        <div style={{ marginBottom: '8px', fontSize: '14px', fontWeight: '500' }}>自定义清除图标</div>
+        <div style={{ width: '180px' }}>
+          <Select
+            placeholder='自定义图标'
+            options={fruitOptions}
+            allowClear={{ clearIcon: <span style={{ color: '#ff4d4f' }}>✗</span> }}
+            defaultValue='banana'
+          />
+        </div>
+      </div>
+    </div>
+  ),
+};
+
+// 自定义标签渲染
+export const CustomLabelRender: Story = {
+  render: () => (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', width: '400px' }}>
+      <div>
+        <h4 style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: '600' }}>单选自定义标签</h4>
+        <Select
+          placeholder='自定义单选标签'
+          options={fruitOptions}
+          defaultValue='apple'
+          labelRender={option => {
+            if (Array.isArray(option)) {
+              return `🎯 ${option.map(opt => opt.label).join(', ')}`;
+            }
+            return `🎯 ${option?.label || ''}`;
+          }}
+        />
+      </div>
+
+      <div>
+        <h4 style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: '600' }}>多选自定义标签</h4>
+        <Select
+          placeholder='自定义多选标签'
+          options={cityOptions.slice(0, 6)}
+          multiple
+          defaultValue={['beijing', 'shanghai']}
+          labelRender={options => {
+            if (Array.isArray(options)) {
+              return `已选择 ${options.length} 个城市: ${options.map(opt => opt.label).join(', ')}`;
+            }
+            return options?.label || '';
+          }}
+        />
+      </div>
+    </div>
+  ),
+};
+
+// 自定义过滤逻辑
+export const CustomFilter: Story = {
+  render: () => (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', width: '400px' }}>
+      <div>
+        <h4 style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: '600' }}>模糊匹配（默认）</h4>
+        <Select placeholder='默认过滤逻辑' options={cityOptions} showSearch />
+      </div>
+
+      <div>
+        <h4 style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: '600' }}>首字母匹配</h4>
+        <Select
+          placeholder='首字母匹配'
+          options={cityOptions}
+          showSearch
+          filterOption={(input, option) => {
+            const label = option.label?.toLowerCase() || '';
+            return label.startsWith(input.toLowerCase());
+          }}
+        />
+      </div>
+
+      <div>
+        <h4 style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: '600' }}>值匹配</h4>
+        <Select
+          placeholder='按值匹配'
+          options={cityOptions}
+          showSearch
+          filterOption={(input, option) => {
+            const value = String(option.value || '').toLowerCase();
+            return value.includes(input.toLowerCase());
+          }}
+        />
+      </div>
     </div>
   ),
 };
@@ -410,18 +534,79 @@ export const CustomPopupRender: Story = {
   ),
 };
 
-// 大数据量示例
-export const LargeData: Story = {
+// 异步加载和动态选项
+export const DynamicOptions: Story = {
   render: () => {
-    const largeOptions: Option[] = Array.from({ length: 100 }, (_, index) => ({
-      value: `item${index + 1}`,
-      label: `选项 ${index + 1}`,
-    }));
+    const [loading, setLoading] = useState(false);
+    const [options, setOptions] = useState<Option[]>([]);
+    const [searchText, setSearchText] = useState('');
+
+    const loadOptions = async (search: string = '') => {
+      setLoading(true);
+
+      // 模拟异步加载
+      await new Promise(resolve => setTimeout(resolve, 800));
+
+      const allOptions = [
+        { value: 'user1', label: 'John Doe' },
+        { value: 'user2', label: 'Jane Smith' },
+        { value: 'user3', label: 'Bob Johnson' },
+        { value: 'user4', label: 'Alice Wilson' },
+        { value: 'user5', label: 'Charlie Brown' },
+        { value: 'user6', label: 'Diana Prince' },
+      ];
+
+      const filtered = search
+        ? allOptions.filter(opt => opt.label.toLowerCase().includes(search.toLowerCase()))
+        : allOptions;
+
+      setOptions(filtered);
+      setLoading(false);
+    };
+
+    React.useEffect(() => {
+      loadOptions();
+    }, []);
 
     return (
-      <div style={{ width: '200px' }}>
-        <Select placeholder='大数据量测试' options={largeOptions} showSearch listHeight={200} />
-        <div style={{ marginTop: '8px', fontSize: '12px', color: '#666' }}>共 {largeOptions.length} 个选项</div>
+      <div style={{ width: '300px' }}>
+        <Select
+          placeholder={loading ? '加载中...' : '搜索用户'}
+          options={options}
+          showSearch
+          allowClear
+          disabled={loading}
+          onSearch={value => {
+            setSearchText(value);
+            if (value) {
+              loadOptions(value);
+            }
+          }}
+          optionRender={option => (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div
+                style={{
+                  width: '24px',
+                  height: '24px',
+                  borderRadius: '50%',
+                  background: '#1890ff',
+                  color: 'white',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '12px',
+                  fontWeight: '600',
+                }}
+              >
+                {option.label?.charAt(0)}
+              </div>
+              <span>{option.label}</span>
+            </div>
+          )}
+        />
+        <div style={{ marginTop: '8px', fontSize: '12px', color: '#666' }}>
+          {loading ? '正在加载选项...' : `找到 ${options.length} 个用户`}
+        </div>
       </div>
     );
   },
@@ -483,183 +668,6 @@ export const ControlledOpen: Story = {
           >
             切换 ({open ? '已展开' : '已收起'})
           </button>
-        </div>
-      </div>
-    );
-  },
-};
-
-// 企业级应用场景
-export const EnterpriseScenarios: Story = {
-  render: () => (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '32px', padding: '20px', width: '600px' }}>
-      <div>
-        <h3 style={{ margin: '0 0 16px 0', fontSize: '16px', fontWeight: '600' }}>表单场景</h3>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-          <div>
-            <label style={{ display: 'block', marginBottom: '4px', fontSize: '14px', fontWeight: '500' }}>
-              所在城市
-            </label>
-            <Select placeholder='请选择城市' options={cityOptions.slice(0, 6)} style={{ width: '100%' }} />
-          </div>
-          <div>
-            <label style={{ display: 'block', marginBottom: '4px', fontSize: '14px', fontWeight: '500' }}>
-              兴趣爱好（多选）
-            </label>
-            <Select
-              placeholder='选择您的兴趣'
-              options={[
-                { value: 'reading', label: '阅读' },
-                { value: 'sports', label: '运动' },
-                { value: 'music', label: '音乐' },
-                { value: 'travel', label: '旅行' },
-                { value: 'coding', label: '编程' },
-                { value: 'photography', label: '摄影' },
-              ]}
-              multiple
-              style={{ width: '100%' }}
-            />
-          </div>
-        </div>
-      </div>
-
-      <div>
-        <h3 style={{ margin: '0 0 16px 0', fontSize: '16px', fontWeight: '600' }}>筛选场景</h3>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
-          <div>
-            <label style={{ display: 'block', marginBottom: '4px', fontSize: '14px', fontWeight: '500' }}>
-              状态筛选
-            </label>
-            <Select
-              placeholder='选择状态'
-              options={[
-                { value: 'all', label: '全部' },
-                { value: 'pending', label: '待处理' },
-                { value: 'processing', label: '处理中' },
-                { value: 'completed', label: '已完成' },
-                { value: 'cancelled', label: '已取消' },
-              ]}
-              style={{ width: '100%' }}
-            />
-          </div>
-          <div>
-            <label style={{ display: 'block', marginBottom: '4px', fontSize: '14px', fontWeight: '500' }}>优先级</label>
-            <Select
-              placeholder='选择优先级'
-              options={[
-                { value: 'high', label: '高' },
-                { value: 'medium', label: '中' },
-                { value: 'low', label: '低' },
-              ]}
-              style={{ width: '100%' }}
-            />
-          </div>
-          <div>
-            <label style={{ display: 'block', marginBottom: '4px', fontSize: '14px', fontWeight: '500' }}>
-              创建时间
-            </label>
-            <Select
-              placeholder='选择时间范围'
-              options={[
-                { value: 'today', label: '今天' },
-                { value: 'week', label: '近一周' },
-                { value: 'month', label: '近一月' },
-                { value: 'quarter', label: '近一季' },
-                { value: 'year', label: '近一年' },
-              ]}
-              style={{ width: '100%' }}
-            />
-          </div>
-        </div>
-      </div>
-
-      <div>
-        <h3 style={{ margin: '0 0 16px 0', fontSize: '16px', fontWeight: '600' }}>配置场景</h3>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-          <div>
-            <label style={{ display: 'block', marginBottom: '4px', fontSize: '14px', fontWeight: '500' }}>
-              主题设置
-            </label>
-            <Select
-              placeholder='选择主题'
-              options={[
-                { value: 'light', label: '🌞 浅色主题' },
-                { value: 'dark', label: '🌙 深色主题' },
-                { value: 'auto', label: '🔄 跟随系统' },
-              ]}
-              style={{ width: '100%' }}
-            />
-          </div>
-          <div>
-            <label style={{ display: 'block', marginBottom: '4px', fontSize: '14px', fontWeight: '500' }}>
-              语言设置
-            </label>
-            <Select
-              placeholder='选择语言'
-              options={[
-                { value: 'zh-CN', label: '简体中文' },
-                { value: 'zh-TW', label: '繁體中文' },
-                { value: 'en-US', label: 'English' },
-                { value: 'ja-JP', label: '日本語' },
-                { value: 'ko-KR', label: '한국어' },
-              ]}
-              showSearch
-              style={{ width: '100%' }}
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-  ),
-  parameters: {
-    layout: 'fullscreen',
-  },
-};
-
-// 回调事件演示
-export const WithCallbacks: Story = {
-  render: () => {
-    const [logs, setLogs] = useState<string[]>([]);
-
-    const addLog = (message: string) => {
-      setLogs(prev => [...prev.slice(-6), `${new Date().toLocaleTimeString()}: ${message}`]);
-    };
-
-    return (
-      <div style={{ width: '500px' }}>
-        <div style={{ marginBottom: '16px' }}>
-          <Select
-            placeholder='测试各种回调事件'
-            options={fruitOptions}
-            showSearch
-            onChange={(value, options) => {
-              addLog(`onChange: ${JSON.stringify(value)}, options: ${JSON.stringify(options)}`);
-            }}
-            onSearch={searchValue => {
-              addLog(`onSearch: "${searchValue}"`);
-            }}
-          />
-        </div>
-
-        <div
-          style={{
-            padding: '12px',
-            background: '#f5f5f5',
-            borderRadius: '4px',
-            maxHeight: '180px',
-            overflowY: 'auto',
-          }}
-        >
-          <div style={{ fontSize: '12px', fontWeight: '600', marginBottom: '8px' }}>事件日志:</div>
-          {logs.length === 0 ? (
-            <div style={{ fontSize: '12px', color: '#999' }}>暂无事件</div>
-          ) : (
-            logs.map((log, index) => (
-              <div key={index} style={{ fontSize: '11px', color: '#666', lineHeight: '1.4', marginBottom: '2px' }}>
-                {log}
-              </div>
-            ))
-          )}
         </div>
       </div>
     );
