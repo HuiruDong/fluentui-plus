@@ -2,6 +2,7 @@ import React, { useCallback, useMemo } from 'react';
 import { mergeClasses } from '@fluentui/react-components';
 import type { CascaderPanelProps, CascaderOption as CascaderOptionType } from './types';
 import CascaderColumn from './CascaderColumn';
+import CascaderEmpty from './CascaderEmpty';
 import { useFloatingPosition } from '../Select/hooks';
 import { hasChildren, getChildren, getValueFromPath } from './utils';
 
@@ -25,15 +26,8 @@ const CascaderPanel: React.FC<CascaderPanelProps> = ({
   prefixCls,
   checkedKeys = new Set(),
   halfCheckedKeys = new Set(),
+  emptyText = '暂无数据',
 }) => {
-  // 使用浮动定位 hook（复用 Select 的）
-  const { floatingRef, floatingStyles, getFloatingProps } = useFloatingPosition({
-    isOpen,
-    triggerRef,
-    onClickOutside: onClose,
-    matchTriggerWidth: false,
-  });
-
   // 是否处于搜索模式
   const isSearching = showSearch && searchValue.trim().length > 0;
 
@@ -41,6 +35,11 @@ const CascaderPanel: React.FC<CascaderPanelProps> = ({
   const columnsData = useMemo(() => {
     if (isSearching) {
       return []; // 搜索模式下不显示列
+    }
+
+    // 如果没有根选项，直接返回空数组
+    if (options.length === 0) {
+      return [];
     }
 
     const columns: { options: CascaderOptionType[]; selectedOption?: CascaderOptionType }[] = [];
@@ -66,6 +65,17 @@ const CascaderPanel: React.FC<CascaderPanelProps> = ({
 
     return columns;
   }, [options, selectedPath, isSearching]);
+
+  // 判断是否为空状态（没有选项或搜索无结果）
+  const isEmpty = columnsData.length === 0 || (isSearching && searchResults.length === 0);
+
+  // 使用浮动定位 hook（复用 Select 的）
+  const { floatingRef, floatingStyles, getFloatingProps } = useFloatingPosition({
+    isOpen,
+    triggerRef,
+    onClickOutside: onClose,
+    matchTriggerWidth: isEmpty, // 空状态时匹配触发器宽度
+  });
 
   // 处理选项选择
   const handleOptionSelect = useCallback(
@@ -154,7 +164,7 @@ const CascaderPanel: React.FC<CascaderPanelProps> = ({
   // 渲染搜索结果
   const renderSearchResults = () => {
     if (searchResults.length === 0) {
-      return <div className={`${prefixCls}__search-empty`}>暂无数据</div>;
+      return <CascaderEmpty prefixCls={prefixCls} text={emptyText} />;
     }
 
     if (!searchColumnData) {
@@ -183,7 +193,7 @@ const CascaderPanel: React.FC<CascaderPanelProps> = ({
   // 渲染级联列
   const renderCascaderColumns = () => {
     if (columnsData.length === 0) {
-      return <div className={`${prefixCls}__empty`}>暂无数据</div>;
+      return <CascaderEmpty prefixCls={prefixCls} text={emptyText} />;
     }
 
     return (

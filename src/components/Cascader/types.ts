@@ -50,6 +50,8 @@ export interface CascaderPanelProps {
   // 多选相关状态
   checkedKeys?: Set<string | number>;
   halfCheckedKeys?: Set<string | number>;
+  // 空状态自定义
+  emptyText?: string;
 }
 
 // 级联列组件属性
@@ -143,4 +145,12 @@ export interface CascaderSearchResult {
   path: CascaderOption[];
   value: CascaderValue;
   label: string;
+}
+
+// 级联空状态组件属性
+export interface CascaderEmptyProps {
+  prefixCls: string;
+  text?: string;
+  className?: string;
+  style?: React.CSSProperties;
 }
