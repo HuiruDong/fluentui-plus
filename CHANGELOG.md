@@ -4,6 +4,30 @@
 
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，项目遵循 [语义化版本](https://semver.org/lang/zh-CN/) 规范。
 
+## [2.2.0](https://github.com/HuiruDong/fluentui-plus/compare/v2.1.0...v2.2.0) (2025-09-22)
+
+### Added
+
+- **cascader:** add Cascader component for hierarchical data selection ([f7aa6de](https://github.com/HuiruDong/fluentui-plus/commit/f7aa6de3c61caecc3b9b247da9ac67b7f3c78b3d))
+- **cascader:** add CascaderEmpty component for empty state display ([5c0e11a](https://github.com/HuiruDong/fluentui-plus/commit/5c0e11a7ea7a023c0548e992787d7dfdae2fe58d))
+- **cascader:** add multiple selection support ([4d627e9](https://github.com/HuiruDong/fluentui-plus/commit/4d627e944f4dc749008aa75d3161690ce7a857cf))
+- **cascader:** enhance search functionality with changeOnSelect support ([a71e17c](https://github.com/HuiruDong/fluentui-plus/commit/a71e17c7ddcd272d988e672a1d8f49c1b73cc1d2))
+- **select:** add labelRender prop to customize selected option display ([6bd2a0c](https://github.com/HuiruDong/fluentui-plus/commit/6bd2a0cd448fc8883dc247e512b164aa1c13f60b))
+
+### Fixed
+
+- **cascader:** fix expandTrigger hover behavior for leaf nodes ([f6a6f14](https://github.com/HuiruDong/fluentui-plus/commit/f6a6f142dc438942ded4593a8471ba9be673d60c))
+- **cascader:** implement search blur behavior and floating position width calculation ([f188b07](https://github.com/HuiruDong/fluentui-plus/commit/f188b07b2709908026bb6349cf0de6253e80f400))
+
+### Changed
+
+- **Cascader:** add comprehensive Storybook stories and examples ([2dfeacc](https://github.com/HuiruDong/fluentui-plus/commit/2dfeacc464005bd59328af1e1b3f2e630e41122b))
+- **cascader:** replace custom SVG arrow with FluentUI ChevronRightFilled icon ([c328fc1](https://github.com/HuiruDong/fluentui-plus/commit/c328fc1423b61209abafd625e3303ca9bb88a2b7))
+- **cascader:** restructure utility functions into modular architecture ([3011c10](https://github.com/HuiruDong/fluentui-plus/commit/3011c10a143241ca9937324fa8f6686bd8dddb78))
+- **cascader:** split useCascader hook into specialized sub-hooks ([0bed32d](https://github.com/HuiruDong/fluentui-plus/commit/0bed32de2b0d2b1f846536f817fa5d4ecb6fb4b5))
+- optimize eslint config and remove redundant lint suppressions in tests ([93794a5](https://github.com/HuiruDong/fluentui-plus/commit/93794a583f3120b9362b4e12b934925816e94e73))
+- **Select:** enhance API documentation and Storybook examples ([b23269c](https://github.com/HuiruDong/fluentui-plus/commit/b23269ce84fc8289fc292912dc120809d32a892d))
+
 ## [2.1.0](https://github.com/HuiruDong/fluentui-plus/compare/v2.0.0...v2.1.0) (2025-09-09)
 
 ### Fixed
