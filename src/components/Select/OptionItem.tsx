@@ -3,16 +3,11 @@ import { mergeClasses } from '@fluentui/react-components';
 import type { OptionItemProps } from './types';
 import { CheckmarkRegular } from '@fluentui/react-icons';
 import { Checkbox } from '@fluentui/react-components';
+import { useSelectContext } from './context';
 
-const OptionItem: React.FC<OptionItemProps> = ({
-  option,
-  index,
-  isSelected,
-  multiple = false,
-  onOptionClick,
-  optionRender,
-  prefixCls,
-}) => {
+const OptionItem: React.FC<OptionItemProps> = ({ option, index, isSelected }) => {
+  // 从 Context 获取需要的数据和方法
+  const { multiple = false, onOptionClick, optionRender, prefixCls } = useSelectContext();
   const handleClick = () => {
     if (option.disabled) return;
     onOptionClick?.(option);

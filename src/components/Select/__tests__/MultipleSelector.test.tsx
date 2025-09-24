@@ -2,6 +2,8 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import MultipleSelector from '../MultipleSelector';
+import { SelectProvider } from '../context';
+import type { SelectContextValue } from '../context/SelectContext';
 import type { Option } from '../types';
 
 // Mock child components
@@ -82,13 +84,27 @@ describe('MultipleSelector', () => {
     { value: '3', label: 'Cherry' },
   ];
 
-  const defaultProps = {
-    selectedOptions: [],
+  // Mock context value
+  const defaultContextValue: SelectContextValue = {
     prefixCls: 'test-select',
+    selectedOptions: [],
+    disabled: false,
+    multiple: true,
+  };
+
+  const renderWithProvider = (contextValue: SelectContextValue = defaultContextValue) => {
+    return render(
+      <SelectProvider value={contextValue}>
+        <MultipleSelector />
+      </SelectProvider>
+    );
   };
 
   it('should render TagList with correct tags', () => {
-    render(<MultipleSelector {...defaultProps} selectedOptions={mockOptions.slice(0, 2)} />);
+    renderWithProvider({
+      ...defaultContextValue,
+      selectedOptions: mockOptions.slice(0, 2),
+    });
 
     expect(screen.getByTestId('tag-list')).toBeInTheDocument();
     expect(screen.getByTestId('tag-0')).toHaveTextContent('Apple');
@@ -96,7 +112,7 @@ describe('MultipleSelector', () => {
   });
 
   it('should render chevron down icon', () => {
-    render(<MultipleSelector {...defaultProps} />);
+    renderWithProvider();
 
     expect(screen.getByTestId('chevron-down')).toBeInTheDocument();
   });
@@ -104,7 +120,10 @@ describe('MultipleSelector', () => {
   it('should call onClick when clicked', () => {
     const mockOnClick = jest.fn();
 
-    render(<MultipleSelector {...defaultProps} onClick={mockOnClick} />);
+    renderWithProvider({
+      ...defaultContextValue,
+      onClick: mockOnClick,
+    });
 
     fireEvent.click(screen.getByTestId('tag-list').parentElement!);
     expect(mockOnClick).toHaveBeenCalled();
@@ -113,16 +132,22 @@ describe('MultipleSelector', () => {
   it('should handle tag removal', () => {
     const mockOnTagRemove = jest.fn();
 
-    render(
-      <MultipleSelector {...defaultProps} selectedOptions={mockOptions.slice(0, 2)} onTagRemove={mockOnTagRemove} />
-    );
+    renderWithProvider({
+      ...defaultContextValue,
+      selectedOptions: mockOptions.slice(0, 2),
+      onTagRemove: mockOnTagRemove,
+    });
 
     fireEvent.click(screen.getByTestId('remove-tag-0'));
     expect(mockOnTagRemove).toHaveBeenCalledWith('Apple', 0);
   });
 
   it('should not show remove buttons when disabled', () => {
-    render(<MultipleSelector {...defaultProps} selectedOptions={mockOptions.slice(0, 2)} disabled={true} />);
+    renderWithProvider({
+      ...defaultContextValue,
+      selectedOptions: mockOptions.slice(0, 2),
+      disabled: true,
+    });
 
     expect(screen.queryByTestId('remove-tag-0')).not.toBeInTheDocument();
     expect(screen.queryByTestId('remove-tag-1')).not.toBeInTheDocument();
@@ -130,28 +155,35 @@ describe('MultipleSelector', () => {
 
   describe('with showSearch enabled', () => {
     it('should render SearchInput when showSearch is true', () => {
-      render(<MultipleSelector {...defaultProps} showSearch={true} searchValue='test' />);
+      renderWithProvider({
+        ...defaultContextValue,
+        showSearch: true,
+        searchValue: 'test',
+      });
 
       expect(screen.getByTestId('search-input')).toBeInTheDocument();
       expect(screen.getByTestId('search-input')).toHaveValue('test');
     });
 
     it('should use empty placeholder when items are selected', () => {
-      render(
-        <MultipleSelector
-          {...defaultProps}
-          selectedOptions={mockOptions.slice(0, 1)}
-          showSearch={true}
-          placeholder='Select items'
-        />
-      );
+      renderWithProvider({
+        ...defaultContextValue,
+        selectedOptions: mockOptions.slice(0, 1),
+        showSearch: true,
+        placeholder: 'Select items',
+      });
 
       const searchInput = screen.getByTestId('search-input');
       expect(searchInput).toHaveAttribute('placeholder', '');
     });
 
     it('should use provided placeholder when no items are selected', () => {
-      render(<MultipleSelector {...defaultProps} selectedOptions={[]} showSearch={true} placeholder='Select items' />);
+      renderWithProvider({
+        ...defaultContextValue,
+        selectedOptions: [],
+        showSearch: true,
+        placeholder: 'Select items',
+      });
 
       const searchInput = screen.getByTestId('search-input');
       expect(searchInput).toHaveAttribute('placeholder', 'Select items');
@@ -162,15 +194,13 @@ describe('MultipleSelector', () => {
       const mockOnSearchFocus = jest.fn();
       const mockOnSearchBlur = jest.fn();
 
-      render(
-        <MultipleSelector
-          {...defaultProps}
-          showSearch={true}
-          onSearchChange={mockOnSearchChange}
-          onSearchFocus={mockOnSearchFocus}
-          onSearchBlur={mockOnSearchBlur}
-        />
-      );
+      renderWithProvider({
+        ...defaultContextValue,
+        showSearch: true,
+        onSearchChange: mockOnSearchChange,
+        onSearchFocus: mockOnSearchFocus,
+        onSearchBlur: mockOnSearchBlur,
+      });
 
       const searchInput = screen.getByTestId('search-input');
 
@@ -185,7 +215,11 @@ describe('MultipleSelector', () => {
     });
 
     it('should pass disabled prop to SearchInput', () => {
-      render(<MultipleSelector {...defaultProps} showSearch={true} disabled={true} />);
+      renderWithProvider({
+        ...defaultContextValue,
+        showSearch: true,
+        disabled: true,
+      });
 
       const searchInput = screen.getByTestId('search-input');
       expect(searchInput).toBeDisabled();
@@ -194,29 +228,34 @@ describe('MultipleSelector', () => {
 
   describe('without showSearch', () => {
     it('should show placeholder text when no items selected and no search', () => {
-      render(
-        <MultipleSelector {...defaultProps} selectedOptions={[]} showSearch={false} placeholder='Please select items' />
-      );
+      renderWithProvider({
+        ...defaultContextValue,
+        selectedOptions: [],
+        showSearch: false,
+        placeholder: 'Please select items',
+      });
 
       expect(screen.getByText('Please select items')).toBeInTheDocument();
       expect(screen.queryByTestId('search-input')).not.toBeInTheDocument();
     });
 
     it('should not show placeholder when items are selected', () => {
-      render(
-        <MultipleSelector
-          {...defaultProps}
-          selectedOptions={mockOptions.slice(0, 1)}
-          showSearch={false}
-          placeholder='Please select items'
-        />
-      );
+      renderWithProvider({
+        ...defaultContextValue,
+        selectedOptions: mockOptions.slice(0, 1),
+        showSearch: false,
+        placeholder: 'Please select items',
+      });
 
       expect(screen.queryByText('Please select items')).not.toBeInTheDocument();
     });
 
     it('should not show placeholder when no placeholder provided', () => {
-      render(<MultipleSelector {...defaultProps} selectedOptions={[]} showSearch={false} />);
+      renderWithProvider({
+        ...defaultContextValue,
+        selectedOptions: [],
+        showSearch: false,
+      });
 
       expect(screen.queryByText('Please select items')).not.toBeInTheDocument();
     });
@@ -224,7 +263,10 @@ describe('MultipleSelector', () => {
 
   describe('tag creation from options', () => {
     it('should use option labels for tags', () => {
-      render(<MultipleSelector {...defaultProps} selectedOptions={mockOptions} />);
+      renderWithProvider({
+        ...defaultContextValue,
+        selectedOptions: mockOptions,
+      });
 
       expect(screen.getByTestId('tag-0')).toHaveTextContent('Apple');
       expect(screen.getByTestId('tag-1')).toHaveTextContent('Banana');
@@ -234,7 +276,10 @@ describe('MultipleSelector', () => {
     it('should use option values when labels are not available', () => {
       const optionsWithoutLabels = [{ value: 'value1' }, { value: 'value2' }];
 
-      render(<MultipleSelector {...defaultProps} selectedOptions={optionsWithoutLabels} />);
+      renderWithProvider({
+        ...defaultContextValue,
+        selectedOptions: optionsWithoutLabels,
+      });
 
       expect(screen.getByTestId('tag-0')).toHaveTextContent('value1');
       expect(screen.getByTestId('tag-1')).toHaveTextContent('value2');
@@ -243,21 +288,31 @@ describe('MultipleSelector', () => {
     it('should handle numeric values', () => {
       const numericOptions = [{ value: 123, label: 'Number Option' }, { value: 456 }];
 
-      render(<MultipleSelector {...defaultProps} selectedOptions={numericOptions} />);
+      renderWithProvider({
+        ...defaultContextValue,
+        selectedOptions: numericOptions,
+      });
 
       expect(screen.getByTestId('tag-0')).toHaveTextContent('Number Option');
       expect(screen.getByTestId('tag-1')).toHaveTextContent('456');
     });
 
     it('should memoize tags creation', () => {
-      const { rerender } = render(<MultipleSelector {...defaultProps} selectedOptions={mockOptions.slice(0, 2)} />);
+      const { rerender } = renderWithProvider({
+        ...defaultContextValue,
+        selectedOptions: mockOptions.slice(0, 2),
+      });
 
       // Verify initial render
       expect(screen.getByTestId('tag-0')).toHaveTextContent('Apple');
       expect(screen.getByTestId('tag-1')).toHaveTextContent('Banana');
 
       // Rerender with same options - should not recreate tags unnecessarily
-      rerender(<MultipleSelector {...defaultProps} selectedOptions={mockOptions.slice(0, 2)} />);
+      rerender(
+        <SelectProvider value={{ ...defaultContextValue, selectedOptions: mockOptions.slice(0, 2) }}>
+          <MultipleSelector />
+        </SelectProvider>
+      );
 
       expect(screen.getByTestId('tag-0')).toHaveTextContent('Apple');
       expect(screen.getByTestId('tag-1')).toHaveTextContent('Banana');
@@ -269,7 +324,7 @@ describe('MultipleSelector', () => {
       const fluentuiModule = jest.requireMock('@fluentui/react-components');
       const { mergeClasses } = fluentuiModule;
 
-      render(<MultipleSelector {...defaultProps} />);
+      renderWithProvider();
 
       expect(mergeClasses).toHaveBeenCalledWith('test-select__selector-inner', 'test-select__selector-inner--multiple');
       expect(mergeClasses).toHaveBeenCalledWith('test-select__tags-container');
@@ -280,7 +335,12 @@ describe('MultipleSelector', () => {
       const fluentuiModule = jest.requireMock('@fluentui/react-components');
       const { mergeClasses } = fluentuiModule;
 
-      render(<MultipleSelector {...defaultProps} selectedOptions={[]} showSearch={false} placeholder='Select items' />);
+      renderWithProvider({
+        ...defaultContextValue,
+        selectedOptions: [],
+        showSearch: false,
+        placeholder: 'Select items',
+      });
 
       expect(mergeClasses).toHaveBeenCalledWith(
         'test-select__selector-text',
@@ -291,7 +351,10 @@ describe('MultipleSelector', () => {
 
   describe('edge cases', () => {
     it('should handle empty selectedOptions array', () => {
-      render(<MultipleSelector {...defaultProps} selectedOptions={[]} />);
+      renderWithProvider({
+        ...defaultContextValue,
+        selectedOptions: [],
+      });
 
       expect(screen.getByTestId('tag-list')).toBeInTheDocument();
       expect(screen.queryByTestId('tag-0')).not.toBeInTheDocument();
@@ -299,7 +362,10 @@ describe('MultipleSelector', () => {
 
     it('should handle missing event handlers gracefully', () => {
       expect(() => {
-        render(<MultipleSelector {...defaultProps} selectedOptions={mockOptions.slice(0, 1)} />);
+        renderWithProvider({
+          ...defaultContextValue,
+          selectedOptions: mockOptions.slice(0, 1),
+        });
 
         // Try to click without handlers - should not throw
         fireEvent.click(screen.getByTestId('tag-list').parentElement!);
@@ -307,7 +373,11 @@ describe('MultipleSelector', () => {
     });
 
     it('should handle undefined searchValue', () => {
-      render(<MultipleSelector {...defaultProps} showSearch={true} searchValue={undefined} />);
+      renderWithProvider({
+        ...defaultContextValue,
+        showSearch: true,
+        searchValue: undefined,
+      });
 
       const searchInput = screen.getByTestId('search-input');
       expect(searchInput).toHaveValue('');

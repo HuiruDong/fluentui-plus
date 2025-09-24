@@ -1,241 +1,140 @@
 import React from 'react';
 import { mergeClasses } from '@fluentui/react-components';
-import type { SelectorProps, Option } from './types';
+import type { Option } from './types';
 import { ChevronDownRegular, DismissRegular } from '@fluentui/react-icons';
 import SearchInput from './SearchInput';
 import TextDisplay from './TextDisplay';
 import MultipleSelector from './MultipleSelector';
+import { useSelectContext } from './context';
 
-const Selector: React.FC<SelectorProps> = ({
-  value,
-  placeholder,
-  disabled,
-  selectedOptions = [],
-  onClick,
-  multiple = false,
-  showSearch = false,
-  searchValue = '',
-  onSearchChange,
-  onSearchFocus,
-  onSearchBlur,
-  inputRef,
-  onTagRemove,
-  onClear,
-  showClear = false,
-  isOpen = false,
-  prefixCls,
-  labelRender,
-}) => {
-  // 多选模式 - 早期返回
-  if (multiple) {
-    return (
-      <MultipleSelector
-        selectedOptions={selectedOptions}
-        disabled={disabled}
-        placeholder={placeholder}
-        showSearch={showSearch}
-        searchValue={searchValue}
-        onClick={onClick}
-        onTagRemove={onTagRemove}
-        onClear={onClear}
-        showClear={showClear}
-        onSearchChange={onSearchChange}
-        onSearchFocus={onSearchFocus}
-        onSearchBlur={onSearchBlur}
-        inputRef={inputRef}
-        prefixCls={prefixCls}
-        labelRender={labelRender}
-      />
-    );
-  }
-
-  // 单选模式处理
-  return renderSingleSelector({
+const Selector: React.FC = () => {
+  // 从 Context 获取所有需要的数据和方法
+  const {
     value,
     placeholder,
     disabled,
-    selectedOptions,
+    selectedOptions = [],
     onClick,
-    showSearch,
-    searchValue,
+    multiple = false,
+    showSearch = false,
+    searchValue = '',
     onSearchChange,
     onSearchFocus,
     onSearchBlur,
-    onClear,
-    showClear,
     inputRef,
-    isOpen,
+    onClear,
+    showClear = false,
+    isOpen = false,
     prefixCls,
     labelRender,
-  });
-};
+  } = useSelectContext();
 
-// 单选模式渲染逻辑
-const renderSingleSelector = ({
-  value,
-  placeholder,
-  disabled,
-  selectedOptions,
-  onClick,
-  showSearch,
-  searchValue,
-  onSearchChange,
-  onSearchFocus,
-  onSearchBlur,
-  onClear,
-  showClear,
-  inputRef,
-  isOpen,
-  prefixCls,
-  labelRender,
-}: Omit<SelectorProps, 'multiple' | 'onTagRemove'>) => {
-  const selectedOption = selectedOptions?.[0];
+  // 获取显示文本的工具函数
+  const getDisplayText = (
+    selectedOption?: Option,
+    value?: string | number | null,
+    placeholder?: string,
+    labelRender?: (selectedOptions: Option | Option[] | null) => string
+  ): string => {
+    // 如果有自定义 labelRender，优先使用
+    if (labelRender && selectedOption) {
+      return labelRender(selectedOption);
+    }
 
-  // 显示搜索输入框模式
-  if (showSearch) {
-    return renderSearchableSelector({
-      selectedOption,
-      placeholder,
-      disabled,
-      onClick,
-      searchValue,
-      onSearchChange,
-      onSearchFocus,
-      onSearchBlur,
-      onClear,
-      showClear,
-      inputRef,
-      isOpen,
-      prefixCls,
-      labelRender,
-    });
-  }
+    if (selectedOption?.label) {
+      return selectedOption.label;
+    }
 
-  // 普通显示模式
-  const displayText = getDisplayText(
-    selectedOption,
-    Array.isArray(value) ? undefined : value,
-    placeholder,
-    labelRender
-  );
+    if (selectedOption?.value !== undefined && selectedOption?.value !== null) {
+      return String(selectedOption.value);
+    }
 
-  return (
-    <TextDisplay
-      displayText={displayText}
-      isPlaceholder={!selectedOption && (value === undefined || value === null)}
-      onClick={onClick}
-      selectedOption={selectedOption}
-      onClear={onClear}
-      showClear={showClear}
-      prefixCls={prefixCls}
-      labelRender={labelRender}
-    />
-  );
-};
+    if (value !== undefined && value !== null) {
+      return String(value);
+    }
 
-// 可搜索选择器渲染逻辑
-const renderSearchableSelector = ({
-  selectedOption,
-  placeholder,
-  disabled,
-  onClick,
-  searchValue,
-  onSearchChange,
-  onSearchFocus,
-  onSearchBlur,
-  onClear,
-  showClear,
-  inputRef,
-  isOpen,
-  prefixCls,
-  labelRender,
-}: {
-  selectedOption?: Option;
-  placeholder?: string;
-  disabled?: boolean;
-  onClick?: () => void;
-  searchValue?: string;
-  onSearchChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onSearchFocus?: () => void;
-  onSearchBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
-  onClear?: (e: React.MouseEvent) => void;
-  showClear?: boolean;
-  inputRef?: React.RefObject<HTMLInputElement>;
-  isOpen?: boolean;
-  prefixCls: string;
-  labelRender?: (selectedOptions: Option | Option[] | null) => string;
-}) => {
-  const inputActivated = isOpen || searchValue !== '';
+    return placeholder || '';
+  };
 
-  // 输入框激活状态 - 显示搜索输入框
-  if (inputActivated) {
-    const searchPlaceholder = selectedOption
-      ? labelRender
-        ? labelRender(selectedOption)
-        : selectedOption.label || String(selectedOption.value)
-      : placeholder || '';
+  // 可搜索选择器渲染逻辑
+  const renderSearchableSelector = () => {
+    const selectedOption = selectedOptions[0];
+    const inputActivated = isOpen || searchValue !== '';
+
+    // 输入框激活状态 - 显示搜索输入框
+    if (inputActivated) {
+      const searchPlaceholder = selectedOption
+        ? labelRender
+          ? labelRender(selectedOption)
+          : selectedOption.label || String(selectedOption.value)
+        : placeholder || '';
+
+      return (
+        <div className={mergeClasses(`${prefixCls}__selector-inner`)} onClick={onClick}>
+          <SearchInput
+            value={searchValue || ''}
+            placeholder={searchPlaceholder}
+            disabled={disabled}
+            inputRef={inputRef}
+            onChange={onSearchChange}
+            onFocus={onSearchFocus}
+            onBlur={onSearchBlur}
+          />
+          <div className={mergeClasses(`${prefixCls}__selector-suffix`)}>
+            {showClear && <DismissRegular className={mergeClasses(`${prefixCls}__selector-clear`)} onClick={onClear} />}
+            <ChevronDownRegular className={mergeClasses(`${prefixCls}__selector-arrow`)} />
+          </div>
+        </div>
+      );
+    }
+
+    // 输入框未激活状态 - 显示文本
+    const displayText = getDisplayText(selectedOption, undefined, placeholder, labelRender);
 
     return (
-      <div className={mergeClasses(`${prefixCls}__selector-inner`)} onClick={onClick}>
-        <SearchInput
-          value={searchValue || ''}
-          placeholder={searchPlaceholder}
-          disabled={disabled}
-          inputRef={inputRef}
-          onChange={onSearchChange}
-          onFocus={onSearchFocus}
-          onBlur={onSearchBlur}
-        />
-        <div className={mergeClasses(`${prefixCls}__selector-suffix`)}>
-          {showClear && <DismissRegular className={mergeClasses(`${prefixCls}__selector-clear`)} onClick={onClear} />}
-          <ChevronDownRegular className={mergeClasses(`${prefixCls}__selector-arrow`)} />
-        </div>
-      </div>
+      <TextDisplay
+        displayText={displayText}
+        isPlaceholder={!selectedOption || selectedOption.value === undefined || selectedOption.value === null}
+        onClick={onClick}
+        selectedOption={selectedOption}
+      />
     );
+  };
+
+  // 单选模式渲染逻辑
+  const renderSingleSelector = () => {
+    const selectedOption = selectedOptions?.[0];
+
+    // 显示搜索输入框模式
+    if (showSearch) {
+      return renderSearchableSelector();
+    }
+
+    // 普通显示模式
+    const displayText = getDisplayText(
+      selectedOption,
+      Array.isArray(value) ? undefined : value,
+      placeholder,
+      labelRender
+    );
+
+    return (
+      <TextDisplay
+        displayText={displayText}
+        isPlaceholder={!selectedOption && (value === undefined || value === null)}
+        onClick={onClick}
+        selectedOption={selectedOption}
+      />
+    );
+  };
+
+  // 多选模式 - 早期返回
+  if (multiple) {
+    return <MultipleSelector />;
   }
 
-  // 输入框未激活状态 - 显示文本
-  const displayText = getDisplayText(selectedOption, undefined, placeholder, labelRender);
-
-  return (
-    <TextDisplay
-      displayText={displayText}
-      isPlaceholder={!selectedOption || selectedOption.value === undefined || selectedOption.value === null}
-      onClick={onClick}
-      selectedOption={selectedOption}
-      onClear={onClear}
-      showClear={showClear}
-      prefixCls={prefixCls}
-      labelRender={labelRender}
-    />
-  );
-};
-
-// 获取显示文本的工具函数
-const getDisplayText = (
-  selectedOption?: Option,
-  value?: string | number | null,
-  placeholder?: string,
-  labelRender?: (selectedOptions: Option | Option[] | null) => string
-): string => {
-  // 如果有自定义 labelRender，优先使用
-  if (labelRender && selectedOption) {
-    return labelRender(selectedOption);
-  }
-
-  if (selectedOption?.label) {
-    return selectedOption.label;
-  }
-
-  if (selectedOption?.value !== undefined && selectedOption?.value !== null) {
-    return String(selectedOption.value);
-  }
-
-  if (value !== undefined && value !== null) {
-    return String(value);
-  }
-
-  return placeholder || '';
+  // 单选模式处理
+  return renderSingleSelector();
 };
 
 export default Selector;

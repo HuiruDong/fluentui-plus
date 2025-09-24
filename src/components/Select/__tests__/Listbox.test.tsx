@@ -2,6 +2,8 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import Listbox from '../Listbox';
+import { SelectProvider } from '../context';
+import type { SelectContextValue } from '../context/SelectContext';
 import type { Option } from '../types';
 
 // Mock child components
@@ -10,15 +12,16 @@ jest.mock('../OptionItem', () => {
     option,
     index,
     isSelected,
-    onOptionClick,
-    optionRender,
   }: {
     option: Option;
     index: number;
     isSelected: boolean;
-    onOptionClick?: (option: Option) => void;
-    optionRender?: (option: Option) => React.ReactNode;
   }) {
+    const React = jest.requireActual('react');
+    const { useSelectContext } = jest.requireActual('../context');
+
+    const { onOptionClick, optionRender } = useSelectContext();
+
     return (
       <div data-testid={`option-item-${index}`} onClick={() => onOptionClick?.(option)}>
         {optionRender ? (
@@ -65,7 +68,20 @@ describe('Listbox', () => {
     isOpen: true,
     triggerRef: { current: null } as React.RefObject<HTMLElement>,
     onClose: jest.fn(),
+  };
+
+  // Mock context value
+  const mockContextValue: SelectContextValue = {
     prefixCls: 'test-select',
+    multiple: false,
+  };
+
+  const renderWithProvider = (props: any, contextValue: SelectContextValue = mockContextValue) => {
+    return render(
+      <SelectProvider value={contextValue}>
+        <Listbox {...props} />
+      </SelectProvider>
+    );
   };
 
   beforeEach(() => {
@@ -90,13 +106,13 @@ describe('Listbox', () => {
   });
 
   it('should not render when isOpen is false', () => {
-    render(<Listbox {...defaultProps} isOpen={false} options={mockOptions} />);
+    renderWithProvider({ ...defaultProps, isOpen: false, options: mockOptions });
 
     expect(screen.queryByTestId('option-item-0')).not.toBeInTheDocument();
   });
 
   it('should render when isOpen is true', () => {
-    render(<Listbox {...defaultProps} options={mockOptions} />);
+    renderWithProvider({ ...defaultProps, options: mockOptions });
 
     expect(screen.getByTestId('option-item-0')).toBeInTheDocument();
     expect(screen.getByTestId('option-item-1')).toBeInTheDocument();
@@ -105,16 +121,17 @@ describe('Listbox', () => {
 
   it('should initialize hooks with correct parameters', () => {
     const mockOnClose = jest.fn();
+    const multipleContext = { ...mockContextValue, multiple: true };
 
-    render(
-      <Listbox
-        {...defaultProps}
-        triggerRef={mockTriggerRef}
-        onClose={mockOnClose}
-        value='1'
-        multiple={true}
-        options={mockOptions}
-      />
+    renderWithProvider(
+      {
+        ...defaultProps,
+        triggerRef: mockTriggerRef,
+        onClose: mockOnClose,
+        value: '1',
+        options: mockOptions,
+      },
+      multipleContext
     );
 
     expect(mockUseFloatingPosition).toHaveBeenCalledWith({
@@ -130,7 +147,7 @@ describe('Listbox', () => {
   });
 
   it('should render options correctly', () => {
-    render(<Listbox {...defaultProps} options={mockOptions} />);
+    renderWithProvider({ ...defaultProps, options: mockOptions });
 
     expect(screen.getByTestId('option-text-0')).toHaveTextContent('Apple');
     expect(screen.getByTestId('option-text-1')).toHaveTextContent('Banana');
@@ -148,7 +165,7 @@ describe('Listbox', () => {
       isOptionSelected: mockIsOptionSelected,
     });
 
-    render(<Listbox {...defaultProps} options={mockOptions} />);
+    renderWithProvider({ ...defaultProps, options: mockOptions });
 
     expect(screen.getByTestId('option-text-0')).toHaveTextContent('Apple (selected)');
     expect(screen.getByTestId('option-text-1')).toHaveTextContent('Banana');
@@ -158,7 +175,10 @@ describe('Listbox', () => {
   it('should handle option click', () => {
     const mockOnOptionClick = jest.fn();
 
-    render(<Listbox {...defaultProps} options={mockOptions} onOptionClick={mockOnOptionClick} />);
+    renderWithProvider(
+      { ...defaultProps, options: mockOptions },
+      { ...mockContextValue, onOptionClick: mockOnOptionClick }
+    );
 
     fireEvent.click(screen.getByTestId('option-item-1'));
 
@@ -166,7 +186,7 @@ describe('Listbox', () => {
   });
 
   it('should render empty state when no options', () => {
-    render(<Listbox {...defaultProps} options={[]} />);
+    renderWithProvider({ ...defaultProps, options: [] });
 
     expect(screen.getByText('暂无数据')).toBeInTheDocument();
   });
@@ -174,7 +194,7 @@ describe('Listbox', () => {
   it('should render custom empty state with correct classes', () => {
     const { mergeClasses } = jest.requireMock('@fluentui/react-components');
 
-    render(<Listbox {...defaultProps} options={[]} />);
+    renderWithProvider({ ...defaultProps, options: [] });
 
     expect(mergeClasses).toHaveBeenCalledWith('test-select__option', 'test-select__option--empty');
   });
@@ -182,7 +202,7 @@ describe('Listbox', () => {
   it('should use custom option render function', () => {
     const customRender = jest.fn((option: Option) => <span>Custom: {option.label}</span>);
 
-    render(<Listbox {...defaultProps} options={mockOptions} optionRender={customRender} />);
+    renderWithProvider({ ...defaultProps, options: mockOptions }, { ...mockContextValue, optionRender: customRender });
 
     expect(customRender).toHaveBeenCalledTimes(3);
     expect(customRender).toHaveBeenCalledWith(mockOptions[0]);
@@ -195,7 +215,7 @@ describe('Listbox', () => {
       <div data-testid='custom-popup'>Custom popup: {node}</div>
     ));
 
-    render(<Listbox {...defaultProps} options={mockOptions} popupRender={customPopupRender} />);
+    renderWithProvider({ ...defaultProps, options: mockOptions, popupRender: customPopupRender });
 
     expect(screen.getByTestId('custom-popup')).toBeInTheDocument();
     expect(customPopupRender).toHaveBeenCalledWith(expect.any(Object));
@@ -204,7 +224,7 @@ describe('Listbox', () => {
   it('should apply correct styles to popup surface', () => {
     const { mergeClasses } = jest.requireMock('@fluentui/react-components');
 
-    render(<Listbox {...defaultProps} options={mockOptions} />);
+    renderWithProvider({ ...defaultProps, options: mockOptions });
 
     expect(mergeClasses).toHaveBeenCalledWith('test-select__popover-surface');
 
@@ -222,7 +242,7 @@ describe('Listbox', () => {
   it('should apply correct styles to listbox', () => {
     const { mergeClasses } = jest.requireMock('@fluentui/react-components');
 
-    render(<Listbox {...defaultProps} options={mockOptions} listHeight={300} />);
+    renderWithProvider({ ...defaultProps, options: mockOptions, listHeight: 300 });
 
     expect(mergeClasses).toHaveBeenCalledWith('test-select__listbox');
 
@@ -231,7 +251,7 @@ describe('Listbox', () => {
   });
 
   it('should use default listHeight when not provided', () => {
-    render(<Listbox {...defaultProps} options={mockOptions} />);
+    renderWithProvider({ ...defaultProps, options: mockOptions });
 
     const listboxElement = screen.getByTestId('option-item-0').parentElement;
     expect(listboxElement).toHaveStyle({ maxHeight: '256px' });
@@ -246,15 +266,13 @@ describe('Listbox', () => {
       isOptionSelected: mockIsOptionSelected,
     });
 
-    render(
-      <Listbox
-        {...defaultProps}
-        options={mockOptions}
-        multiple={true}
-        onOptionClick={mockOnOptionClick}
-        optionRender={customRender}
-      />
-    );
+    renderWithProvider({
+      ...defaultProps,
+      options: mockOptions,
+      multiple: true,
+      onOptionClick: mockOnOptionClick,
+      optionRender: customRender,
+    });
 
     // Check that OptionItem received correct props through our mock
     expect(screen.getByTestId('option-item-0')).toBeInTheDocument();
@@ -264,14 +282,14 @@ describe('Listbox', () => {
 
   describe('edge cases', () => {
     it('should handle undefined options', () => {
-      render(<Listbox {...defaultProps} />);
+      renderWithProvider({ ...defaultProps });
 
       expect(screen.getByText('暂无数据')).toBeInTheDocument();
     });
 
     it('should handle missing onOptionClick gracefully', () => {
       expect(() => {
-        render(<Listbox {...defaultProps} options={mockOptions} />);
+        renderWithProvider({ ...defaultProps, options: mockOptions });
         fireEvent.click(screen.getByTestId('option-item-0'));
       }).not.toThrow();
     });
@@ -279,7 +297,7 @@ describe('Listbox', () => {
     it('should handle options with undefined values', () => {
       const optionsWithUndefined: Option[] = [{ label: 'Option 1' } as Option, { value: '2', label: 'Option 2' }];
 
-      render(<Listbox {...defaultProps} options={optionsWithUndefined} />);
+      renderWithProvider({ ...defaultProps, options: optionsWithUndefined });
 
       expect(screen.getByTestId('option-item-0')).toBeInTheDocument();
       expect(screen.getByTestId('option-item-1')).toBeInTheDocument();
@@ -291,7 +309,7 @@ describe('Listbox', () => {
         { value: 2, label: 'Option 2' } as Option,
       ];
 
-      render(<Listbox {...defaultProps} options={numericOptions} />);
+      renderWithProvider({ ...defaultProps, options: numericOptions });
 
       expect(screen.getByTestId('option-text-0')).toHaveTextContent('Option 1');
       expect(screen.getByTestId('option-text-1')).toHaveTextContent('Option 2');
@@ -301,7 +319,7 @@ describe('Listbox', () => {
       const optionsWithoutValue: Option[] = [{ label: 'Option 1' } as Option, { label: 'Option 2' } as Option];
 
       expect(() => {
-        render(<Listbox {...defaultProps} options={optionsWithoutValue} />);
+        renderWithProvider({ ...defaultProps, options: optionsWithoutValue });
       }).not.toThrow();
 
       expect(screen.getByTestId('option-item-0')).toBeInTheDocument();
@@ -318,7 +336,7 @@ describe('Listbox', () => {
         getFloatingProps: jest.fn(() => ({})),
       });
 
-      render(<Listbox {...defaultProps} options={mockOptions} />);
+      renderWithProvider({ ...defaultProps, options: mockOptions });
 
       expect(mockUseFloatingPosition).toHaveBeenCalledWith({
         isOpen: true,
@@ -335,7 +353,7 @@ describe('Listbox', () => {
         getFloatingProps: jest.fn(() => ({})),
       });
 
-      render(<Listbox {...defaultProps} options={mockOptions} />);
+      renderWithProvider({ ...defaultProps, options: mockOptions });
 
       // The ref should be attached to the popup surface
       expect(screen.getByTestId('option-item-0').closest('.test-select__popover-surface')).toBeInTheDocument();

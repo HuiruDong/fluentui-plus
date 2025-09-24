@@ -2,17 +2,11 @@ import React from 'react';
 import { mergeClasses } from '@fluentui/react-components';
 import { ChevronDownRegular, DismissCircleFilled } from '@fluentui/react-icons';
 import type { TextDisplayProps } from './types';
+import { useSelectContext } from './context';
 
-const TextDisplay: React.FC<TextDisplayProps> = ({
-  displayText,
-  isPlaceholder,
-  onClick,
-  selectedOption,
-  onClear,
-  showClear = false,
-  prefixCls,
-  labelRender,
-}) => {
+const TextDisplay: React.FC<TextDisplayProps> = ({ displayText, isPlaceholder, onClick, selectedOption }) => {
+  // 从 Context 获取需要的数据和方法
+  const { onClear, showClear = false, prefixCls, labelRender } = useSelectContext();
   // 如果有 labelRender 且有选中的选项，使用 labelRender 来生成显示文本
   const finalDisplayText = labelRender && selectedOption && !isPlaceholder ? labelRender(selectedOption) : displayText;
   return (

@@ -1,310 +1,330 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import OptionGroup from '../OptionGroup';
+import { SelectProvider } from '../context';
+import type { SelectContextValue } from '../context/SelectContext';
 import type { OptionGroup as OptionGroupType, Option } from '../types';
 
-// Mock @fluentui/react-components
-jest.mock('@fluentui/react-components', () => ({
-  mergeClasses: jest.fn((...classes) => classes.filter(Boolean).join(' ')),
-  Checkbox: ({
-    checked,
-    disabled,
-    onChange,
-    ...props
+// Mock OptionItem component
+jest.mock('../OptionItem', () => {
+  return function MockOptionItem({
+    option,
+    index,
+    isSelected,
   }: {
-    checked?: boolean;
-    disabled?: boolean;
-    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    [key: string]: unknown;
-  }) => (
-    <input
-      type='checkbox'
-      checked={checked}
-      disabled={disabled}
-      onChange={onChange || (() => {})}
-      {...props}
-      data-testid='checkbox'
-    />
-  ),
-}));
+    option: Option;
+    index: number;
+    isSelected: boolean;
+  }) {
+    return (
+      <div data-testid={`option-item-${option.value || index}`} data-selected={isSelected} data-index={index}>
+        {option.label || option.value}
+      </div>
+    );
+  };
+});
 
-// Mock @fluentui/react-icons
-jest.mock('@fluentui/react-icons', () => ({
-  CheckmarkRegular: () => <span data-testid='checkmark'>✓</span>,
+// Mock useSelectContext
+jest.mock('../context', () => ({
+  ...jest.requireActual('../context'),
+  useSelectContext: jest.fn(),
 }));
 
 describe('OptionGroup', () => {
+  const mockOptions: Option[] = [
+    { value: '1', label: 'Apple' },
+    { value: '2', label: 'Banana' },
+    { value: '3', label: 'Cherry' },
+  ];
+
   const mockGroup: OptionGroupType = {
     label: 'Fruits',
-    options: [
-      { value: 'apple', label: 'Apple' },
-      { value: 'banana', label: 'Banana' },
-      { value: 'cherry', label: 'Cherry', disabled: true },
-    ],
+    options: mockOptions,
   };
 
   const defaultProps = {
     group: mockGroup,
-    prefixCls: 'test-select',
+    selectedValues: [],
   };
+
+  // Mock context value
+  const mockContextValue: SelectContextValue = {
+    prefixCls: 'test-select',
+    multiple: false,
+  };
+
+  const mockUseSelectContext = jest.requireMock('../context').useSelectContext;
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUseSelectContext.mockReturnValue(mockContextValue);
   });
 
-  it('should render group label correctly', () => {
-    render(<OptionGroup {...defaultProps} />);
-
-    expect(screen.getByText('Fruits')).toBeInTheDocument();
-  });
-
-  it('should render all options in the group', () => {
-    render(<OptionGroup {...defaultProps} />);
-
-    expect(screen.getByText('Apple')).toBeInTheDocument();
-    expect(screen.getByText('Banana')).toBeInTheDocument();
-    expect(screen.getByText('Cherry')).toBeInTheDocument();
-  });
-
-  it('should apply correct CSS classes to group elements', () => {
-    const { container } = render(<OptionGroup {...defaultProps} />);
-
-    const groupElement = container.querySelector('.test-select__group');
-    const groupLabelElement = container.querySelector('.test-select__group-label');
-    const groupOptionsElement = container.querySelector('.test-select__group-options');
-
-    expect(groupElement).toBeInTheDocument();
-    expect(groupLabelElement).toBeInTheDocument();
-    expect(groupOptionsElement).toBeInTheDocument();
-  });
-
-  it('should set title attribute on group label', () => {
-    const { container } = render(<OptionGroup {...defaultProps} />);
-
-    const groupLabelElement = container.querySelector('.test-select__group-label');
-    expect(groupLabelElement).toHaveAttribute('title', 'Fruits');
-  });
-
-  it('should pass correct props to OptionItem components', () => {
-    const mockOnOptionClick = jest.fn();
-    const selectedValues = ['apple', 'banana'];
-
-    render(
-      <OptionGroup
-        {...defaultProps}
-        multiple={true}
-        selectedValues={selectedValues}
-        onOptionClick={mockOnOptionClick}
-      />
+  const renderWithProvider = (props: any, contextValue: SelectContextValue = mockContextValue) => {
+    mockUseSelectContext.mockReturnValue(contextValue);
+    return render(
+      <SelectProvider value={contextValue}>
+        <OptionGroup {...props} />
+      </SelectProvider>
     );
+  };
 
-    // 验证选中状态
-    const checkboxes = screen.getAllByTestId('checkbox');
-    expect(checkboxes[0]).toBeChecked(); // Apple
-    expect(checkboxes[1]).toBeChecked(); // Banana
-    expect(checkboxes[2]).not.toBeChecked(); // Cherry
-  });
+  describe('基础渲染', () => {
+    it('should render group label correctly', () => {
+      renderWithProvider(defaultProps);
 
-  it('should handle option clicks correctly', () => {
-    const mockOnOptionClick = jest.fn();
+      expect(screen.getByText('Fruits')).toBeInTheDocument();
+    });
 
-    render(<OptionGroup {...defaultProps} onOptionClick={mockOnOptionClick} />);
+    it('should render all options in the group', () => {
+      renderWithProvider(defaultProps);
 
-    fireEvent.click(screen.getByText('Apple'));
+      expect(screen.getByTestId('option-item-1')).toBeInTheDocument();
+      expect(screen.getByTestId('option-item-2')).toBeInTheDocument();
+      expect(screen.getByTestId('option-item-3')).toBeInTheDocument();
+    });
 
-    expect(mockOnOptionClick).toHaveBeenCalledWith(mockGroup.options[0]);
-  });
+    it('should apply correct CSS classes', () => {
+      const { container } = renderWithProvider(defaultProps);
 
-  it('should not call onOptionClick for disabled options', () => {
-    const mockOnOptionClick = jest.fn();
+      const groupElement = container.querySelector('.test-select__group');
+      expect(groupElement).toBeInTheDocument();
 
-    render(<OptionGroup {...defaultProps} onOptionClick={mockOnOptionClick} />);
+      const labelElement = container.querySelector('.test-select__group-label');
+      expect(labelElement).toBeInTheDocument();
 
-    fireEvent.click(screen.getByText('Cherry'));
+      const optionsElement = container.querySelector('.test-select__group-options');
+      expect(optionsElement).toBeInTheDocument();
+    });
 
-    expect(mockOnOptionClick).not.toHaveBeenCalled();
-  });
+    it('should set title attribute on group label', () => {
+      const { container } = renderWithProvider(defaultProps);
 
-  it('should work in single selection mode', () => {
-    const selectedValues = ['banana'];
-
-    render(<OptionGroup {...defaultProps} multiple={false} selectedValues={selectedValues} />);
-
-    // 在单选模式下，应该显示 checkmark 而不是 checkbox
-    expect(screen.getByTestId('checkmark')).toBeInTheDocument();
-    expect(screen.queryByTestId('checkbox')).not.toBeInTheDocument();
-  });
-
-  it('should work in multiple selection mode', () => {
-    const selectedValues = ['apple', 'banana'];
-
-    render(<OptionGroup {...defaultProps} multiple={true} selectedValues={selectedValues} />);
-
-    // 在多选模式下，应该显示 checkbox
-    const checkboxes = screen.getAllByTestId('checkbox');
-    expect(checkboxes).toHaveLength(3);
-    expect(checkboxes[0]).toBeChecked(); // Apple
-    expect(checkboxes[1]).toBeChecked(); // Banana
-    expect(checkboxes[2]).not.toBeChecked(); // Cherry
-  });
-
-  it('should handle empty selectedValues array', () => {
-    render(<OptionGroup {...defaultProps} multiple={true} selectedValues={[]} />);
-
-    const checkboxes = screen.getAllByTestId('checkbox');
-    checkboxes.forEach(checkbox => {
-      expect(checkbox).not.toBeChecked();
+      const labelElement = container.querySelector('.test-select__group-label');
+      expect(labelElement).toHaveAttribute('title', 'Fruits');
     });
   });
 
-  it('should handle undefined selectedValues', () => {
-    render(<OptionGroup {...defaultProps} multiple={true} selectedValues={undefined} />);
+  describe('选中状态处理', () => {
+    it('should pass correct isSelected prop to OptionItem when no values are selected', () => {
+      renderWithProvider(defaultProps);
 
-    const checkboxes = screen.getAllByTestId('checkbox');
-    checkboxes.forEach(checkbox => {
-      expect(checkbox).not.toBeChecked();
+      expect(screen.getByTestId('option-item-1')).toHaveAttribute('data-selected', 'false');
+      expect(screen.getByTestId('option-item-2')).toHaveAttribute('data-selected', 'false');
+      expect(screen.getByTestId('option-item-3')).toHaveAttribute('data-selected', 'false');
+    });
+
+    it('should pass correct isSelected prop when some values are selected', () => {
+      const propsWithSelection = {
+        ...defaultProps,
+        selectedValues: ['1', '3'],
+      };
+
+      renderWithProvider(propsWithSelection);
+
+      expect(screen.getByTestId('option-item-1')).toHaveAttribute('data-selected', 'true');
+      expect(screen.getByTestId('option-item-2')).toHaveAttribute('data-selected', 'false');
+      expect(screen.getByTestId('option-item-3')).toHaveAttribute('data-selected', 'true');
+    });
+
+    it('should handle numeric selected values', () => {
+      const numericGroup: OptionGroupType = {
+        label: 'Numbers',
+        options: [
+          { value: 1, label: 'One' },
+          { value: 2, label: 'Two' },
+          { value: 3, label: 'Three' },
+        ],
+      };
+
+      const propsWithNumericSelection = {
+        group: numericGroup,
+        selectedValues: [1, 3],
+      };
+
+      renderWithProvider(propsWithNumericSelection);
+
+      expect(screen.getByTestId('option-item-1')).toHaveAttribute('data-selected', 'true');
+      expect(screen.getByTestId('option-item-2')).toHaveAttribute('data-selected', 'false');
+      expect(screen.getByTestId('option-item-3')).toHaveAttribute('data-selected', 'true');
+    });
+
+    it('should handle empty selectedValues array', () => {
+      const propsWithEmptySelection = {
+        ...defaultProps,
+        selectedValues: [],
+      };
+
+      renderWithProvider(propsWithEmptySelection);
+
+      expect(screen.getByTestId('option-item-1')).toHaveAttribute('data-selected', 'false');
+      expect(screen.getByTestId('option-item-2')).toHaveAttribute('data-selected', 'false');
+      expect(screen.getByTestId('option-item-3')).toHaveAttribute('data-selected', 'false');
+    });
+
+    it('should use empty array as default when selectedValues is undefined', () => {
+      const propsWithoutSelection = {
+        group: mockGroup,
+        // selectedValues 未传递，应该使用默认值 []
+      };
+
+      renderWithProvider(propsWithoutSelection);
+
+      expect(screen.getByTestId('option-item-1')).toHaveAttribute('data-selected', 'false');
+      expect(screen.getByTestId('option-item-2')).toHaveAttribute('data-selected', 'false');
+      expect(screen.getByTestId('option-item-3')).toHaveAttribute('data-selected', 'false');
     });
   });
 
-  it('should use custom optionRender when provided', () => {
-    const customRender = jest.fn((option: Option) => <div data-testid='custom-option'>Custom: {option.label}</div>);
+  describe('选项处理', () => {
+    it('should pass correct index to each OptionItem', () => {
+      renderWithProvider(defaultProps);
 
-    render(<OptionGroup {...defaultProps} optionRender={customRender} />);
+      expect(screen.getByTestId('option-item-1')).toHaveAttribute('data-index', '0');
+      expect(screen.getByTestId('option-item-2')).toHaveAttribute('data-index', '1');
+      expect(screen.getByTestId('option-item-3')).toHaveAttribute('data-index', '2');
+    });
 
-    expect(screen.getAllByTestId('custom-option')).toHaveLength(3);
-    expect(screen.getByText('Custom: Apple')).toBeInTheDocument();
-    expect(screen.getByText('Custom: Banana')).toBeInTheDocument();
-    expect(screen.getByText('Custom: Cherry')).toBeInTheDocument();
+    it('should handle options without value', () => {
+      const groupWithoutValues: OptionGroupType = {
+        label: 'Items',
+        options: [{ label: 'Item One' }, { label: 'Item Two' }],
+      };
 
-    expect(customRender).toHaveBeenCalledTimes(3);
-    expect(customRender).toHaveBeenCalledWith(mockGroup.options[0]);
-    expect(customRender).toHaveBeenCalledWith(mockGroup.options[1]);
-    expect(customRender).toHaveBeenCalledWith(mockGroup.options[2]);
+      const props = {
+        group: groupWithoutValues,
+        selectedValues: [],
+      };
+
+      renderWithProvider(props);
+
+      expect(screen.getByTestId('option-item-0')).toBeInTheDocument();
+      expect(screen.getByTestId('option-item-1')).toBeInTheDocument();
+    });
+
+    it('should handle empty options array', () => {
+      const emptyGroup: OptionGroupType = {
+        label: 'Empty Group',
+        options: [],
+      };
+
+      const props = {
+        group: emptyGroup,
+        selectedValues: [],
+      };
+
+      renderWithProvider(props);
+
+      expect(screen.getByText('Empty Group')).toBeInTheDocument();
+      expect(screen.queryByTestId(/option-item/)).not.toBeInTheDocument();
+    });
+
+    it('should handle mixed value types in options', () => {
+      const mixedGroup: OptionGroupType = {
+        label: 'Mixed Types',
+        options: [{ value: 'string-value', label: 'String' }, { value: 123, label: 'Number' }, { label: 'No Value' }],
+      };
+
+      const props = {
+        group: mixedGroup,
+        selectedValues: ['string-value', 123],
+      };
+
+      renderWithProvider(props);
+
+      expect(screen.getByTestId('option-item-string-value')).toHaveAttribute('data-selected', 'true');
+      expect(screen.getByTestId('option-item-123')).toHaveAttribute('data-selected', 'true');
+      expect(screen.getByTestId('option-item-2')).toHaveAttribute('data-selected', 'false');
+    });
   });
 
-  it('should handle group with empty options array', () => {
-    const emptyGroup: OptionGroupType = {
-      label: 'Empty Group',
-      options: [],
-    };
+  describe('Context 集成', () => {
+    it('should use prefixCls from context', () => {
+      const customContext = {
+        ...mockContextValue,
+        prefixCls: 'custom-select',
+      };
 
-    const { container } = render(<OptionGroup {...defaultProps} group={emptyGroup} />);
+      const { container } = renderWithProvider(defaultProps, customContext);
 
-    expect(screen.getByText('Empty Group')).toBeInTheDocument();
+      expect(container.querySelector('.custom-select__group')).toBeInTheDocument();
+      expect(container.querySelector('.custom-select__group-label')).toBeInTheDocument();
+      expect(container.querySelector('.custom-select__group-options')).toBeInTheDocument();
+    });
 
-    const groupOptionsElement = container.querySelector('.test-select__group-options');
-    expect(groupOptionsElement).toBeInTheDocument();
-    expect(groupOptionsElement?.children).toHaveLength(0);
+    it('should throw error when used outside SelectProvider', () => {
+      // 模拟 useSelectContext 抛出错误
+      mockUseSelectContext.mockImplementation(() => {
+        throw new Error('useSelectContext must be used within SelectProvider');
+      });
+
+      // 使用 console.error mock 来避免测试输出中的错误信息
+      const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+
+      expect(() => {
+        render(<OptionGroup {...defaultProps} />);
+      }).toThrow('useSelectContext must be used within SelectProvider');
+
+      consoleSpy.mockRestore();
+    });
   });
 
-  it('should handle group with single option', () => {
-    const singleOptionGroup: OptionGroupType = {
-      label: 'Single Option Group',
-      options: [{ value: 'single', label: 'Single Option' }],
-    };
+  describe('边界情况', () => {
+    it('should handle very long group label', () => {
+      const longLabelGroup: OptionGroupType = {
+        label: 'This is a very long group label that might cause layout issues',
+        options: [{ value: '1', label: 'Option' }],
+      };
 
-    render(<OptionGroup {...defaultProps} group={singleOptionGroup} />);
+      const props = {
+        group: longLabelGroup,
+        selectedValues: [],
+      };
 
-    expect(screen.getByText('Single Option Group')).toBeInTheDocument();
-    expect(screen.getByText('Single Option')).toBeInTheDocument();
-  });
+      renderWithProvider(props);
 
-  it('should use option value as key when value is defined', () => {
-    const { container } = render(<OptionGroup {...defaultProps} />);
+      expect(screen.getByText('This is a very long group label that might cause layout issues')).toBeInTheDocument();
+    });
 
-    // 验证所有选项都被正确渲染
-    const optionElements = container.querySelectorAll('.test-select__option');
-    expect(optionElements).toHaveLength(3);
-  });
+    it('should handle special characters in group label', () => {
+      const specialCharGroup: OptionGroupType = {
+        label: 'Group & <Special> "Characters" 你好',
+        options: [{ value: '1', label: 'Option' }],
+      };
 
-  it('should use index as fallback key when option value is undefined', () => {
-    const groupWithUndefinedValues: OptionGroupType = {
-      label: 'Group with undefined values',
-      options: [{ label: 'Option 1' }, { label: 'Option 2' }, { label: 'Option 3' }],
-    };
+      const props = {
+        group: specialCharGroup,
+        selectedValues: [],
+      };
 
-    render(<OptionGroup {...defaultProps} group={groupWithUndefinedValues} />);
+      renderWithProvider(props);
 
-    expect(screen.getByText('Option 1')).toBeInTheDocument();
-    expect(screen.getByText('Option 2')).toBeInTheDocument();
-    expect(screen.getByText('Option 3')).toBeInTheDocument();
-  });
+      expect(screen.getByText('Group & <Special> "Characters" 你好')).toBeInTheDocument();
+    });
 
-  it('should handle numeric values in selectedValues', () => {
-    const groupWithNumericValues: OptionGroupType = {
-      label: 'Numeric Group',
-      options: [
-        { value: 1, label: 'One' },
-        { value: 2, label: 'Two' },
-        { value: 3, label: 'Three' },
-      ],
-    };
+    it('should handle large number of options', () => {
+      const largeOptions = Array.from({ length: 100 }, (_, i) => ({
+        value: `option-${i}`,
+        label: `Option ${i}`,
+      }));
 
-    const selectedValues = [1, 3];
+      const largeGroup: OptionGroupType = {
+        label: 'Large Group',
+        options: largeOptions,
+      };
 
-    render(
-      <OptionGroup {...defaultProps} group={groupWithNumericValues} multiple={true} selectedValues={selectedValues} />
-    );
+      const props = {
+        group: largeGroup,
+        selectedValues: ['option-0', 'option-50', 'option-99'],
+      };
 
-    const checkboxes = screen.getAllByTestId('checkbox');
-    expect(checkboxes[0]).toBeChecked(); // One
-    expect(checkboxes[1]).not.toBeChecked(); // Two
-    expect(checkboxes[2]).toBeChecked(); // Three
-  });
+      renderWithProvider(props);
 
-  it('should handle mixed string and numeric values', () => {
-    const groupWithMixedValues: OptionGroupType = {
-      label: 'Mixed Group',
-      options: [
-        { value: 'string', label: 'String Option' },
-        { value: 42, label: 'Numeric Option' },
-        { value: 'another', label: 'Another String' },
-      ],
-    };
-
-    const selectedValues = ['string', 42];
-
-    render(
-      <OptionGroup {...defaultProps} group={groupWithMixedValues} multiple={true} selectedValues={selectedValues} />
-    );
-
-    const checkboxes = screen.getAllByTestId('checkbox');
-    expect(checkboxes[0]).toBeChecked(); // String Option
-    expect(checkboxes[1]).toBeChecked(); // Numeric Option
-    expect(checkboxes[2]).not.toBeChecked(); // Another String
-  });
-
-  it('should handle long group labels correctly', () => {
-    const longLabelGroup: OptionGroupType = {
-      label: 'This is a very long group label that might overflow in some layouts',
-      options: [{ value: 'test', label: 'Test Option' }],
-    };
-
-    const { container } = render(<OptionGroup {...defaultProps} group={longLabelGroup} />);
-
-    const groupLabelElement = container.querySelector('.test-select__group-label');
-    expect(groupLabelElement).toHaveTextContent('This is a very long group label that might overflow in some layouts');
-    expect(groupLabelElement).toHaveAttribute('title', longLabelGroup.label);
-  });
-
-  it('should handle special characters in group labels', () => {
-    const specialCharGroup: OptionGroupType = {
-      label: 'Group with special chars: <>&"\'',
-      options: [{ value: 'test', label: 'Test Option' }],
-    };
-
-    render(<OptionGroup {...defaultProps} group={specialCharGroup} />);
-
-    expect(screen.getByText('Group with special chars: <>&"\'')).toBeInTheDocument();
-  });
-
-  it('should maintain proper accessibility attributes', () => {
-    const { container } = render(<OptionGroup {...defaultProps} />);
-
-    const groupLabelElement = container.querySelector('.test-select__group-label');
-
-    // 验证 title 属性存在用于可访问性
-    expect(groupLabelElement).toHaveAttribute('title', 'Fruits');
+      expect(screen.getByTestId('option-item-option-0')).toHaveAttribute('data-selected', 'true');
+      expect(screen.getByTestId('option-item-option-50')).toHaveAttribute('data-selected', 'true');
+      expect(screen.getByTestId('option-item-option-99')).toHaveAttribute('data-selected', 'true');
+      expect(screen.getByTestId('option-item-option-1')).toHaveAttribute('data-selected', 'false');
+    });
   });
 });

@@ -6,54 +6,44 @@ import type { Option } from '../types';
 
 // Mock child components
 jest.mock('../Selector', () => {
-  const MockSelector = ({
-    onClick,
-    onSearchChange,
-    onSearchFocus,
-    onSearchBlur,
-    onTagRemove,
-    selectedOptions,
-    searchValue,
-    placeholder,
-  }: {
-    onClick?: () => void;
-    onSearchChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    onSearchFocus?: () => void;
-    onSearchBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
-    onTagRemove?: (tag: string, index: number) => void;
-    selectedOptions?: Option[];
-    searchValue?: string;
-    placeholder?: string;
-  }) => (
-    <div data-testid='selector' onClick={onClick}>
-      <span data-testid='selected-count'>{selectedOptions?.length || 0}</span>
-      <span data-testid='search-value'>{searchValue}</span>
-      <span data-testid='placeholder'>{placeholder}</span>
-      <input data-testid='search-input' onChange={onSearchChange} onFocus={onSearchFocus} onBlur={onSearchBlur} />
-      {selectedOptions?.map((opt: Option, idx: number) => (
-        <button key={idx} data-testid={`remove-tag-${idx}`} onClick={() => onTagRemove?.(opt.label || '', idx)}>
-          Remove {opt.label}
-        </button>
-      ))}
-    </div>
-  );
+  const { useSelectContext } = jest.requireActual('../context');
+
+  const MockSelector = () => {
+    const {
+      onClick,
+      onSearchChange,
+      onSearchFocus,
+      onSearchBlur,
+      onTagRemove,
+      selectedOptions = [],
+      searchValue = '',
+      placeholder = '',
+    } = useSelectContext();
+
+    return (
+      <div data-testid='selector' onClick={onClick}>
+        <span data-testid='selected-count'>{selectedOptions.length || 0}</span>
+        <span data-testid='search-value'>{searchValue}</span>
+        <span data-testid='placeholder'>{placeholder}</span>
+        <input data-testid='search-input' onChange={onSearchChange} onFocus={onSearchFocus} onBlur={onSearchBlur} />
+        {selectedOptions.map((opt: Option, idx: number) => (
+          <button key={idx} data-testid={`remove-tag-${idx}`} onClick={() => onTagRemove?.(opt.label || '', idx)}>
+            Remove {opt.label}
+          </button>
+        ))}
+      </div>
+    );
+  };
   MockSelector.displayName = 'MockSelector';
   return MockSelector;
 });
 
 jest.mock('../Listbox', () => {
-  const MockListbox = ({
-    isOpen,
-    options,
-    onOptionClick,
-    onClose,
-  }: {
-    isOpen: boolean;
-    options?: Option[];
-    onOptionClick?: (option: Option) => void;
-    onClose?: () => void;
-  }) =>
-    isOpen ? (
+  const MockListbox = ({ isOpen, options, onClose }: { isOpen: boolean; options?: Option[]; onClose?: () => void }) => {
+    const { useSelectContext } = jest.requireActual('../context');
+    const { onOptionClick } = useSelectContext();
+
+    return isOpen ? (
       <div data-testid='listbox'>
         <button data-testid='close-listbox' onClick={onClose}>
           Close
@@ -65,6 +55,7 @@ jest.mock('../Listbox', () => {
         ))}
       </div>
     ) : null;
+  };
   MockListbox.displayName = 'MockListbox';
   return MockListbox;
 });
@@ -81,7 +72,7 @@ jest.mock('@fluentui/react-components', () => ({
 
 describe('Select', () => {
   let mockUseSelect: jest.Mock;
-   
+
   let mockSelectState: any;
 
   const mockOptions: Option[] = [

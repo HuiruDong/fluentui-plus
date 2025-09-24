@@ -2,6 +2,7 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import Selector from '../Selector';
+import { SelectProvider, type SelectContextValue } from '../context';
 import type { Option } from '../types';
 
 // Mock child components
@@ -51,19 +52,18 @@ jest.mock('../TextDisplay', () => {
 });
 
 jest.mock('../MultipleSelector', () => {
-  const MockMultipleSelector = ({
-    selectedOptions,
-    placeholder,
-    onClick,
-  }: {
-    selectedOptions?: Option[];
-    placeholder?: string;
-    onClick?: () => void;
-  }) => (
-    <div data-testid='multiple-selector' onClick={onClick}>
-      Multiple: {selectedOptions?.length || 0} selected, placeholder: {placeholder}
-    </div>
-  );
+  const MockMultipleSelector = () => {
+    // 在测试中模拟从 Context 获取数据
+    const { useSelectContext } = jest.requireActual('../context');
+    const context = useSelectContext();
+    const { selectedOptions = [], placeholder } = context;
+
+    return (
+      <div data-testid='multiple-selector' onClick={context.onClick}>
+        Multiple: {selectedOptions.length} selected, placeholder: {placeholder}
+      </div>
+    );
+  };
   MockMultipleSelector.displayName = 'MockMultipleSelector';
   return MockMultipleSelector;
 });
@@ -87,13 +87,28 @@ describe('Selector', () => {
     { value: '2', label: 'Banana' },
   ];
 
-  const defaultProps = {
-    prefixCls: 'test-select',
+  // 创建测试工具函数来包装组件
+  const renderSelectorWithContext = (contextValue: Partial<SelectContextValue>) => {
+    const fullContextValue: SelectContextValue = {
+      prefixCls: 'test-select',
+      selectedOptions: [],
+      ...contextValue,
+    };
+
+    return render(
+      <SelectProvider value={fullContextValue}>
+        <Selector />
+      </SelectProvider>
+    );
   };
 
   describe('multiple mode', () => {
     it('should render MultipleSelector in multiple mode', () => {
-      render(<Selector {...defaultProps} multiple={true} selectedOptions={mockOptions} placeholder='Select items' />);
+      renderSelectorWithContext({
+        multiple: true,
+        selectedOptions: mockOptions,
+        placeholder: 'Select items',
+      });
 
       expect(screen.getByTestId('multiple-selector')).toBeInTheDocument();
       expect(screen.getByText('Multiple: 2 selected, placeholder: Select items')).toBeInTheDocument();
@@ -104,20 +119,17 @@ describe('Selector', () => {
       const mockOnTagRemove = jest.fn();
       const mockOnSearchChange = jest.fn();
 
-      render(
-        <Selector
-          {...defaultProps}
-          multiple={true}
-          selectedOptions={mockOptions}
-          disabled={true}
-          placeholder='Select multiple'
-          showSearch={true}
-          searchValue='search'
-          onClick={mockOnClick}
-          onTagRemove={mockOnTagRemove}
-          onSearchChange={mockOnSearchChange}
-        />
-      );
+      renderSelectorWithContext({
+        multiple: true,
+        selectedOptions: mockOptions,
+        disabled: true,
+        placeholder: 'Select multiple',
+        showSearch: true,
+        searchValue: 'search',
+        onClick: mockOnClick,
+        onTagRemove: mockOnTagRemove,
+        onSearchChange: mockOnSearchChange,
+      });
 
       // MultipleSelector should be rendered
       expect(screen.getByTestId('multiple-selector')).toBeInTheDocument();
@@ -130,9 +142,11 @@ describe('Selector', () => {
 
   describe('single mode', () => {
     it('should render TextDisplay in single mode without search', () => {
-      render(
-        <Selector {...defaultProps} multiple={false} selectedOptions={[mockOptions[0]]} placeholder='Select item' />
-      );
+      renderSelectorWithContext({
+        multiple: false,
+        selectedOptions: [mockOptions[0]],
+        placeholder: 'Select item',
+      });
 
       expect(screen.getByTestId('text-display')).toBeInTheDocument();
       expect(screen.getByTestId('display-text')).toBeInTheDocument();
@@ -140,7 +154,11 @@ describe('Selector', () => {
     });
 
     it('should render placeholder when no option is selected', () => {
-      render(<Selector {...defaultProps} multiple={false} selectedOptions={[]} placeholder='Please select' />);
+      renderSelectorWithContext({
+        multiple: false,
+        selectedOptions: [],
+        placeholder: 'Please select',
+      });
 
       expect(screen.getByTestId('text-display')).toBeInTheDocument();
       expect(screen.getByTestId('placeholder-text')).toBeInTheDocument();
@@ -150,13 +168,20 @@ describe('Selector', () => {
     it('should use option value when label is not available', () => {
       const optionWithoutLabel = { value: '123' };
 
-      render(<Selector {...defaultProps} multiple={false} selectedOptions={[optionWithoutLabel]} />);
+      renderSelectorWithContext({
+        multiple: false,
+        selectedOptions: [optionWithoutLabel],
+      });
 
       expect(screen.getByText('123')).toBeInTheDocument();
     });
 
     it('should handle value prop in single mode', () => {
-      render(<Selector {...defaultProps} multiple={false} value='direct value' selectedOptions={[]} />);
+      renderSelectorWithContext({
+        multiple: false,
+        value: 'direct value',
+        selectedOptions: [],
+      });
 
       expect(screen.getByText('direct value')).toBeInTheDocument();
     });
@@ -164,80 +189,65 @@ describe('Selector', () => {
 
   describe('searchable single mode', () => {
     it('should render SearchInput when showSearch is true and isOpen is true', () => {
-      render(
-        <Selector
-          {...defaultProps}
-          multiple={false}
-          showSearch={true}
-          isOpen={true}
-          selectedOptions={[mockOptions[0]]}
-          searchValue='test'
-        />
-      );
+      renderSelectorWithContext({
+        multiple: false,
+        showSearch: true,
+        isOpen: true,
+        selectedOptions: [mockOptions[0]],
+        searchValue: 'test',
+      });
 
       expect(screen.getByTestId('search-input')).toBeInTheDocument();
       expect(screen.getByTestId('chevron-down')).toBeInTheDocument();
     });
 
     it('should render SearchInput when showSearch is true and searchValue is not empty', () => {
-      render(
-        <Selector
-          {...defaultProps}
-          multiple={false}
-          showSearch={true}
-          isOpen={false}
-          selectedOptions={[mockOptions[0]]}
-          searchValue='test search'
-        />
-      );
+      renderSelectorWithContext({
+        multiple: false,
+        showSearch: true,
+        isOpen: false,
+        selectedOptions: [mockOptions[0]],
+        searchValue: 'test search',
+      });
 
       expect(screen.getByTestId('search-input')).toBeInTheDocument();
     });
 
     it('should render TextDisplay when showSearch is true but not activated', () => {
-      render(
-        <Selector
-          {...defaultProps}
-          multiple={false}
-          showSearch={true}
-          isOpen={false}
-          selectedOptions={[mockOptions[0]]}
-          searchValue=''
-        />
-      );
+      renderSelectorWithContext({
+        multiple: false,
+        showSearch: true,
+        isOpen: false,
+        selectedOptions: [mockOptions[0]],
+        searchValue: '',
+      });
 
       expect(screen.getByTestId('text-display')).toBeInTheDocument();
       expect(screen.queryByTestId('search-input')).not.toBeInTheDocument();
     });
 
     it('should use selected option label as search placeholder', () => {
-      render(
-        <Selector
-          {...defaultProps}
-          multiple={false}
-          showSearch={true}
-          isOpen={true}
-          selectedOptions={[mockOptions[0]]}
-          searchValue=''
-        />
-      );
+      renderSelectorWithContext({
+        multiple: false,
+        showSearch: true,
+        isOpen: true,
+        selectedOptions: [mockOptions[0]],
+        searchValue: '',
+      });
 
       const searchInput = screen.getByTestId('search-input');
       expect(searchInput).toHaveAttribute('placeholder', 'Apple');
     });
 
     it('should use regular placeholder when no option is selected', () => {
-      render(
-        <Selector
-          {...defaultProps}
-          multiple={false}
-          showSearch={true}
-          isOpen={true}
-          selectedOptions={[]}
-          placeholder='Search...'
-          searchValue=''
-        />
-      );
+      renderSelectorWithContext({
+        multiple: false,
+        showSearch: true,
+        isOpen: true,
+        selectedOptions: [],
+        placeholder: 'Search...',
+        searchValue: '',
+      });
 
       const searchInput = screen.getByTestId('search-input');
       expect(searchInput).toHaveAttribute('placeholder', 'Search...');
@@ -248,17 +258,14 @@ describe('Selector', () => {
       const mockOnSearchFocus = jest.fn();
       const mockOnSearchBlur = jest.fn();
 
-      render(
-        <Selector
-          {...defaultProps}
-          multiple={false}
-          showSearch={true}
-          isOpen={true}
-          onSearchChange={mockOnSearchChange}
-          onSearchFocus={mockOnSearchFocus}
-          onSearchBlur={mockOnSearchBlur}
-        />
-      );
+      renderSelectorWithContext({
+        multiple: false,
+        showSearch: true,
+        isOpen: true,
+        onSearchChange: mockOnSearchChange,
+        onSearchFocus: mockOnSearchFocus,
+        onSearchBlur: mockOnSearchBlur,
+      });
 
       const searchInput = screen.getByTestId('search-input');
 
@@ -277,7 +284,10 @@ describe('Selector', () => {
     it('should call onClick when selector is clicked', () => {
       const mockOnClick = jest.fn();
 
-      render(<Selector {...defaultProps} multiple={false} onClick={mockOnClick} />);
+      renderSelectorWithContext({
+        multiple: false,
+        onClick: mockOnClick,
+      });
 
       fireEvent.click(screen.getByTestId('text-display'));
       expect(mockOnClick).toHaveBeenCalled();
@@ -286,7 +296,12 @@ describe('Selector', () => {
     it('should call onClick when searchable selector container is clicked', () => {
       const mockOnClick = jest.fn();
 
-      render(<Selector {...defaultProps} multiple={false} showSearch={true} isOpen={true} onClick={mockOnClick} />);
+      renderSelectorWithContext({
+        multiple: false,
+        showSearch: true,
+        isOpen: true,
+        onClick: mockOnClick,
+      });
 
       // Click on the container div
       fireEvent.click(screen.getByTestId('search-input').parentElement!);
@@ -296,23 +311,32 @@ describe('Selector', () => {
 
   describe('edge cases', () => {
     it('should handle array value in single mode', () => {
-       
-      render(<Selector {...defaultProps} multiple={false} value={['array', 'value'] as any} selectedOptions={[]} />);
+      renderSelectorWithContext({
+        multiple: false,
+        value: ['array', 'value'] as any,
+        selectedOptions: [],
+      });
 
       // Should render without crashing
       expect(screen.getByTestId('text-display')).toBeInTheDocument();
     });
 
     it('should handle undefined selectedOptions', () => {
-       
-      render(<Selector {...defaultProps} multiple={false} selectedOptions={undefined as any} />);
+      renderSelectorWithContext({
+        multiple: false,
+        selectedOptions: undefined as any,
+      });
 
       expect(screen.getByTestId('text-display')).toBeInTheDocument();
     });
 
     it('should handle missing handlers gracefully', () => {
       expect(() => {
-        render(<Selector {...defaultProps} multiple={false} showSearch={true} isOpen={true} />);
+        renderSelectorWithContext({
+          multiple: false,
+          showSearch: true,
+          isOpen: true,
+        });
       }).not.toThrow();
     });
   });

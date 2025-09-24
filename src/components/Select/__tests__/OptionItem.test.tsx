@@ -2,6 +2,8 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import OptionItem from '../OptionItem';
+import { SelectProvider } from '../context';
+import type { SelectContextValue } from '../context/SelectContext';
 import type { Option } from '../types';
 
 // Mock @fluentui/react-components
@@ -45,25 +47,41 @@ describe('OptionItem', () => {
     option: mockOption,
     index: 0,
     isSelected: false,
+  };
+
+  // Mock context value
+  const mockContextValue: SelectContextValue = {
     prefixCls: 'test-select',
+    multiple: false,
+    onOptionClick: jest.fn(),
+    optionRender: undefined,
+  };
+
+  const renderWithProvider = (props: any, contextValue: SelectContextValue = mockContextValue) => {
+    return render(
+      <SelectProvider value={contextValue}>
+        <OptionItem {...props} />
+      </SelectProvider>
+    );
   };
 
   it('should render option label correctly', () => {
-    render(<OptionItem {...defaultProps} />);
+    renderWithProvider(defaultProps);
 
     expect(screen.getByText('Apple')).toBeInTheDocument();
   });
 
   it('should render option value when label is not provided', () => {
     const optionWithoutLabel = { value: '2' };
-    render(<OptionItem {...defaultProps} option={optionWithoutLabel} />);
+    renderWithProvider({ ...defaultProps, option: optionWithoutLabel });
 
     expect(screen.getByText('2')).toBeInTheDocument();
   });
 
   it('should call onOptionClick when clicked', () => {
     const mockOnClick = jest.fn();
-    render(<OptionItem {...defaultProps} onOptionClick={mockOnClick} />);
+    const contextWithClick = { ...mockContextValue, onOptionClick: mockOnClick };
+    renderWithProvider(defaultProps, contextWithClick);
 
     fireEvent.click(screen.getByText('Apple'));
 
@@ -73,8 +91,9 @@ describe('OptionItem', () => {
   it('should not call onOptionClick when disabled', () => {
     const mockOnClick = jest.fn();
     const disabledOption = { ...mockOption, disabled: true };
+    const contextWithClick = { ...mockContextValue, onOptionClick: mockOnClick };
 
-    render(<OptionItem {...defaultProps} option={disabledOption} onOptionClick={mockOnClick} />);
+    renderWithProvider({ ...defaultProps, option: disabledOption }, contextWithClick);
 
     fireEvent.click(screen.getByText('Apple'));
 
@@ -82,32 +101,35 @@ describe('OptionItem', () => {
   });
 
   it('should render checkmark when selected in single mode', () => {
-    render(<OptionItem {...defaultProps} isSelected={true} />);
+    renderWithProvider({ ...defaultProps, isSelected: true });
 
     expect(screen.getByTestId('checkmark')).toBeInTheDocument();
   });
 
   it('should not render checkmark when not selected in single mode', () => {
-    render(<OptionItem {...defaultProps} isSelected={false} />);
+    renderWithProvider({ ...defaultProps, isSelected: false });
 
     expect(screen.queryByTestId('checkmark')).not.toBeInTheDocument();
   });
 
   it('should render checkbox when in multiple mode', () => {
-    render(<OptionItem {...defaultProps} multiple={true} />);
+    const multipleContext = { ...mockContextValue, multiple: true };
+    renderWithProvider(defaultProps, multipleContext);
 
     expect(screen.getByTestId('checkbox')).toBeInTheDocument();
   });
 
   it('should render checked checkbox when selected in multiple mode', () => {
-    render(<OptionItem {...defaultProps} multiple={true} isSelected={true} />);
+    const multipleContext = { ...mockContextValue, multiple: true };
+    renderWithProvider({ ...defaultProps, isSelected: true }, multipleContext);
 
     const checkbox = screen.getByTestId('checkbox');
     expect(checkbox).toBeChecked();
   });
 
   it('should render unchecked checkbox when not selected in multiple mode', () => {
-    render(<OptionItem {...defaultProps} multiple={true} isSelected={false} />);
+    const multipleContext = { ...mockContextValue, multiple: true };
+    renderWithProvider({ ...defaultProps, isSelected: false }, multipleContext);
 
     const checkbox = screen.getByTestId('checkbox');
     expect(checkbox).not.toBeChecked();
@@ -115,15 +137,16 @@ describe('OptionItem', () => {
 
   it('should render disabled checkbox when option is disabled in multiple mode', () => {
     const disabledOption = { ...mockOption, disabled: true };
+    const multipleContext = { ...mockContextValue, multiple: true };
 
-    render(<OptionItem {...defaultProps} option={disabledOption} multiple={true} />);
+    renderWithProvider({ ...defaultProps, option: disabledOption }, multipleContext);
 
     const checkbox = screen.getByTestId('checkbox');
     expect(checkbox).toBeDisabled();
   });
 
   it('should use custom title when provided', () => {
-    const { container } = render(<OptionItem {...defaultProps} />);
+    const { container } = renderWithProvider(defaultProps);
 
     const optionElement = container.querySelector('.test-select__option');
     expect(optionElement).toHaveAttribute('title', 'Apple option');
@@ -131,7 +154,7 @@ describe('OptionItem', () => {
 
   it('should use label as title when title is not provided', () => {
     const optionWithoutTitle = { value: '1', label: 'Apple' };
-    const { container } = render(<OptionItem {...defaultProps} option={optionWithoutTitle} />);
+    const { container } = renderWithProvider({ ...defaultProps, option: optionWithoutTitle });
 
     const optionElement = container.querySelector('.test-select__option');
     expect(optionElement).toHaveAttribute('title', 'Apple');
@@ -142,7 +165,7 @@ describe('OptionItem', () => {
     const { mergeClasses } = fluentuiModule;
     mergeClasses.mockClear();
 
-    render(<OptionItem {...defaultProps} />);
+    renderWithProvider(defaultProps);
 
     // 检查 mergeClasses 是否被正确调用（不严格检查参数顺序）
     expect(mergeClasses).toHaveBeenCalled();
@@ -153,7 +176,8 @@ describe('OptionItem', () => {
     const { mergeClasses } = fluentuiModule;
     mergeClasses.mockClear();
 
-    render(<OptionItem {...defaultProps} multiple={true} />);
+    const multipleContext = { ...mockContextValue, multiple: true };
+    renderWithProvider(defaultProps, multipleContext);
 
     // 检查 mergeClasses 是否被正确调用（不严格检查参数顺序）
     expect(mergeClasses).toHaveBeenCalled();
@@ -164,15 +188,16 @@ describe('OptionItem', () => {
     const { mergeClasses } = fluentuiModule;
     const disabledOption = { ...mockOption, disabled: true };
 
-    render(<OptionItem {...defaultProps} option={disabledOption} />);
+    renderWithProvider({ ...defaultProps, option: disabledOption });
 
     expect(mergeClasses).toHaveBeenCalledWith('test-select__option', false, 'test-select__option--disabled');
   });
 
   it('should render custom option content when optionRender is provided', () => {
     const customRender = jest.fn((option: Option) => <div>Custom: {option.label}</div>);
+    const contextWithRender = { ...mockContextValue, optionRender: customRender };
 
-    render(<OptionItem {...defaultProps} optionRender={customRender} />);
+    renderWithProvider(defaultProps, contextWithRender);
 
     expect(screen.getByText('Custom: Apple')).toBeInTheDocument();
     expect(customRender).toHaveBeenCalledWith(mockOption);
@@ -183,27 +208,25 @@ describe('OptionItem', () => {
   });
 
   it('should use option value as key when value is defined', () => {
-    const { container } = render(
-      <div>
-        <OptionItem {...defaultProps} />
-      </div>
-    );
+    const { container } = renderWithProvider(defaultProps);
 
     // React key 属性不会出现在 DOM 中，所以我们验证组件正确渲染
     const optionElement = container.querySelector('.test-select__option');
     expect(optionElement).toBeInTheDocument();
   });
+
   it('should use index as fallback when option value is undefined', () => {
     const optionWithoutValue = { label: 'Apple' };
 
-    const container = render(<OptionItem {...defaultProps} option={optionWithoutValue} index={5} />);
+    const { container } = renderWithProvider({ ...defaultProps, option: optionWithoutValue, index: 5 });
 
-    expect(container.container.firstChild).toBeInTheDocument();
+    expect(container.firstChild).toBeInTheDocument();
   });
 
   it('should handle missing onOptionClick gracefully', () => {
+    const contextWithoutClick = { ...mockContextValue, onOptionClick: undefined };
     expect(() => {
-      render(<OptionItem {...defaultProps} />);
+      renderWithProvider(defaultProps, contextWithoutClick);
       fireEvent.click(screen.getByText('Apple'));
     }).not.toThrow();
   });
@@ -211,7 +234,7 @@ describe('OptionItem', () => {
   it('should handle numeric option values', () => {
     const numericOption = { value: 123, label: 'Numeric Option' };
 
-    render(<OptionItem {...defaultProps} option={numericOption} />);
+    renderWithProvider({ ...defaultProps, option: numericOption });
 
     expect(screen.getByText('Numeric Option')).toBeInTheDocument();
   });
@@ -219,7 +242,7 @@ describe('OptionItem', () => {
   it('should handle options with only value (no label)', () => {
     const valueOnlyOption = { value: 'value-only' };
 
-    render(<OptionItem {...defaultProps} option={valueOnlyOption} />);
+    renderWithProvider({ ...defaultProps, option: valueOnlyOption });
 
     expect(screen.getByText('value-only')).toBeInTheDocument();
   });

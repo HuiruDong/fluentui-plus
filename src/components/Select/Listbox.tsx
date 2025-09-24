@@ -5,6 +5,7 @@ import OptionItem from './OptionItem';
 import OptionGroup from './OptionGroup';
 import { useFloatingPosition, useOptionSelection } from './hooks';
 import { isOptionGroup } from './utils';
+import { useSelectContext } from './context';
 
 const Listbox: React.FC<ListboxProps> = ({
   isOpen,
@@ -13,12 +14,10 @@ const Listbox: React.FC<ListboxProps> = ({
   options = [],
   value,
   listHeight = 256,
-  multiple = false,
-  onOptionClick,
-  optionRender,
   popupRender,
-  prefixCls,
 }) => {
+  // 从 Context 获取需要的数据和方法
+  const { multiple = false, prefixCls } = useSelectContext();
   // 使用浮动定位 hook
   const { floatingRef, floatingStyles, getFloatingProps } = useFloatingPosition({
     isOpen,
@@ -46,17 +45,7 @@ const Listbox: React.FC<ListboxProps> = ({
           if (isOptionGroup(item)) {
             // 渲染分组
             const selectedValues = Array.isArray(value) ? value : value !== undefined ? [value] : [];
-            return (
-              <OptionGroup
-                key={`group-${item.label}-${index}`}
-                group={item}
-                multiple={multiple}
-                selectedValues={selectedValues}
-                onOptionClick={onOptionClick}
-                optionRender={optionRender}
-                prefixCls={prefixCls}
-              />
-            );
+            return <OptionGroup key={`group-${item.label}-${index}`} group={item} selectedValues={selectedValues} />;
           } else {
             // 渲染普通选项
             return (
@@ -65,10 +54,6 @@ const Listbox: React.FC<ListboxProps> = ({
                 option={item}
                 index={index}
                 isSelected={isOptionSelected(item)}
-                multiple={multiple}
-                onOptionClick={onOptionClick}
-                optionRender={optionRender}
-                prefixCls={prefixCls}
               />
             );
           }

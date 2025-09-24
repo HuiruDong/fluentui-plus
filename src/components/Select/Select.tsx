@@ -4,6 +4,7 @@ import type { SelectProps, Option } from './types';
 import Selector from './Selector';
 import Listbox from './Listbox';
 import { useSelect } from './hooks';
+import { SelectProvider } from './context';
 import './index.less';
 
 const prefixCls = 'fluentui-plus-select';
@@ -133,52 +134,66 @@ const Select: React.FC<SelectProps> = ({
   // 使用重构后的过滤选项
   const displayOptions = selectState.filteredOptions;
 
+  // 准备 Context 值
+  const contextValue = {
+    // 基础配置状态
+    disabled,
+    multiple,
+    showSearch,
+    prefixCls,
+    placeholder,
+
+    // 显示状态
+    isOpen: currentOpen,
+    showClear,
+
+    // 数据状态
+    selectedOptions,
+    searchValue: selectState.inputManager.inputValue,
+    value: currentValue,
+
+    // 渲染函数
+    optionRender,
+    labelRender,
+
+    // 事件处理方法
+    onOptionClick: handleOptionClick,
+    onSearchChange: handleSearchChange,
+    onSearchFocus: handleSearchFocus,
+    onSearchBlur: handleSearchBlur,
+    onTagRemove: handleTagRemove,
+    onClear: handleClear,
+    onClick: handleSelectorClick,
+
+    // Ref 引用
+    inputRef: showSearch ? inputRef : undefined,
+  };
+
   return (
-    <div className={mergeClasses(prefixCls, className)} style={style}>
-      <div
-        ref={selectorRef}
-        className={mergeClasses(
-          `${prefixCls}__selector`,
-          disabled && `${prefixCls}__selector--disabled`,
-          multiple && `${prefixCls}__selector--multiple`
-        )}
-      >
-        <Selector
-          value={currentValue}
-          placeholder={placeholder}
-          disabled={disabled}
-          selectedOptions={selectedOptions}
-          onClick={handleSelectorClick}
-          multiple={multiple}
-          showSearch={showSearch}
-          searchValue={selectState.inputManager.inputValue}
-          onSearchChange={handleSearchChange}
-          onSearchFocus={handleSearchFocus}
-          onSearchBlur={handleSearchBlur}
-          onTagRemove={handleTagRemove}
-          onClear={handleClear}
-          showClear={showClear}
-          inputRef={showSearch ? inputRef : undefined}
+    <SelectProvider value={contextValue}>
+      <div className={mergeClasses(prefixCls, className)} style={style}>
+        <div
+          ref={selectorRef}
+          className={mergeClasses(
+            `${prefixCls}__selector`,
+            disabled && `${prefixCls}__selector--disabled`,
+            multiple && `${prefixCls}__selector--multiple`
+          )}
+        >
+          <Selector />
+        </div>
+
+        <Listbox
           isOpen={currentOpen}
-          prefixCls={prefixCls}
-          labelRender={labelRender}
+          triggerRef={selectorRef}
+          onClose={handleClose}
+          options={displayOptions}
+          value={currentValue}
+          listHeight={listHeight}
+          popupRender={popupRender}
         />
       </div>
-
-      <Listbox
-        isOpen={currentOpen}
-        triggerRef={selectorRef}
-        onClose={handleClose}
-        options={displayOptions}
-        value={currentValue}
-        listHeight={listHeight}
-        multiple={multiple}
-        onOptionClick={handleOptionClick}
-        optionRender={optionRender}
-        popupRender={popupRender}
-        prefixCls={prefixCls}
-      />
-    </div>
+    </SelectProvider>
   );
 };
 

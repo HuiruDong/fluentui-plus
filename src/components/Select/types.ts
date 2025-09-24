@@ -21,32 +21,12 @@ export interface ListboxProps {
   options?: GroupedOption[];
   value?: string | number | (string | number)[];
   listHeight?: number;
-  multiple?: boolean;
-  onOptionClick?: (option: Option) => void;
-  optionRender?: (option: Option) => React.ReactNode;
   popupRender?: (originNode: React.ReactNode) => React.ReactNode;
-  prefixCls: string;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface SelectorProps {
-  value?: string | number | (string | number)[];
-  placeholder?: string;
-  disabled?: boolean;
-  selectedOptions?: Option[];
-  onClick?: () => void;
-  multiple?: boolean;
-  showSearch?: boolean;
-  searchValue?: string;
-  onSearchChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onSearchFocus?: () => void;
-  onSearchBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
-  inputRef?: React.RefObject<HTMLInputElement>;
-  isOpen?: boolean;
-  onTagRemove?: (tag: string, index: number) => void;
-  onClear?: (e: React.MouseEvent) => void;
-  showClear?: boolean;
-  prefixCls: string;
-  labelRender?: (selectedOptions: Option | Option[] | null) => string;
+  // 保留为空接口，因为所有 props 都来自 Context
 }
 
 export interface SelectProps {
@@ -74,32 +54,15 @@ export interface SelectProps {
   labelRender?: (selectedOptions: Option | Option[] | null) => string;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface MultipleSelectorProps {
-  selectedOptions: Option[];
-  disabled?: boolean;
-  placeholder?: string;
-  showSearch?: boolean;
-  searchValue?: string;
-  onClick?: () => void;
-  onTagRemove?: (tag: string, index: number) => void;
-  onClear?: (e: React.MouseEvent) => void;
-  showClear?: boolean;
-  onSearchChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onSearchFocus?: () => void;
-  onSearchBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
-  inputRef?: React.RefObject<HTMLInputElement>;
-  prefixCls: string;
-  labelRender?: (selectedOptions: Option | Option[] | null) => string;
+  // 保留为空接口，因为所有 props 都来自 Context
 }
 
 export interface OptionItemProps {
   option: Option;
   index: number;
   isSelected: boolean;
-  multiple?: boolean;
-  onOptionClick?: (option: Option) => void;
-  optionRender?: (option: Option) => React.ReactNode;
-  prefixCls: string;
 }
 
 export interface SearchInputProps {
@@ -116,21 +79,12 @@ export interface TextDisplayProps {
   displayText: string;
   isPlaceholder: boolean;
   onClick?: () => void;
-  title?: string;
   selectedOption?: Option;
-  onClear?: (e: React.MouseEvent) => void;
-  showClear?: boolean;
-  prefixCls: string;
-  labelRender?: (selectedOptions: Option | Option[] | null) => string;
 }
 
 export interface OptionGroupProps {
   group: OptionGroup;
-  multiple?: boolean;
   selectedValues?: (string | number)[];
-  onOptionClick?: (option: Option) => void;
-  optionRender?: (option: Option) => React.ReactNode;
-  prefixCls: string;
 }
 
 // 辅助函数类型

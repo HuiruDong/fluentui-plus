@@ -4,6 +4,7 @@ import type { CascaderProps, CascaderOption } from './types';
 import type { Option } from '../Select/types';
 import CascaderPanel from './CascaderPanel';
 import Selector from '../Select/Selector';
+import { SelectProvider } from '../Select/context';
 import { useSelectState } from '../Select/hooks';
 import { useCascader } from './hooks';
 import './index.less';
@@ -199,6 +200,41 @@ const Cascader: React.FC<CascaderProps> = ({
     [multiple, cascaderState.selectedPath, cascaderState.displayText, labelRender]
   );
 
+  // 为 Selector 准备 Context 值
+  const selectorContextValue = {
+    // 基础配置状态
+    disabled,
+    multiple,
+    showSearch,
+    prefixCls,
+    placeholder,
+
+    // 显示状态
+    isOpen: currentOpen,
+    showClear,
+
+    // 数据状态
+    selectedOptions: selectorSelectedOptions,
+    searchValue: cascaderState.searchValue,
+    value: undefined, // Cascader 不传递 value，通过 selectedOptions 和 labelRender 控制显示
+
+    // 渲染函数
+    optionRender: undefined,
+    labelRender: selectorLabelRender,
+
+    // 事件处理方法
+    onOptionClick: undefined,
+    onSearchChange: handleSearchChange,
+    onSearchFocus: handleSearchFocus,
+    onSearchBlur: handleSearchBlur,
+    onTagRemove: handleTagRemove,
+    onClear: handleClear,
+    onClick: handleSelectorClick,
+
+    // Ref 引用
+    inputRef: showSearch ? inputRef : undefined,
+  };
+
   return (
     <div className={mergeClasses(prefixCls, className)} style={style}>
       <div
@@ -209,26 +245,9 @@ const Cascader: React.FC<CascaderProps> = ({
           multiple && `${prefixCls}__selector--multiple`
         )}
       >
-        <Selector
-          value={undefined} // 不传递 value，通过 selectedOptions 和 labelRender 控制显示
-          placeholder={placeholder}
-          disabled={disabled}
-          selectedOptions={selectorSelectedOptions}
-          onClick={handleSelectorClick}
-          multiple={multiple}
-          showSearch={showSearch}
-          searchValue={cascaderState.searchValue}
-          onSearchChange={handleSearchChange}
-          onSearchFocus={handleSearchFocus}
-          onSearchBlur={handleSearchBlur}
-          onTagRemove={handleTagRemove}
-          onClear={handleClear}
-          showClear={showClear}
-          inputRef={showSearch ? inputRef : undefined}
-          isOpen={currentOpen}
-          prefixCls={prefixCls}
-          labelRender={selectorLabelRender}
-        />
+        <SelectProvider value={selectorContextValue}>
+          <Selector />
+        </SelectProvider>
       </div>
 
       <CascaderPanel

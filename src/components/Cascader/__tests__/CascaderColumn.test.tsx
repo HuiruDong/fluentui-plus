@@ -1,152 +1,68 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
-import Cascader from '../Cascader';
-import type { CascaderOption, CascaderProps } from '../types';
+import CascaderColumn from '../CascaderColumn';
+import type { CascaderOption, CascaderColumnProps, CheckedStatus } from '../types';
 
 // Mock FluentUI components
 jest.mock('@fluentui/react-components', () => ({
   mergeClasses: (...classes: (string | undefined | false)[]) => classes.filter(Boolean).join(' '),
 }));
 
-// Mock子组件
-jest.mock('../CascaderPanel', () => {
-  return function MockCascaderPanel({
-    isOpen,
-    options = [],
-    multiple = false,
-    onPathChange,
-    onFinalSelect,
-    onMultipleSelect,
-    prefixCls,
-    checkedKeys = new Set(),
-  }: any) {
-    if (!isOpen) return null;
-
-    return (
-      <div data-testid='cascader-panel' className={`${prefixCls}__panel`}>
-        {options.map((option: CascaderOption, index: number) => (
-          <div
-            key={option.value ?? index}
-            data-testid={`option-${option.value}`}
-            onClick={() => {
-              if (multiple) {
-                onMultipleSelect?.(option, !checkedKeys.has(option.value));
-              } else {
-                if (option.children && option.children.length > 0) {
-                  onPathChange?.([option]);
-                } else {
-                  onFinalSelect?.(option, []);
-                }
-              }
-            }}
-          >
-            {option.label || option.value}
-          </div>
-        ))}
-      </div>
-    );
-  };
-});
-
-jest.mock('../../Select/Selector', () => {
-  return function MockSelector({
-    placeholder,
-    disabled,
-    selectedOptions = [],
+// Mock CascaderOption component
+jest.mock('../CascaderOption', () => {
+  return function MockCascaderOption({
+    option,
+    isSelected,
+    isActive,
+    hasChildren,
     onClick,
-    multiple,
-    showSearch,
-    searchValue = '',
-    onSearchChange,
-    onSearchFocus,
-    onSearchBlur,
-    onTagRemove,
-    onClear,
-    showClear,
-    isOpen,
+    onHover,
+    optionRender,
     prefixCls,
-    labelRender,
+    multiple = false,
+    checked = 'unchecked',
+    onCheckChange,
   }: any) {
-    const displayValue = React.useMemo(() => {
-      if (multiple && Array.isArray(selectedOptions)) {
-        return selectedOptions.map((opt: any) => opt.label || opt.value).join(', ');
-      } else if (selectedOptions.length > 0) {
-        const option = selectedOptions[0];
-        if (labelRender) {
-          return labelRender(option);
-        }
-        return option.label || option.value;
-      }
-      return '';
-    }, [selectedOptions, multiple, labelRender]);
+    const label = option.label || option.value?.toString() || '';
 
     return (
       <div
-        data-testid='cascader-selector'
-        className={`${prefixCls}__selector ${disabled ? `${prefixCls}__selector--disabled` : ''} ${multiple ? `${prefixCls}__selector--multiple` : ''}`}
-        onClick={disabled ? undefined : onClick}
+        data-testid={`option-${option.value}`}
+        className={`${prefixCls}__option`}
+        onClick={onClick}
+        onMouseEnter={onHover}
       >
-        {showSearch && isOpen ? (
+        {multiple && (
           <input
-            data-testid='search-input'
-            value={searchValue}
-            onChange={onSearchChange}
-            onFocus={onSearchFocus}
-            onBlur={onSearchBlur}
-            placeholder={placeholder}
-            disabled={disabled}
+            type='checkbox'
+            data-testid={`checkbox-${option.value}`}
+            checked={checked === 'checked'}
+            onChange={e => onCheckChange?.(e.target.checked)}
           />
-        ) : (
-          <span data-testid='selector-text'>{displayValue || placeholder}</span>
         )}
-
-        {multiple &&
-          selectedOptions.map((option: any, index: number) => (
-            <span
-              key={index}
-              data-testid={`tag-${index}`}
-              onClick={e => {
-                e.stopPropagation();
-                onTagRemove?.(option.value, index);
-              }}
-            >
-              {option.label || option.value} ×
-            </span>
-          ))}
-
-        {showClear && (
-          <span
-            data-testid='clear-button'
-            onClick={e => {
-              e.stopPropagation();
-              onClear?.(e);
-            }}
-          >
-            ×
+        <span data-testid={`label-${option.value}`}>{optionRender ? optionRender(option) : label}</span>
+        {hasChildren && (
+          <span data-testid={`arrow-${option.value}`} className={`${prefixCls}__option-arrow`}>
+            →
           </span>
         )}
+        {isSelected && <span data-testid={`selected-${option.value}`}>✓</span>}
+        {isActive && <span data-testid={`active-${option.value}`}>Active</span>}
       </div>
     );
   };
 });
 
-// Mock hooks
-jest.mock('../../Select/hooks', () => ({
-  useSelectState: ({ open }: { open?: boolean }) => ({
-    isOpen: open !== undefined ? open : false,
-    toggleOpen: jest.fn(),
-    closeDropdown: jest.fn(),
-  }),
+// Mock utils
+jest.mock('../utils', () => ({
+  hasChildren: (option: CascaderOption) => option.children && option.children.length > 0,
+  getNodeCheckedStatus: (option: CascaderOption, checkedKeys: Set<string | number>): CheckedStatus => {
+    if (checkedKeys.has(option.value!)) return 'checked';
+    return 'unchecked';
+  },
 }));
-
-jest.mock('../hooks/useCascader', () => ({
-  useCascader: jest.fn(),
-}));
-
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const mockUseCascader = require('../hooks/useCascader').useCascader;
 
 // 测试数据
 const mockOptions: CascaderOption[] = [
@@ -161,436 +77,338 @@ const mockOptions: CascaderOption[] = [
   {
     value: '2',
     label: 'Option 2',
-    children: [
-      { value: '2-1', label: 'Option 2-1' },
-      { value: '2-2', label: 'Option 2-2' },
-    ],
+    children: [{ value: '2-1', label: 'Option 2-1' }],
   },
   {
     value: '3',
     label: 'Option 3',
+    // 没有 children，是叶子节点
+  },
+  {
+    value: '4',
+    label: 'Disabled Option',
+    disabled: true,
   },
 ];
 
-const defaultUseCascaderReturn = {
-  selectedPath: [],
-  activePath: [],
-  searchValue: '',
-  isSearching: false,
-  currentValue: undefined,
-  displayText: '',
-  searchResults: [],
-  checkedKeys: new Set(),
-  halfCheckedKeys: new Set(),
-  handlePathChange: jest.fn(),
-  handleFinalSelect: jest.fn(),
-  handleMultipleSelect: jest.fn(),
-  handleSearchChange: jest.fn(),
-  handleClear: jest.fn(),
+const defaultProps: CascaderColumnProps = {
+  options: mockOptions,
+  level: 0,
+  onSelect: jest.fn(),
+  prefixCls: 'fluentui-plus-cascader',
 };
 
-describe('Cascader Component', () => {
+describe('CascaderColumn Component', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockUseCascader.mockReturnValue(defaultUseCascaderReturn);
   });
 
   describe('基础渲染', () => {
     it('should render correctly with default props', () => {
-      render(<Cascader options={mockOptions} />);
+      render(<CascaderColumn {...defaultProps} />);
 
-      const container = document.querySelector('.fluentui-plus-cascader');
-      expect(container).toBeInTheDocument();
-      expect(screen.getByTestId('cascader-selector')).toBeInTheDocument();
+      const column = document.querySelector('.fluentui-plus-cascader__column');
+      expect(column).toBeInTheDocument();
     });
 
-    it('should apply custom className and style', () => {
-      const customStyle = { width: '300px' };
-      render(<Cascader options={mockOptions} className='custom-cascader' style={customStyle} />);
+    it('should render all options', () => {
+      render(<CascaderColumn {...defaultProps} />);
 
-      const container = document.querySelector('.fluentui-plus-cascader');
-      expect(container).toHaveClass('custom-cascader');
-      expect(container).toHaveStyle('width: 300px');
+      mockOptions.forEach(option => {
+        expect(screen.getByTestId(`option-${option.value}`)).toBeInTheDocument();
+        expect(screen.getByTestId(`label-${option.value}`)).toHaveTextContent(option.label!);
+      });
     });
 
-    it('should render with placeholder', () => {
-      render(<Cascader options={mockOptions} placeholder='请选择' />);
+    it('should show arrows for options with children', () => {
+      render(<CascaderColumn {...defaultProps} />);
 
-      expect(screen.getByText('请选择')).toBeInTheDocument();
+      // Option 1 和 Option 2 有子选项，应该显示箭头
+      expect(screen.getByTestId('arrow-1')).toBeInTheDocument();
+      expect(screen.getByTestId('arrow-2')).toBeInTheDocument();
+
+      // Option 3 没有子选项，不应该显示箭头
+      expect(screen.queryByTestId('arrow-3')).not.toBeInTheDocument();
     });
 
-    it('should render as disabled when disabled prop is true', () => {
-      render(<Cascader options={mockOptions} disabled placeholder='Disabled' />);
+    it('should handle options without value correctly', () => {
+      const optionsWithoutValue = [{ label: 'No Value Option' }, { value: '1', label: 'With Value Option' }];
 
-      const selector = screen.getByTestId('cascader-selector');
-      expect(selector).toHaveClass('fluentui-plus-cascader__selector--disabled');
+      render(<CascaderColumn {...defaultProps} options={optionsWithoutValue} />);
+
+      expect(screen.getByText('No Value Option')).toBeInTheDocument();
+      expect(screen.getByText('With Value Option')).toBeInTheDocument();
     });
   });
 
-  describe('单选模式', () => {
-    it('should handle single selection correctly', () => {
-      const handleChange = jest.fn();
-      const mockReturn = {
-        ...defaultUseCascaderReturn,
-        selectedPath: [mockOptions[0]],
-        displayText: 'Option 1',
-        handleFinalSelect: jest.fn(),
-      };
-      mockUseCascader.mockReturnValue(mockReturn);
+  describe('选中状态', () => {
+    it('should show selected state correctly', () => {
+      const selectedOption = mockOptions[0];
 
-      render(<Cascader options={mockOptions} onChange={handleChange} open={true} />);
+      render(<CascaderColumn {...defaultProps} selectedOption={selectedOption} />);
 
-      expect(screen.getByTestId('cascader-panel')).toBeInTheDocument();
-      expect(screen.getByTestId('selector-text')).toHaveTextContent('Option 1');
+      expect(screen.getByTestId('selected-1')).toBeInTheDocument();
+      expect(screen.queryByTestId('selected-2')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('selected-3')).not.toBeInTheDocument();
     });
 
-    it('should display selected path correctly', () => {
-      const mockReturn = {
-        ...defaultUseCascaderReturn,
-        selectedPath: [
-          { value: '1', label: 'Option 1' },
-          { value: '1-1', label: 'Option 1-1' },
-        ],
-        displayText: 'Option 1 / Option 1-1',
-      };
-      mockUseCascader.mockReturnValue(mockReturn);
+    it('should show active state correctly', () => {
+      const selectedOption = mockOptions[0];
 
-      render(<Cascader options={mockOptions} />);
+      render(<CascaderColumn {...defaultProps} selectedOption={selectedOption} />);
 
-      const selectorText = screen.getByTestId('selector-text');
-      expect(selectorText).toHaveTextContent('Option 1 / Option 1-1');
+      // 选中的选项应该同时是活跃状态
+      expect(screen.getByTestId('active-1')).toBeInTheDocument();
+      expect(screen.queryByTestId('active-2')).not.toBeInTheDocument();
     });
 
-    it('should close panel after final selection in single mode', () => {
-      // This test validates the logic flow but the actual state manager calls happen in useSelectState hook
-      // We're testing the component integration here
-      render(<Cascader options={mockOptions} multiple={false} open={true} />);
+    it('should handle undefined selectedOption correctly', () => {
+      render(<CascaderColumn {...defaultProps} selectedOption={undefined} />);
 
-      // 模拟选择叶子节点
-      const leafOption = screen.getByTestId('option-3');
-      fireEvent.click(leafOption);
+      // 没有选项应该显示为选中状态
+      mockOptions.forEach(option => {
+        expect(screen.queryByTestId(`selected-${option.value}`)).not.toBeInTheDocument();
+        expect(screen.queryByTestId(`active-${option.value}`)).not.toBeInTheDocument();
+      });
+    });
+  });
 
-      // 验证 finalSelect 处理函数被调用（这会在实际组件中触发关闭）
-      expect(defaultUseCascaderReturn.handleFinalSelect).toHaveBeenCalled();
+  describe('点击交互', () => {
+    it('should handle option click correctly', async () => {
+      const user = userEvent.setup();
+      const onSelect = jest.fn();
+
+      render(<CascaderColumn {...defaultProps} onSelect={onSelect} />);
+
+      const option1 = screen.getByTestId('option-1');
+      await user.click(option1);
+
+      expect(onSelect).toHaveBeenCalledWith(mockOptions[0], 0);
+    });
+
+    it('should handle click on all types of options', async () => {
+      const user = userEvent.setup();
+      const onSelect = jest.fn();
+
+      render(<CascaderColumn {...defaultProps} onSelect={onSelect} />);
+
+      // 测试有子选项的选项
+      await user.click(screen.getByTestId('option-1'));
+      expect(onSelect).toHaveBeenCalledWith(mockOptions[0], 0);
+
+      // 测试叶子节点选项
+      await user.click(screen.getByTestId('option-3'));
+      expect(onSelect).toHaveBeenCalledWith(mockOptions[2], 0);
+
+      // 测试禁用选项
+      await user.click(screen.getByTestId('option-4'));
+      expect(onSelect).toHaveBeenCalledWith(mockOptions[3], 0);
+
+      expect(onSelect).toHaveBeenCalledTimes(3);
+    });
+  });
+
+  describe('悬停交互', () => {
+    it('should handle hover with click trigger', async () => {
+      const user = userEvent.setup();
+      const onSelect = jest.fn();
+
+      render(<CascaderColumn {...defaultProps} onSelect={onSelect} expandTrigger='click' />);
+
+      const option1 = screen.getByTestId('option-1');
+      await user.hover(option1);
+
+      // click 模式下，hover 不应该触发选择
+      expect(onSelect).not.toHaveBeenCalled();
+    });
+
+    it('should handle hover with hover trigger for options with children', async () => {
+      const user = userEvent.setup();
+      const onSelect = jest.fn();
+
+      render(<CascaderColumn {...defaultProps} onSelect={onSelect} expandTrigger='hover' />);
+
+      // 有子选项的选项在 hover 时应该触发展开
+      const option1 = screen.getByTestId('option-1');
+      await user.hover(option1);
+
+      expect(onSelect).toHaveBeenCalledWith(mockOptions[0], 0);
+    });
+
+    it('should not trigger selection on hover for leaf nodes even with hover trigger', async () => {
+      const user = userEvent.setup();
+      const onSelect = jest.fn();
+
+      render(<CascaderColumn {...defaultProps} onSelect={onSelect} expandTrigger='hover' />);
+
+      // 叶子节点即使在 hover 模式下也不应该在 hover 时触发选择
+      const option3 = screen.getByTestId('option-3');
+      await user.hover(option3);
+
+      expect(onSelect).not.toHaveBeenCalled();
     });
   });
 
   describe('多选模式', () => {
-    it('should render in multiple mode correctly', () => {
-      const mockReturn = {
-        ...defaultUseCascaderReturn,
-        selectedPath: [
-          { value: '1', label: 'Option 1' },
-          { value: '2', label: 'Option 2' },
-        ],
-        checkedKeys: new Set(['1', '2']),
-      };
-      mockUseCascader.mockReturnValue(mockReturn);
+    it('should render checkboxes in multiple mode', () => {
+      render(<CascaderColumn {...defaultProps} multiple={true} checkedKeys={new Set(['1', '3'])} />);
 
-      render(<Cascader options={mockOptions} multiple={true} />);
+      mockOptions.forEach(option => {
+        const checkbox = screen.getByTestId(`checkbox-${option.value}`);
+        expect(checkbox).toBeInTheDocument();
 
-      const selector = screen.getByTestId('cascader-selector');
-      expect(selector).toHaveClass('fluentui-plus-cascader__selector--multiple');
+        // 检查选中状态
+        if (option.value === '1' || option.value === '3') {
+          expect(checkbox).toBeChecked();
+        } else {
+          expect(checkbox).not.toBeChecked();
+        }
+      });
     });
 
-    it('should handle multiple selection correctly', () => {
-      const mockReturn = {
-        ...defaultUseCascaderReturn,
-        selectedPath: [
-          { value: '1', label: 'Option 1' },
-          { value: '2', label: 'Option 2' },
-        ],
-        checkedKeys: new Set(['1', '2']),
-        handleMultipleSelect: jest.fn(),
-      };
-      mockUseCascader.mockReturnValue(mockReturn);
+    it('should handle checkbox changes in multiple mode', async () => {
+      const user = userEvent.setup();
+      const onCheckChange = jest.fn();
 
-      render(<Cascader options={mockOptions} multiple={true} open={true} />);
-
-      const option1 = screen.getByTestId('option-1');
-      fireEvent.click(option1);
-
-      expect(mockReturn.handleMultipleSelect).toHaveBeenCalledWith(
-        mockOptions[0],
-        false // 因为已经在checkedKeys中，所以是取消选择
+      render(
+        <CascaderColumn {...defaultProps} multiple={true} onCheckChange={onCheckChange} checkedKeys={new Set()} />
       );
+
+      const checkbox1 = screen.getByTestId('checkbox-1');
+      await user.click(checkbox1);
+
+      expect(onCheckChange).toHaveBeenCalledWith(mockOptions[0], true);
     });
 
-    it('should handle tag removal in multiple mode', async () => {
+    it('should handle unchecking in multiple mode', async () => {
       const user = userEvent.setup();
-      const mockReturn = {
-        ...defaultUseCascaderReturn,
-        selectedPath: [
-          { value: '1', label: 'Option 1' },
-          { value: '2', label: 'Option 2' },
-        ],
-        handleMultipleSelect: jest.fn(),
-      };
-      mockUseCascader.mockReturnValue(mockReturn);
+      const onCheckChange = jest.fn();
 
-      render(<Cascader options={mockOptions} multiple={true} />);
+      render(
+        <CascaderColumn
+          {...defaultProps}
+          multiple={true}
+          onCheckChange={onCheckChange}
+          checkedKeys={new Set(['1'])} // Option 1 已选中
+        />
+      );
 
-      const tag = screen.getByTestId('tag-0');
-      await user.click(tag);
+      const checkbox1 = screen.getByTestId('checkbox-1');
+      await user.click(checkbox1);
 
-      expect(mockReturn.handleMultipleSelect).toHaveBeenCalledWith({ value: '1', label: 'Option 1' }, false);
+      expect(onCheckChange).toHaveBeenCalledWith(mockOptions[0], false);
     });
 
-    it('should not close panel after selection in multiple mode', () => {
-      // This validates that multiple mode doesn't trigger panel closing
-      render(<Cascader options={mockOptions} multiple={true} open={true} />);
-
-      // 模拟多选模式下的选择
-      const option = screen.getByTestId('option-1');
-      fireEvent.click(option);
-
-      // 在多选模式下，handleFinalSelect 不应该被调用，而是 handleMultipleSelect
-      expect(defaultUseCascaderReturn.handleMultipleSelect).toHaveBeenCalled();
-      expect(defaultUseCascaderReturn.handleFinalSelect).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('搜索功能', () => {
-    it('should render search input when showSearch is true and panel is open', () => {
-      render(<Cascader options={mockOptions} showSearch={true} open={true} />);
-
-      expect(screen.getByTestId('search-input')).toBeInTheDocument();
-    });
-
-    it('should handle search input changes', async () => {
-      const user = userEvent.setup();
-      const mockReturn = {
-        ...defaultUseCascaderReturn,
-        searchValue: 'test',
-        handleSearchChange: jest.fn(),
-      };
-      mockUseCascader.mockReturnValue(mockReturn);
-
-      render(<Cascader options={mockOptions} showSearch={true} open={true} />);
-
-      const searchInput = screen.getByTestId('search-input');
-      await user.type(searchInput, 'new text');
-
-      expect(mockReturn.handleSearchChange).toHaveBeenCalled();
-    });
-
-    it('should clear search value on blur', async () => {
-      const user = userEvent.setup();
-      const mockReturn = {
-        ...defaultUseCascaderReturn,
-        searchValue: 'test',
-        handleSearchChange: jest.fn(),
-      };
-      mockUseCascader.mockReturnValue(mockReturn);
-
-      render(<Cascader options={mockOptions} showSearch={true} open={true} />);
-
-      const searchInput = screen.getByTestId('search-input');
-      await user.click(searchInput);
-      await user.tab(); // 模拟失焦
-
-      expect(mockReturn.handleSearchChange).toHaveBeenCalledWith('');
-    });
-  });
-
-  describe('清除功能', () => {
-    it('should show clear button when allowClear is true and has value', () => {
-      const mockReturn = {
-        ...defaultUseCascaderReturn,
-        selectedPath: [mockOptions[0]],
-      };
-      mockUseCascader.mockReturnValue(mockReturn);
-
-      render(<Cascader options={mockOptions} allowClear={true} />);
-
-      expect(screen.getByTestId('clear-button')).toBeInTheDocument();
-    });
-
-    it('should not show clear button when disabled', () => {
-      const mockReturn = {
-        ...defaultUseCascaderReturn,
-        selectedPath: [mockOptions[0]],
-      };
-      mockUseCascader.mockReturnValue(mockReturn);
-
-      render(<Cascader options={mockOptions} allowClear={true} disabled={true} />);
-
-      expect(screen.queryByTestId('clear-button')).not.toBeInTheDocument();
-    });
-
-    it('should handle clear action correctly', async () => {
-      const user = userEvent.setup();
-      const onClear = jest.fn();
-      const mockReturn = {
-        ...defaultUseCascaderReturn,
-        selectedPath: [mockOptions[0]],
-        handleClear: jest.fn(),
-      };
-      mockUseCascader.mockReturnValue(mockReturn);
-
-      render(<Cascader options={mockOptions} allowClear={true} onClear={onClear} />);
-
-      const clearButton = screen.getByTestId('clear-button');
-      await user.click(clearButton);
-
-      expect(mockReturn.handleClear).toHaveBeenCalled();
-      expect(onClear).toHaveBeenCalled();
-    });
-  });
-
-  describe('交互行为', () => {
-    it('should handle selector click correctly', async () => {
+    it('should work correctly without onCheckChange callback', async () => {
       const user = userEvent.setup();
 
-      render(<Cascader options={mockOptions} />);
+      render(
+        <CascaderColumn
+          {...defaultProps}
+          multiple={true}
+          checkedKeys={new Set(['1'])}
+          // 没有传入 onCheckChange
+        />
+      );
 
-      const selector = screen.getByTestId('cascader-selector');
-      await user.click(selector);
+      const checkbox1 = screen.getByTestId('checkbox-1');
 
-      // The click handler is mocked, so we validate that click works without error
-      expect(selector).toBeInTheDocument();
-    });
-
-    it('should not handle click when disabled', async () => {
-      const user = userEvent.setup();
-
-      render(<Cascader options={mockOptions} disabled={true} />);
-
-      const selector = screen.getByTestId('cascader-selector');
-      await user.click(selector);
-
-      // Disabled selector should not respond to clicks (validated by implementation)
-      expect(selector).toBeInTheDocument();
-    });
-
-    it('should focus search input after opening panel in search mode', async () => {
-      const user = userEvent.setup();
-
-      render(<Cascader options={mockOptions} showSearch={true} open={true} />);
-
-      const selector = screen.getByTestId('cascader-selector');
-      await user.click(selector);
-
-      // The search input is rendered when open and showSearch is true
-      const searchInput = screen.getByTestId('search-input');
-      expect(searchInput).toBeInTheDocument();
+      // 应该不会抛出错误
+      await user.click(checkbox1);
+      expect(checkbox1).toBeInTheDocument();
     });
   });
 
   describe('自定义渲染', () => {
-    it('should use custom labelRender for single mode', () => {
-      const labelRender = jest.fn(option => `Custom: ${option.label}`);
-      const mockReturn = {
-        ...defaultUseCascaderReturn,
-        selectedPath: [mockOptions[0]],
-      };
-      mockUseCascader.mockReturnValue(mockReturn);
+    it('should use custom optionRender when provided', () => {
+      const optionRender = jest.fn(option => `Custom: ${option.label}`);
 
-      render(<Cascader options={mockOptions} labelRender={labelRender} />);
+      render(<CascaderColumn {...defaultProps} optionRender={optionRender} />);
 
-      expect(labelRender).toHaveBeenCalledWith(mockOptions[0]);
+      mockOptions.forEach(option => {
+        expect(optionRender).toHaveBeenCalledWith(option);
+        expect(screen.getByText(`Custom: ${option.label}`)).toBeInTheDocument();
+      });
     });
 
-    it('should use custom labelRender for multiple mode', () => {
-      const labelRender = jest.fn(option => `Custom: ${option.label}`);
-      const mockReturn = {
-        ...defaultUseCascaderReturn,
-        selectedPath: [mockOptions[0], mockOptions[1]],
-      };
-      mockUseCascader.mockReturnValue(mockReturn);
+    it('should fall back to label when optionRender is not provided', () => {
+      render(<CascaderColumn {...defaultProps} />);
 
-      render(<Cascader options={mockOptions} multiple={true} labelRender={labelRender} />);
-
-      // The labelRender function should be called through the Selector component
-      // This tests the integration rather than direct function calls
-      expect(screen.getByTestId('cascader-selector')).toBeInTheDocument();
+      mockOptions.forEach(option => {
+        expect(screen.getByText(option.label!)).toBeInTheDocument();
+      });
     });
   });
 
-  describe('受控/非受控', () => {
-    it('should work in controlled mode', () => {
-      const value = ['1', '1-1'];
-      const onChange = jest.fn();
+  describe('级别传递', () => {
+    it('should pass correct level to option selection', async () => {
+      const user = userEvent.setup();
+      const onSelect = jest.fn();
+      const level = 2;
 
-      render(<Cascader options={mockOptions} value={value} onChange={onChange} />);
+      render(<CascaderColumn {...defaultProps} onSelect={onSelect} level={level} />);
 
-      expect(mockUseCascader).toHaveBeenCalledWith(
-        expect.objectContaining({
-          value,
-          onChange,
-        })
-      );
+      const option1 = screen.getByTestId('option-1');
+      await user.click(option1);
+
+      expect(onSelect).toHaveBeenCalledWith(mockOptions[0], level);
+    });
+  });
+
+  describe('边界情况', () => {
+    it('should handle empty options array', () => {
+      render(<CascaderColumn {...defaultProps} options={[]} />);
+
+      const column = document.querySelector('.fluentui-plus-cascader__column');
+      expect(column).toBeInTheDocument();
+      expect(column).toBeEmptyDOMElement();
     });
 
-    it('should work in uncontrolled mode', () => {
-      const defaultValue = ['1', '1-1'];
-      const onChange = jest.fn();
+    it('should handle options with missing labels', () => {
+      const optionsWithoutLabels = [{ value: '1' }, { value: '2', label: '' }, { value: '3', label: 'Option 3' }];
 
-      render(<Cascader options={mockOptions} defaultValue={defaultValue} onChange={onChange} />);
+      render(<CascaderColumn {...defaultProps} options={optionsWithoutLabels} />);
 
-      expect(mockUseCascader).toHaveBeenCalledWith(
-        expect.objectContaining({
-          defaultValue,
-          onChange,
-        })
-      );
+      // 应该使用 value 作为显示文本
+      expect(screen.getByText('1')).toBeInTheDocument();
+      expect(screen.getByText('2')).toBeInTheDocument();
+      expect(screen.getByText('Option 3')).toBeInTheDocument();
+    });
+
+    it('should handle options with undefined/null values', () => {
+      const optionsWithSpecialValues = [
+        { value: undefined, label: 'Undefined Value' },
+        { value: 0, label: 'Zero Value' },
+        { value: '', label: 'Empty String Value' },
+      ];
+
+      render(<CascaderColumn {...defaultProps} options={optionsWithSpecialValues} />);
+
+      expect(screen.getByText('Undefined Value')).toBeInTheDocument();
+      expect(screen.getByText('Zero Value')).toBeInTheDocument();
+      expect(screen.getByText('Empty String Value')).toBeInTheDocument();
     });
   });
 
   describe('属性传递', () => {
-    it('should pass all props to hooks correctly', () => {
-      const props: CascaderProps = {
-        value: ['1'],
-        defaultValue: ['2'],
+    it('should pass all required props to CascaderOption', () => {
+      const props = {
+        ...defaultProps,
+        selectedOption: mockOptions[0],
         multiple: true,
-        showSearch: true,
-        options: mockOptions,
-        expandTrigger: 'hover',
-        changeOnSelect: true,
-        onChange: jest.fn(),
-        onSearch: jest.fn(),
+        checkedKeys: new Set(['1']),
+        onCheckChange: jest.fn(),
+        optionRender: jest.fn(option => option.label),
+        expandTrigger: 'hover' as const,
       };
 
-      render(<Cascader {...props} />);
+      render(<CascaderColumn {...props} />);
 
-      expect(mockUseCascader).toHaveBeenCalledWith(
-        expect.objectContaining({
-          value: props.value,
-          defaultValue: props.defaultValue,
-          multiple: props.multiple,
-          showSearch: props.showSearch,
-          options: props.options,
-          expandTrigger: props.expandTrigger,
-          changeOnSelect: props.changeOnSelect,
-          onChange: props.onChange,
-          onSearch: props.onSearch,
-        })
-      );
-    });
+      // 验证 optionRender 被调用
+      expect(props.optionRender).toHaveBeenCalledTimes(mockOptions.length);
 
-    it('should pass correct props to CascaderPanel', () => {
-      const mockReturn = {
-        ...defaultUseCascaderReturn,
-        searchResults: [{ option: mockOptions[0], path: [], value: ['1'], label: 'Option 1' }],
-      };
-      mockUseCascader.mockReturnValue(mockReturn);
-
-      render(
-        <Cascader
-          options={mockOptions}
-          open={true}
-          multiple={true}
-          listHeight={300}
-          optionRender={option => `Custom: ${option.label}`}
-          popupRender={node => <div className='custom-popup'>{node}</div>}
-          expandTrigger='hover'
-          changeOnSelect={true}
-          showSearch={true}
-        />
-      );
-
-      const panel = screen.getByTestId('cascader-panel');
-      expect(panel).toBeInTheDocument();
+      // 验证多选相关元素存在
+      expect(screen.getByTestId('checkbox-1')).toBeInTheDocument();
     });
   });
 });

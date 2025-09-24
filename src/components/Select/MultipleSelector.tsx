@@ -3,25 +3,27 @@ import { mergeClasses } from '@fluentui/react-components';
 import { ChevronDownRegular, DismissCircleFilled } from '@fluentui/react-icons';
 import TagList from '../InputTag/TagList';
 import SearchInput from './SearchInput';
-import type { MultipleSelectorProps } from './types';
+import { useSelectContext } from './context';
 
-const MultipleSelector: React.FC<MultipleSelectorProps> = ({
-  selectedOptions,
-  disabled,
-  placeholder,
-  showSearch,
-  searchValue = '',
-  onClick,
-  onTagRemove,
-  onClear,
-  showClear = false,
-  onSearchChange,
-  onSearchFocus,
-  onSearchBlur,
-  inputRef,
-  prefixCls,
-  labelRender,
-}) => {
+const MultipleSelector: React.FC = () => {
+  // 从 Context 获取所有需要的数据和方法
+  const {
+    selectedOptions = [],
+    disabled,
+    placeholder,
+    showSearch,
+    searchValue = '',
+    onClick,
+    onTagRemove,
+    onClear,
+    showClear = false,
+    onSearchChange,
+    onSearchFocus,
+    onSearchBlur,
+    inputRef,
+    prefixCls,
+    labelRender,
+  } = useSelectContext();
   // 使用 useMemo 优化 tags 数组的创建
   const tags = useMemo(() => {
     // 如果有 labelRender，对每个选项单独调用 labelRender
