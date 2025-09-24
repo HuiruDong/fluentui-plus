@@ -8,11 +8,10 @@ jest.mock('../../hooks/useOptionSelection');
 jest.mock('../../hooks/useSelectSearch');
 
 describe('useSelect', () => {
-   
   let mockStateManager: any;
-   
+
   let mockSelectionManager: any;
-   
+
   let mockSearchManager: any;
 
   const mockOptions: Option[] = [

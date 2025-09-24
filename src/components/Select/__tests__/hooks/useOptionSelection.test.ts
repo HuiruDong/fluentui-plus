@@ -9,7 +9,7 @@ jest.mock('../../../../hooks', () => ({
 
 describe('useOptionSelection', () => {
   let mockUseTagManager: jest.Mock;
-   
+
   let mockTagManager: any;
 
   const mockOptions: Option[] = [
@@ -381,7 +381,6 @@ describe('useOptionSelection', () => {
     it('should handle non-array defaultValue in multiple mode', () => {
       renderHook(() =>
         useOptionSelection({
-           
           defaultValue: '1' as any, // Invalid for multiple mode
           multiple: true,
           options: mockOptions,
@@ -398,7 +397,6 @@ describe('useOptionSelection', () => {
     it('should handle array value in single mode gracefully', () => {
       const { result } = renderHook(() =>
         useOptionSelection({
-           
           value: ['1', '2'] as any, // Invalid for single mode
           multiple: false,
           options: mockOptions,

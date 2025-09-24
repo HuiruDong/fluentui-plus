@@ -9,7 +9,7 @@ jest.mock('../../../../hooks', () => ({
 
 describe('useSelectSearch', () => {
   let mockUseInputValue: jest.Mock;
-   
+
   let mockInputManager: any;
 
   const mockOptions: Option[] = [
