@@ -116,6 +116,10 @@ const Layout: React.FC = () => {
         { path: '/cascader', label: 'Cascader 级联选择' },
       ],
     },
+    {
+      title: '反馈组件',
+      items: [{ path: '/modal', label: 'Modal 对话框' }],
+    },
   ];
 
   return (

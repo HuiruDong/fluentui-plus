@@ -8,6 +8,7 @@ import InputTagPage from './pages/InputTagPage';
 import SelectPage from './pages/SelectPage';
 import CascaderPage from './pages/CascaderPage';
 import CheckboxPage from './pages/CheckboxPage';
+import ModalPage from './pages/ModalPage';
 
 const router = createBrowserRouter([
   {
@@ -41,6 +42,10 @@ const router = createBrowserRouter([
       {
         path: '/checkbox',
         element: <CheckboxPage />,
+      },
+      {
+        path: '/modal',
+        element: <ModalPage />,
       },
     ],
   },

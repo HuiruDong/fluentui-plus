@@ -1,0 +1,69 @@
+.fluentui-plus-modal {
+  position: relative;
+
+  &__close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    z-index: 10;
+    border: none;
+    background: transparent;
+
+    &:hover {
+      background-color: @color-neutral-background-1-hover;
+    }
+
+    &:active {
+      background-color: @color-neutral-background-1-pressed;
+    }
+  }
+
+  &__footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 24px;
+  }
+}
+
+// 静态 Modal 样式
+.fluentui-plus-static-modal {
+  // 标题容器
+  &__title {
+    display: flex;
+    align-items: center;
+
+    &-icon {
+      margin-right: @spacing-horizontal-m;
+      font-size: @font-size-600;
+
+      // 不同类型的图标颜色
+      &--info {
+        color: @color-brand-background-static;
+      }
+
+      &--success {
+        color: @color-status-success-foreground-3;
+      }
+
+      &--error {
+        color: @color-status-danger-foreground-3;
+      }
+
+      &--warning {
+        color: @color-status-warning-border-active;
+      }
+
+      &--confirm {
+        color: @color-brand-background-static;
+      }
+    }
+  }
+
+  // 内容区域
+  &__content {
+    color: @color-neutral-foreground-1;
+    font-size: @font-size-400;
+    line-height: @line-height-400;
+  }
+}

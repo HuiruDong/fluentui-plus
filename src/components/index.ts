@@ -36,3 +36,7 @@ export type { CascaderProps, CascaderOption, CascaderValue, CascaderMultipleValu
 // Checkbox 组件
 export { default as Checkbox } from './Checkbox';
 export type { CheckboxProps, GroupProps } from './Checkbox';
+
+// Modal 组件
+export { Modal } from './Modal';
+export type { ModalProps } from './Modal';
