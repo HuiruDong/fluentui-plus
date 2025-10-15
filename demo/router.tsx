@@ -7,6 +7,7 @@ import NavPage from './pages/NavPage';
 import InputTagPage from './pages/InputTagPage';
 import SelectPage from './pages/SelectPage';
 import CascaderPage from './pages/CascaderPage';
+import CheckboxPage from './pages/CheckboxPage';
 
 const router = createBrowserRouter([
   {
@@ -36,6 +37,10 @@ const router = createBrowserRouter([
       {
         path: '/cascader',
         element: <CascaderPage />,
+      },
+      {
+        path: '/checkbox',
+        element: <CheckboxPage />,
       },
     ],
   },
