@@ -143,10 +143,13 @@ const ModalPage: React.FC = () => {
                 console.log('确定按钮被点击');
                 setBasicOpen(false);
               }}
+              style={{ maxHeight: '400px' }}
               onCancel={() => setBasicOpen(false)}
             >
               <div className={styles.modalContent}>
-                这是一个基础的对话框内容。用户可以在这里查看重要信息，或者进行简单的操作确认。
+                {new Array(30).fill(null).map((_, index) => (
+                  <p key={`${index}`}>这是一个基础的对话框内容。用户可以在这里查看重要信息，或者进行简单的操作确认。</p>
+                ))}
               </div>
             </Modal>
           </div>

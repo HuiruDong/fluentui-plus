@@ -1,6 +1,33 @@
 .fluentui-plus-modal {
   position: relative;
 
+  &.fui-DialogSurface {
+    max-height: inherit;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .fui-DialogBody {
+    display: flex !important;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+    flex: 1;
+  }
+
+  .fui-DialogContent {
+    flex: 1 !important;
+    overflow: auto;
+  }
+
+  .fui-DialogTitle {
+    flex-shrink: 0;
+  }
+
+  .fui-DialogActions {
+    flex-shrink: 0;
+  }
+
   &__close {
     position: absolute;
     top: 16px;
@@ -21,8 +48,6 @@
   &__footer {
     display: flex;
     justify-content: flex-end;
-    gap: 8px;
-    margin-top: 24px;
   }
 }
 
