@@ -4,6 +4,24 @@
 
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，项目遵循 [语义化版本](https://semver.org/lang/zh-CN/) 规范。
 
+## [2.3.0](https://github.com/HuiruDong/fluentui-plus/compare/v2.2.0...v2.3.0) (2025-10-15)
+
+### Added
+
+- **Checkbox:** add Checkbox component with Group support ([5b2509a](https://github.com/HuiruDong/fluentui-plus/commit/5b2509a6e703043b071c7021cb1806268c6fffe5))
+- **modal:** add Modal component with static methods and comprehensive demo ([6aaadd3](https://github.com/HuiruDong/fluentui-plus/commit/6aaadd3aed5b322ba1e29611db9e9e7ad23e7436))
+
+### Fixed
+
+- **modal:** improve layout handling and scrolling behavior ([049e097](https://github.com/HuiruDong/fluentui-plus/commit/049e097cd3708ecbfac858186bcc7e20feb148eb))
+
+### Changed
+
+- **api:** add comprehensive API documentation for Cascader, Checkbox and Modal components ([cff94c3](https://github.com/HuiruDong/fluentui-plus/commit/cff94c38409f451e42965b461d262738531afac6))
+- **Cascader:** remove commented CSS code ([b88cdd2](https://github.com/HuiruDong/fluentui-plus/commit/b88cdd2b7f221e607ed6266f35dbfde838f4ef6b))
+- **demo:** extract common styles into reusable hooks ([12da5fd](https://github.com/HuiruDong/fluentui-plus/commit/12da5fd2b9381545d980a5b89ff4af41d708afd7))
+- **Select:** implement React Context to eliminate prop drilling ([db713c0](https://github.com/HuiruDong/fluentui-plus/commit/db713c0d1cacec8016284e67a818af0d308ad18c))
+
 ## [2.2.0](https://github.com/HuiruDong/fluentui-plus/compare/v2.1.0...v2.2.0) (2025-09-22)
 
 ### Added
