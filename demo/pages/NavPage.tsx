@@ -2,55 +2,10 @@ import React from 'react';
 import { makeStyles } from '@fluentui/react-components';
 import { Nav } from '../../src';
 import type { NavItemType } from '../../src';
+import { useCommonDemoStyles, useApiTableStyles } from '../hooks';
 
-const useStyles = makeStyles({
-  container: {
-    padding: '40px',
-    maxWidth: '1200px',
-    margin: '0 auto',
-  },
-  header: {
-    marginBottom: '40px',
-  },
-  title: {
-    fontSize: '36px',
-    fontWeight: '700',
-    marginBottom: '12px',
-    color: '#1f2937',
-  },
-  description: {
-    fontSize: '18px',
-    color: '#6b7280',
-    lineHeight: '1.6',
-  },
-  section: {
-    marginBottom: '48px',
-  },
-  sectionTitle: {
-    fontSize: '24px',
-    fontWeight: '600',
-    marginBottom: '16px',
-    color: '#1f2937',
-  },
-  sectionDescription: {
-    fontSize: '16px',
-    color: '#6b7280',
-    marginBottom: '24px',
-    lineHeight: '1.6',
-  },
-  demoContainer: {
-    backgroundColor: '#ffffff',
-    border: '1px solid #e5e7eb',
-    borderRadius: '12px',
-    padding: '32px',
-    marginBottom: '24px',
-  },
-  demoTitle: {
-    fontSize: '18px',
-    fontWeight: '600',
-    marginBottom: '16px',
-    color: '#374151',
-  },
+// NavPage 特有样式
+const useCustomStyles = makeStyles({
   navDemo: {
     width: '280px',
     height: '400px',
@@ -67,7 +22,15 @@ const useStyles = makeStyles({
 });
 
 const NavPage: React.FC = () => {
-  const styles = useStyles();
+  const commonStyles = useCommonDemoStyles();
+  const customStyles = useCustomStyles();
+  const apiTableStyles = useApiTableStyles();
+
+  // 合并通用样式和特有样式
+  const styles = {
+    ...commonStyles,
+    ...customStyles,
+  };
 
   // 基础导航数据
   const basicNavItems: NavItemType[] = [
@@ -209,155 +172,155 @@ const NavPage: React.FC = () => {
         <div className={styles.sectionDescription}>Nav 组件支持的所有参数配置。</div>
         <div className={styles.demoContainer}>
           <h3 style={{ marginBottom: '16px', fontSize: '16px', fontWeight: '600', color: '#374151' }}>Nav</h3>
-          <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '32px' }}>
+          <table style={apiTableStyles.tableWithMarginStyle}>
             <thead>
               <tr style={{ backgroundColor: '#f9fafb' }}>
-                <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid #e5e7eb' }}>参数</th>
-                <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid #e5e7eb' }}>说明</th>
-                <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid #e5e7eb' }}>类型</th>
-                <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid #e5e7eb' }}>默认值</th>
+                <th style={apiTableStyles.thStyle}>参数</th>
+                <th style={apiTableStyles.thStyle}>说明</th>
+                <th style={apiTableStyles.thStyle}>类型</th>
+                <th style={apiTableStyles.thStyle}>默认值</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>items</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>菜单数据</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>NavItemType[]</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>[]</td>
+                <td style={apiTableStyles.tdStyle}>items</td>
+                <td style={apiTableStyles.tdStyle}>菜单数据</td>
+                <td style={apiTableStyles.tdStyle}>NavItemType[]</td>
+                <td style={apiTableStyles.tdStyle}>[]</td>
               </tr>
               <tr>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>mode</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>菜单模式</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>'inline'</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>'inline'</td>
+                <td style={apiTableStyles.tdStyle}>mode</td>
+                <td style={apiTableStyles.tdStyle}>菜单模式</td>
+                <td style={apiTableStyles.tdStyle}>'inline'</td>
+                <td style={apiTableStyles.tdStyle}>'inline'</td>
               </tr>
               <tr>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>collapsed</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>是否收起菜单</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>boolean</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>false</td>
+                <td style={apiTableStyles.tdStyle}>collapsed</td>
+                <td style={apiTableStyles.tdStyle}>是否收起菜单</td>
+                <td style={apiTableStyles.tdStyle}>boolean</td>
+                <td style={apiTableStyles.tdStyle}>false</td>
               </tr>
               <tr>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>selectedKeys</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>当前选中的菜单项</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>string[]</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>[]</td>
+                <td style={apiTableStyles.tdStyle}>selectedKeys</td>
+                <td style={apiTableStyles.tdStyle}>当前选中的菜单项</td>
+                <td style={apiTableStyles.tdStyle}>string[]</td>
+                <td style={apiTableStyles.tdStyle}>[]</td>
               </tr>
               <tr>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>defaultSelectedKeys</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>默认选中的菜单项</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>string[]</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>[]</td>
+                <td style={apiTableStyles.tdStyle}>defaultSelectedKeys</td>
+                <td style={apiTableStyles.tdStyle}>默认选中的菜单项</td>
+                <td style={apiTableStyles.tdStyle}>string[]</td>
+                <td style={apiTableStyles.tdStyle}>[]</td>
               </tr>
               <tr>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>openKeys</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>当前展开的子菜单</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>string[]</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>[]</td>
+                <td style={apiTableStyles.tdStyle}>openKeys</td>
+                <td style={apiTableStyles.tdStyle}>当前展开的子菜单</td>
+                <td style={apiTableStyles.tdStyle}>string[]</td>
+                <td style={apiTableStyles.tdStyle}>[]</td>
               </tr>
               <tr>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>defaultOpenKeys</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>默认展开的子菜单</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>string[]</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>[]</td>
+                <td style={apiTableStyles.tdStyle}>defaultOpenKeys</td>
+                <td style={apiTableStyles.tdStyle}>默认展开的子菜单</td>
+                <td style={apiTableStyles.tdStyle}>string[]</td>
+                <td style={apiTableStyles.tdStyle}>[]</td>
               </tr>
               <tr>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>onSelect</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>被选中时调用</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>function</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>-</td>
+                <td style={apiTableStyles.tdStyle}>onSelect</td>
+                <td style={apiTableStyles.tdStyle}>被选中时调用</td>
+                <td style={apiTableStyles.tdStyle}>function</td>
+                <td style={apiTableStyles.tdStyle}>-</td>
               </tr>
               <tr>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>onOpenChange</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>SubMenu 展开/关闭的回调</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>(openKeys: string[]) =&gt; void</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>-</td>
+                <td style={apiTableStyles.tdStyle}>onOpenChange</td>
+                <td style={apiTableStyles.tdStyle}>SubMenu 展开/关闭的回调</td>
+                <td style={apiTableStyles.tdStyle}>(openKeys: string[]) =&gt; void</td>
+                <td style={apiTableStyles.tdStyle}>-</td>
               </tr>
               <tr>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>expandIcon</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>自定义展开图标</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>ReactNode</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>-</td>
+                <td style={apiTableStyles.tdStyle}>expandIcon</td>
+                <td style={apiTableStyles.tdStyle}>自定义展开图标</td>
+                <td style={apiTableStyles.tdStyle}>ReactNode</td>
+                <td style={apiTableStyles.tdStyle}>-</td>
               </tr>
               <tr>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>className</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>容器的样式类名</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>string</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>-</td>
+                <td style={apiTableStyles.tdStyle}>className</td>
+                <td style={apiTableStyles.tdStyle}>容器的样式类名</td>
+                <td style={apiTableStyles.tdStyle}>string</td>
+                <td style={apiTableStyles.tdStyle}>-</td>
               </tr>
               <tr>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>style</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>容器的样式</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>CSSProperties</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>-</td>
+                <td style={apiTableStyles.tdStyle}>style</td>
+                <td style={apiTableStyles.tdStyle}>容器的样式</td>
+                <td style={apiTableStyles.tdStyle}>CSSProperties</td>
+                <td style={apiTableStyles.tdStyle}>-</td>
               </tr>
             </tbody>
           </table>
 
           <h3 style={{ marginBottom: '16px', fontSize: '16px', fontWeight: '600', color: '#374151' }}>NavItemType</h3>
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+          <table style={apiTableStyles.tableStyle}>
             <thead>
               <tr style={{ backgroundColor: '#f9fafb' }}>
-                <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid #e5e7eb' }}>参数</th>
-                <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid #e5e7eb' }}>说明</th>
-                <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid #e5e7eb' }}>类型</th>
-                <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid #e5e7eb' }}>默认值</th>
+                <th style={apiTableStyles.thStyle}>参数</th>
+                <th style={apiTableStyles.thStyle}>说明</th>
+                <th style={apiTableStyles.thStyle}>类型</th>
+                <th style={apiTableStyles.thStyle}>默认值</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>key</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>唯一标识</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>string</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>-</td>
+                <td style={apiTableStyles.tdStyle}>key</td>
+                <td style={apiTableStyles.tdStyle}>唯一标识</td>
+                <td style={apiTableStyles.tdStyle}>string</td>
+                <td style={apiTableStyles.tdStyle}>-</td>
               </tr>
               <tr>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>type</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>菜单项类型</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>'item' | 'divider' | 'group'</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>'item'</td>
+                <td style={apiTableStyles.tdStyle}>type</td>
+                <td style={apiTableStyles.tdStyle}>菜单项类型</td>
+                <td style={apiTableStyles.tdStyle}>'item' | 'divider' | 'group'</td>
+                <td style={apiTableStyles.tdStyle}>'item'</td>
               </tr>
               <tr>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>label</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>菜单项标题</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>ReactNode</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>-</td>
+                <td style={apiTableStyles.tdStyle}>label</td>
+                <td style={apiTableStyles.tdStyle}>菜单项标题</td>
+                <td style={apiTableStyles.tdStyle}>ReactNode</td>
+                <td style={apiTableStyles.tdStyle}>-</td>
               </tr>
               <tr>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>title</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>设置收缩时展示的悬浮标题</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>string</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>-</td>
+                <td style={apiTableStyles.tdStyle}>title</td>
+                <td style={apiTableStyles.tdStyle}>设置收缩时展示的悬浮标题</td>
+                <td style={apiTableStyles.tdStyle}>string</td>
+                <td style={apiTableStyles.tdStyle}>-</td>
               </tr>
               <tr>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>icon</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>菜单图标</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>ReactNode</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>-</td>
+                <td style={apiTableStyles.tdStyle}>icon</td>
+                <td style={apiTableStyles.tdStyle}>菜单图标</td>
+                <td style={apiTableStyles.tdStyle}>ReactNode</td>
+                <td style={apiTableStyles.tdStyle}>-</td>
               </tr>
               <tr>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>disabled</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>是否禁用</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>boolean</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>false</td>
+                <td style={apiTableStyles.tdStyle}>disabled</td>
+                <td style={apiTableStyles.tdStyle}>是否禁用</td>
+                <td style={apiTableStyles.tdStyle}>boolean</td>
+                <td style={apiTableStyles.tdStyle}>false</td>
               </tr>
               <tr>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>children</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>子菜单项</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>NavItemType[]</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>-</td>
+                <td style={apiTableStyles.tdStyle}>children</td>
+                <td style={apiTableStyles.tdStyle}>子菜单项</td>
+                <td style={apiTableStyles.tdStyle}>NavItemType[]</td>
+                <td style={apiTableStyles.tdStyle}>-</td>
               </tr>
               <tr>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>className</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>自定义样式类</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>string</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>-</td>
+                <td style={apiTableStyles.tdStyle}>className</td>
+                <td style={apiTableStyles.tdStyle}>自定义样式类</td>
+                <td style={apiTableStyles.tdStyle}>string</td>
+                <td style={apiTableStyles.tdStyle}>-</td>
               </tr>
               <tr>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>style</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>自定义样式</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>CSSProperties</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>-</td>
+                <td style={apiTableStyles.tdStyle}>style</td>
+                <td style={apiTableStyles.tdStyle}>自定义样式</td>
+                <td style={apiTableStyles.tdStyle}>CSSProperties</td>
+                <td style={apiTableStyles.tdStyle}>-</td>
               </tr>
             </tbody>
           </table>

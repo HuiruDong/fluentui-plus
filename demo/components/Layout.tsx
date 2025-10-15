@@ -1,5 +1,5 @@
 import React from 'react';
-import { Outlet, Link, useLocation } from 'react-router-dom';
+import { Outlet, Link, useLocation, ScrollRestoration } from 'react-router-dom';
 import { makeStyles } from '@fluentui/react-components';
 
 const useStyles = makeStyles({
@@ -154,6 +154,7 @@ const Layout: React.FC = () => {
       {/* Main Content */}
       <div className={styles.content}>
         <Outlet />
+        <ScrollRestoration />
       </div>
     </div>
   );

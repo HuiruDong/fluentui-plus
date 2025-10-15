@@ -1,13 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { makeStyles } from '@fluentui/react-components';
+import { useCommonDemoStyles } from '../hooks';
 
-const useStyles = makeStyles({
-  container: {
-    padding: '40px',
-    maxWidth: '1200px',
-    margin: '0 auto',
-  },
+// HomePage 特有样式（首页有很多独特的样式）
+const useCustomStyles = makeStyles({
   header: {
     textAlign: 'center',
     marginBottom: '60px',
@@ -102,7 +99,14 @@ const useStyles = makeStyles({
 });
 
 const HomePage: React.FC = () => {
-  const styles = useStyles();
+  const commonStyles = useCommonDemoStyles();
+  const customStyles = useCustomStyles();
+
+  // 合并通用样式和特有样式，优先使用自定义样式
+  const styles = {
+    ...commonStyles,
+    ...customStyles,
+  };
 
   const categories = [
     {
@@ -120,8 +124,14 @@ const HomePage: React.FC = () => {
     {
       title: '数据录入组件',
       description: '数据录入组件提供多种输入方式，提升用户体验。',
-      components: ['InputTag', 'Select'],
+      components: ['InputTag', 'Select', 'Cascader', 'Checkbox'],
       path: '/inputtag',
+    },
+    {
+      title: '反馈组件',
+      description: '反馈组件用于向用户展示操作结果和系统状态。',
+      components: ['Modal'],
+      path: '/modal',
     },
   ];
 
@@ -153,7 +163,7 @@ const HomePage: React.FC = () => {
       <div className={styles.statsSection}>
         <div className={styles.statsGrid}>
           <div className={styles.statItem}>
-            <div className={styles.statNumber}>4</div>
+            <div className={styles.statNumber}>7</div>
             <div className={styles.statLabel}>组件</div>
           </div>
           <div className={styles.statItem}>
@@ -161,7 +171,7 @@ const HomePage: React.FC = () => {
             <div className={styles.statLabel}>TypeScript</div>
           </div>
           <div className={styles.statItem}>
-            <div className={styles.statNumber}>12+</div>
+            <div className={styles.statNumber}>20+</div>
             <div className={styles.statLabel}>示例</div>
           </div>
         </div>

@@ -2,65 +2,15 @@ import React, { useState } from 'react';
 import { makeStyles, Button, webDarkTheme, webLightTheme } from '@fluentui/react-components';
 import { Modal } from '../../src';
 import { DeleteFilled, EditFilled, InfoFilled } from '@fluentui/react-icons';
+import { useCommonDemoStyles, useApiTableStyles } from '../hooks';
 
-const useStyles = makeStyles({
-  container: {
-    padding: '40px',
-    maxWidth: '1200px',
-    margin: '0 auto',
-  },
-  header: {
-    marginBottom: '40px',
-  },
-  title: {
-    fontSize: '36px',
-    fontWeight: '700',
-    marginBottom: '12px',
-    color: '#1f2937',
-  },
-  description: {
-    fontSize: '18px',
-    color: '#6b7280',
-    lineHeight: '1.6',
-  },
-  section: {
-    marginBottom: '48px',
-  },
-  sectionTitle: {
-    fontSize: '24px',
-    fontWeight: '600',
-    marginBottom: '16px',
-    color: '#1f2937',
-  },
-  sectionDescription: {
-    fontSize: '16px',
-    color: '#6b7280',
-    marginBottom: '24px',
-    lineHeight: '1.6',
-  },
-  demoContainer: {
-    backgroundColor: '#ffffff',
-    border: '1px solid #e5e7eb',
-    borderRadius: '12px',
-    padding: '32px',
-    marginBottom: '24px',
-  },
-  demoTitle: {
-    fontSize: '18px',
-    fontWeight: '600',
-    marginBottom: '16px',
-    color: '#374151',
-  },
+// ModalPage 特有样式
+const useCustomStyles = makeStyles({
   demo: {
     display: 'flex',
     flexDirection: 'row',
     gap: '16px',
     alignItems: 'center',
-    flexWrap: 'wrap',
-  },
-  buttonGroup: {
-    display: 'flex',
-    gap: '12px',
     flexWrap: 'wrap',
   },
   modalContent: {
@@ -83,7 +33,15 @@ const useStyles = makeStyles({
 });
 
 const ModalPage: React.FC = () => {
-  const styles = useStyles();
+  const commonStyles = useCommonDemoStyles();
+  const customStyles = useCustomStyles();
+  const apiTableStyles = useApiTableStyles();
+
+  // 合并通用样式和特有样式
+  const styles = {
+    ...commonStyles,
+    ...customStyles,
+  };
 
   // 基础用法状态
   const [basicOpen, setBasicOpen] = useState(false);
@@ -491,93 +449,93 @@ const ModalPage: React.FC = () => {
         <div className={styles.sectionDescription}>Modal 组件支持的所有参数配置。</div>
         <div className={styles.demoContainer}>
           <div className={styles.demoTitle}>Modal 组件参数</div>
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+          <table style={apiTableStyles.tableStyle}>
             <thead>
               <tr style={{ backgroundColor: '#f9fafb' }}>
-                <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid #e5e7eb' }}>参数</th>
-                <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid #e5e7eb' }}>说明</th>
-                <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid #e5e7eb' }}>类型</th>
-                <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid #e5e7eb' }}>默认值</th>
+                <th style={apiTableStyles.thStyle}>参数</th>
+                <th style={apiTableStyles.thStyle}>说明</th>
+                <th style={apiTableStyles.thStyle}>类型</th>
+                <th style={apiTableStyles.thStyle}>默认值</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>open</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>对话框是否可见</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>boolean</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>false</td>
+                <td style={apiTableStyles.tdStyle}>open</td>
+                <td style={apiTableStyles.tdStyle}>对话框是否可见</td>
+                <td style={apiTableStyles.tdStyle}>boolean</td>
+                <td style={apiTableStyles.tdStyle}>false</td>
               </tr>
               <tr>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>title</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>标题</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>string</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>-</td>
+                <td style={apiTableStyles.tdStyle}>title</td>
+                <td style={apiTableStyles.tdStyle}>标题</td>
+                <td style={apiTableStyles.tdStyle}>string</td>
+                <td style={apiTableStyles.tdStyle}>-</td>
               </tr>
               <tr>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>onOk</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>点击确定回调</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>() =&gt; void</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>-</td>
+                <td style={apiTableStyles.tdStyle}>onOk</td>
+                <td style={apiTableStyles.tdStyle}>点击确定回调</td>
+                <td style={apiTableStyles.tdStyle}>() =&gt; void</td>
+                <td style={apiTableStyles.tdStyle}>-</td>
               </tr>
               <tr>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>onCancel</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>点击取消或关闭按钮的回调</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>() =&gt; void</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>-</td>
+                <td style={apiTableStyles.tdStyle}>onCancel</td>
+                <td style={apiTableStyles.tdStyle}>点击取消或关闭按钮的回调</td>
+                <td style={apiTableStyles.tdStyle}>() =&gt; void</td>
+                <td style={apiTableStyles.tdStyle}>-</td>
               </tr>
               <tr>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>okText</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>确认按钮文字</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>string</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>确定</td>
+                <td style={apiTableStyles.tdStyle}>okText</td>
+                <td style={apiTableStyles.tdStyle}>确认按钮文字</td>
+                <td style={apiTableStyles.tdStyle}>string</td>
+                <td style={apiTableStyles.tdStyle}>确定</td>
               </tr>
               <tr>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>okType</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>确认按钮类型</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>ButtonProps['appearance']</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>primary</td>
+                <td style={apiTableStyles.tdStyle}>okType</td>
+                <td style={apiTableStyles.tdStyle}>确认按钮类型</td>
+                <td style={apiTableStyles.tdStyle}>ButtonProps['appearance']</td>
+                <td style={apiTableStyles.tdStyle}>primary</td>
               </tr>
               <tr>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>okButtonProps</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>确认按钮的 props</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>ButtonProps</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>-</td>
+                <td style={apiTableStyles.tdStyle}>okButtonProps</td>
+                <td style={apiTableStyles.tdStyle}>确认按钮的 props</td>
+                <td style={apiTableStyles.tdStyle}>ButtonProps</td>
+                <td style={apiTableStyles.tdStyle}>-</td>
               </tr>
               <tr>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>cancelButtonProps</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>取消按钮的 props</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>ButtonProps</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>-</td>
+                <td style={apiTableStyles.tdStyle}>cancelButtonProps</td>
+                <td style={apiTableStyles.tdStyle}>取消按钮的 props</td>
+                <td style={apiTableStyles.tdStyle}>ButtonProps</td>
+                <td style={apiTableStyles.tdStyle}>-</td>
               </tr>
               <tr>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>closeIcon</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>自定义关闭图标</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>ReactNode</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>DismissFilled</td>
+                <td style={apiTableStyles.tdStyle}>closeIcon</td>
+                <td style={apiTableStyles.tdStyle}>自定义关闭图标</td>
+                <td style={apiTableStyles.tdStyle}>ReactNode</td>
+                <td style={apiTableStyles.tdStyle}>DismissFilled</td>
               </tr>
               <tr>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>mask</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>是否展示遮罩</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>boolean</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>true</td>
+                <td style={apiTableStyles.tdStyle}>mask</td>
+                <td style={apiTableStyles.tdStyle}>是否展示遮罩</td>
+                <td style={apiTableStyles.tdStyle}>boolean</td>
+                <td style={apiTableStyles.tdStyle}>true</td>
               </tr>
               <tr>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>footer</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>底部内容</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>ReactNode | null | function</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>默认按钮</td>
+                <td style={apiTableStyles.tdStyle}>footer</td>
+                <td style={apiTableStyles.tdStyle}>底部内容</td>
+                <td style={apiTableStyles.tdStyle}>ReactNode | null | function</td>
+                <td style={apiTableStyles.tdStyle}>默认按钮</td>
               </tr>
               <tr>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>className</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>自定义样式类名</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>string</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>-</td>
+                <td style={apiTableStyles.tdStyle}>className</td>
+                <td style={apiTableStyles.tdStyle}>自定义样式类名</td>
+                <td style={apiTableStyles.tdStyle}>string</td>
+                <td style={apiTableStyles.tdStyle}>-</td>
               </tr>
               <tr>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>style</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>自定义样式</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>CSSProperties</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>-</td>
+                <td style={apiTableStyles.tdStyle}>style</td>
+                <td style={apiTableStyles.tdStyle}>自定义样式</td>
+                <td style={apiTableStyles.tdStyle}>CSSProperties</td>
+                <td style={apiTableStyles.tdStyle}>-</td>
               </tr>
             </tbody>
           </table>
@@ -585,45 +543,45 @@ const ModalPage: React.FC = () => {
 
         <div className={styles.demoContainer} style={{ marginTop: '24px' }}>
           <div className={styles.demoTitle}>静态方法参数</div>
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+          <table style={apiTableStyles.tableStyle}>
             <thead>
               <tr style={{ backgroundColor: '#f9fafb' }}>
-                <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid #e5e7eb' }}>方法</th>
-                <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid #e5e7eb' }}>说明</th>
-                <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid #e5e7eb' }}>参数类型</th>
-                <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid #e5e7eb' }}>返回值</th>
+                <th style={apiTableStyles.thStyle}>方法</th>
+                <th style={apiTableStyles.thStyle}>说明</th>
+                <th style={apiTableStyles.thStyle}>参数类型</th>
+                <th style={apiTableStyles.thStyle}>返回值</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>Modal.info</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>信息提示对话框</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>StaticModalProps</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>ModalInstance</td>
+                <td style={apiTableStyles.tdStyle}>Modal.info</td>
+                <td style={apiTableStyles.tdStyle}>信息提示对话框</td>
+                <td style={apiTableStyles.tdStyle}>StaticModalProps</td>
+                <td style={apiTableStyles.tdStyle}>ModalInstance</td>
               </tr>
               <tr>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>Modal.success</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>成功提示对话框</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>StaticModalProps</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>ModalInstance</td>
+                <td style={apiTableStyles.tdStyle}>Modal.success</td>
+                <td style={apiTableStyles.tdStyle}>成功提示对话框</td>
+                <td style={apiTableStyles.tdStyle}>StaticModalProps</td>
+                <td style={apiTableStyles.tdStyle}>ModalInstance</td>
               </tr>
               <tr>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>Modal.error</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>错误提示对话框</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>StaticModalProps</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>ModalInstance</td>
+                <td style={apiTableStyles.tdStyle}>Modal.error</td>
+                <td style={apiTableStyles.tdStyle}>错误提示对话框</td>
+                <td style={apiTableStyles.tdStyle}>StaticModalProps</td>
+                <td style={apiTableStyles.tdStyle}>ModalInstance</td>
               </tr>
               <tr>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>Modal.warning</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>警告提示对话框</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>StaticModalProps</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>ModalInstance</td>
+                <td style={apiTableStyles.tdStyle}>Modal.warning</td>
+                <td style={apiTableStyles.tdStyle}>警告提示对话框</td>
+                <td style={apiTableStyles.tdStyle}>StaticModalProps</td>
+                <td style={apiTableStyles.tdStyle}>ModalInstance</td>
               </tr>
               <tr>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>Modal.confirm</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>确认对话框</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>StaticModalProps</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>ModalInstance</td>
+                <td style={apiTableStyles.tdStyle}>Modal.confirm</td>
+                <td style={apiTableStyles.tdStyle}>确认对话框</td>
+                <td style={apiTableStyles.tdStyle}>StaticModalProps</td>
+                <td style={apiTableStyles.tdStyle}>ModalInstance</td>
               </tr>
             </tbody>
           </table>

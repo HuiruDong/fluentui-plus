@@ -1,55 +1,10 @@
 import React, { useState } from 'react';
 import { makeStyles } from '@fluentui/react-components';
 import { Tag } from '../../src';
+import { useCommonDemoStyles, useApiTableStyles } from '../hooks';
 
-const useStyles = makeStyles({
-  container: {
-    padding: '40px',
-    maxWidth: '1200px',
-    margin: '0 auto',
-  },
-  header: {
-    marginBottom: '40px',
-  },
-  title: {
-    fontSize: '36px',
-    fontWeight: '700',
-    marginBottom: '12px',
-    color: '#1f2937',
-  },
-  description: {
-    fontSize: '18px',
-    color: '#6b7280',
-    lineHeight: '1.6',
-  },
-  section: {
-    marginBottom: '48px',
-  },
-  sectionTitle: {
-    fontSize: '24px',
-    fontWeight: '600',
-    marginBottom: '16px',
-    color: '#1f2937',
-  },
-  sectionDescription: {
-    fontSize: '16px',
-    color: '#6b7280',
-    marginBottom: '24px',
-    lineHeight: '1.6',
-  },
-  demoContainer: {
-    backgroundColor: '#ffffff',
-    border: '1px solid #e5e7eb',
-    borderRadius: '12px',
-    padding: '32px',
-    marginBottom: '24px',
-  },
-  demoTitle: {
-    fontSize: '18px',
-    fontWeight: '600',
-    marginBottom: '16px',
-    color: '#374151',
-  },
+// TagPage 特有样式
+const useCustomStyles = makeStyles({
   demo: {
     display: 'flex',
     flexWrap: 'wrap',
@@ -59,7 +14,15 @@ const useStyles = makeStyles({
 });
 
 const TagPage: React.FC = () => {
-  const styles = useStyles();
+  const commonStyles = useCommonDemoStyles();
+  const customStyles = useCustomStyles();
+  const apiTableStyles = useApiTableStyles();
+
+  // 合并通用样式和特有样式
+  const styles = {
+    ...commonStyles,
+    ...customStyles,
+  };
   const [checkedTags, setCheckedTags] = useState<Record<string, boolean>>({
     tag1: true,
     tag2: false,
@@ -179,63 +142,63 @@ const TagPage: React.FC = () => {
         <div className={styles.sectionDescription}>Tag 组件支持的所有参数配置。</div>
         <div className={styles.demoContainer}>
           <h3 style={{ marginBottom: '16px', fontSize: '16px', fontWeight: '600', color: '#374151' }}>Tag</h3>
-          <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '32px' }}>
+          <table style={apiTableStyles.tableWithMarginStyle}>
             <thead>
               <tr style={{ backgroundColor: '#f9fafb' }}>
-                <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid #e5e7eb' }}>参数</th>
-                <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid #e5e7eb' }}>说明</th>
-                <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid #e5e7eb' }}>类型</th>
-                <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid #e5e7eb' }}>默认值</th>
+                <th style={apiTableStyles.thStyle}>参数</th>
+                <th style={apiTableStyles.thStyle}>说明</th>
+                <th style={apiTableStyles.thStyle}>类型</th>
+                <th style={apiTableStyles.thStyle}>默认值</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>children</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>标签内容</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>ReactNode</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>-</td>
+                <td style={apiTableStyles.tdStyle}>children</td>
+                <td style={apiTableStyles.tdStyle}>标签内容</td>
+                <td style={apiTableStyles.tdStyle}>ReactNode</td>
+                <td style={apiTableStyles.tdStyle}>-</td>
               </tr>
               <tr>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>closeIcon</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>设置标签的关闭图标</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>boolean | ReactNode</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>false</td>
+                <td style={apiTableStyles.tdStyle}>closeIcon</td>
+                <td style={apiTableStyles.tdStyle}>设置标签的关闭图标</td>
+                <td style={apiTableStyles.tdStyle}>boolean | ReactNode</td>
+                <td style={apiTableStyles.tdStyle}>false</td>
               </tr>
               <tr>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>color</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>标签颜色</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>string</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>-</td>
+                <td style={apiTableStyles.tdStyle}>color</td>
+                <td style={apiTableStyles.tdStyle}>标签颜色</td>
+                <td style={apiTableStyles.tdStyle}>string</td>
+                <td style={apiTableStyles.tdStyle}>-</td>
               </tr>
               <tr>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>bordered</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>是否有边框</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>boolean</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>true</td>
+                <td style={apiTableStyles.tdStyle}>bordered</td>
+                <td style={apiTableStyles.tdStyle}>是否有边框</td>
+                <td style={apiTableStyles.tdStyle}>boolean</td>
+                <td style={apiTableStyles.tdStyle}>true</td>
               </tr>
               <tr>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>className</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>自定义样式类名</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>string</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>-</td>
+                <td style={apiTableStyles.tdStyle}>className</td>
+                <td style={apiTableStyles.tdStyle}>自定义样式类名</td>
+                <td style={apiTableStyles.tdStyle}>string</td>
+                <td style={apiTableStyles.tdStyle}>-</td>
               </tr>
               <tr>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>style</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>自定义样式</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>CSSProperties</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>-</td>
+                <td style={apiTableStyles.tdStyle}>style</td>
+                <td style={apiTableStyles.tdStyle}>自定义样式</td>
+                <td style={apiTableStyles.tdStyle}>CSSProperties</td>
+                <td style={apiTableStyles.tdStyle}>-</td>
               </tr>
               <tr>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>onClose</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>关闭时的回调</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>(e: MouseEvent) =&gt; void</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>-</td>
+                <td style={apiTableStyles.tdStyle}>onClose</td>
+                <td style={apiTableStyles.tdStyle}>关闭时的回调</td>
+                <td style={apiTableStyles.tdStyle}>(e: MouseEvent) =&gt; void</td>
+                <td style={apiTableStyles.tdStyle}>-</td>
               </tr>
               <tr>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>onClick</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>点击时的回调</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>(e: MouseEvent) =&gt; void</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>-</td>
+                <td style={apiTableStyles.tdStyle}>onClick</td>
+                <td style={apiTableStyles.tdStyle}>点击时的回调</td>
+                <td style={apiTableStyles.tdStyle}>(e: MouseEvent) =&gt; void</td>
+                <td style={apiTableStyles.tdStyle}>-</td>
               </tr>
             </tbody>
           </table>
@@ -243,57 +206,57 @@ const TagPage: React.FC = () => {
           <h3 style={{ marginBottom: '16px', fontSize: '16px', fontWeight: '600', color: '#374151' }}>
             Tag.CheckableTag
           </h3>
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+          <table style={apiTableStyles.tableStyle}>
             <thead>
               <tr style={{ backgroundColor: '#f9fafb' }}>
-                <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid #e5e7eb' }}>参数</th>
-                <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid #e5e7eb' }}>说明</th>
-                <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid #e5e7eb' }}>类型</th>
-                <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid #e5e7eb' }}>默认值</th>
+                <th style={apiTableStyles.thStyle}>参数</th>
+                <th style={apiTableStyles.thStyle}>说明</th>
+                <th style={apiTableStyles.thStyle}>类型</th>
+                <th style={apiTableStyles.thStyle}>默认值</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>children</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>标签内容</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>ReactNode</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>-</td>
+                <td style={apiTableStyles.tdStyle}>children</td>
+                <td style={apiTableStyles.tdStyle}>标签内容</td>
+                <td style={apiTableStyles.tdStyle}>ReactNode</td>
+                <td style={apiTableStyles.tdStyle}>-</td>
               </tr>
               <tr>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>checked</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>设置标签的选中状态</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>boolean</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>false</td>
+                <td style={apiTableStyles.tdStyle}>checked</td>
+                <td style={apiTableStyles.tdStyle}>设置标签的选中状态</td>
+                <td style={apiTableStyles.tdStyle}>boolean</td>
+                <td style={apiTableStyles.tdStyle}>false</td>
               </tr>
               <tr>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>onChange</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>点击标签时的回调</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>(checked: boolean) =&gt; void</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>-</td>
+                <td style={apiTableStyles.tdStyle}>onChange</td>
+                <td style={apiTableStyles.tdStyle}>点击标签时的回调</td>
+                <td style={apiTableStyles.tdStyle}>(checked: boolean) =&gt; void</td>
+                <td style={apiTableStyles.tdStyle}>-</td>
               </tr>
               <tr>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>color</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>标签颜色</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>string</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>-</td>
+                <td style={apiTableStyles.tdStyle}>color</td>
+                <td style={apiTableStyles.tdStyle}>标签颜色</td>
+                <td style={apiTableStyles.tdStyle}>string</td>
+                <td style={apiTableStyles.tdStyle}>-</td>
               </tr>
               <tr>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>bordered</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>是否有边框</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>boolean</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>true</td>
+                <td style={apiTableStyles.tdStyle}>bordered</td>
+                <td style={apiTableStyles.tdStyle}>是否有边框</td>
+                <td style={apiTableStyles.tdStyle}>boolean</td>
+                <td style={apiTableStyles.tdStyle}>true</td>
               </tr>
               <tr>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>className</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>自定义样式类名</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>string</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>-</td>
+                <td style={apiTableStyles.tdStyle}>className</td>
+                <td style={apiTableStyles.tdStyle}>自定义样式类名</td>
+                <td style={apiTableStyles.tdStyle}>string</td>
+                <td style={apiTableStyles.tdStyle}>-</td>
               </tr>
               <tr>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>style</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>自定义样式</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>CSSProperties</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>-</td>
+                <td style={apiTableStyles.tdStyle}>style</td>
+                <td style={apiTableStyles.tdStyle}>自定义样式</td>
+                <td style={apiTableStyles.tdStyle}>CSSProperties</td>
+                <td style={apiTableStyles.tdStyle}>-</td>
               </tr>
             </tbody>
           </table>

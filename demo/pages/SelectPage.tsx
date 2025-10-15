@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { makeStyles } from '@fluentui/react-components';
 import { Select } from '../../src';
+import { useCommonDemoStyles, useApiTableStyles } from '../hooks';
 
 // 定义 Option 类型
 type Option = {
@@ -16,77 +17,26 @@ type GroupOption = {
   options: Option[];
 };
 
-const useStyles = makeStyles({
-  container: {
-    padding: '40px',
-    maxWidth: '1200px',
-    margin: '0 auto',
-  },
-  header: {
-    marginBottom: '40px',
-  },
-  title: {
-    fontSize: '36px',
-    fontWeight: '700',
-    marginBottom: '12px',
-    color: '#1f2937',
-  },
-  description: {
-    fontSize: '18px',
-    color: '#6b7280',
-    lineHeight: '1.6',
-  },
-  section: {
-    marginBottom: '48px',
-  },
-  sectionTitle: {
-    fontSize: '24px',
-    fontWeight: '600',
-    marginBottom: '16px',
-    color: '#1f2937',
-  },
-  sectionDescription: {
-    fontSize: '16px',
-    color: '#6b7280',
-    marginBottom: '24px',
-    lineHeight: '1.6',
-  },
-  demoContainer: {
-    backgroundColor: '#ffffff',
-    border: '1px solid #e5e7eb',
-    borderRadius: '12px',
-    padding: '32px',
-    marginBottom: '24px',
-  },
-  demoTitle: {
-    fontSize: '18px',
-    fontWeight: '600',
-    marginBottom: '16px',
-    color: '#374151',
-  },
+// SelectPage 特有样式
+const useCustomStyles = makeStyles({
   demo: {
     display: 'flex',
     flexDirection: 'column',
     gap: '16px',
     maxWidth: '300px',
   },
-  twoColumnDemo: {
-    display: 'grid',
-    gridTemplateColumns: '300px 300px',
-    gap: '24px',
-  },
-  valueDisplay: {
-    marginTop: '12px',
-    padding: '12px',
-    backgroundColor: '#f3f4f6',
-    borderRadius: '6px',
-    fontSize: '14px',
-    color: '#374151',
-  },
 });
 
 const SelectPage: React.FC = () => {
-  const styles = useStyles();
+  const commonStyles = useCommonDemoStyles();
+  const customStyles = useCustomStyles();
+  const apiTableStyles = useApiTableStyles();
+
+  // 合并通用样式和特有样式
+  const styles = {
+    ...commonStyles,
+    ...customStyles,
+  };
 
   // 基础用法状态
   const [basicValue, setBasicValue] = useState<string | number | undefined>('option2');
@@ -403,79 +353,77 @@ const SelectPage: React.FC = () => {
         <div className={styles.sectionTitle}>API 参数</div>
         <div className={styles.sectionDescription}>Select 组件支持的所有参数配置。</div>
         <div className={styles.demoContainer}>
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+          <table style={apiTableStyles.tableStyle}>
             <thead>
               <tr style={{ backgroundColor: '#f9fafb' }}>
-                <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid #e5e7eb' }}>参数</th>
-                <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid #e5e7eb' }}>说明</th>
-                <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid #e5e7eb' }}>类型</th>
-                <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid #e5e7eb' }}>默认值</th>
+                <th style={apiTableStyles.thStyle}>参数</th>
+                <th style={apiTableStyles.thStyle}>说明</th>
+                <th style={apiTableStyles.thStyle}>类型</th>
+                <th style={apiTableStyles.thStyle}>默认值</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>value</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>当前选中的值</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>string | number | array</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>-</td>
+                <td style={apiTableStyles.tdStyle}>value</td>
+                <td style={apiTableStyles.tdStyle}>当前选中的值</td>
+                <td style={apiTableStyles.tdStyle}>string | number | array</td>
+                <td style={apiTableStyles.tdStyle}>-</td>
               </tr>
               <tr>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>onChange</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>选中值变化时的回调</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>function</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>-</td>
+                <td style={apiTableStyles.tdStyle}>onChange</td>
+                <td style={apiTableStyles.tdStyle}>选中值变化时的回调</td>
+                <td style={apiTableStyles.tdStyle}>function</td>
+                <td style={apiTableStyles.tdStyle}>-</td>
               </tr>
               <tr>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>options</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>选项数据</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>Option[]</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>[]</td>
+                <td style={apiTableStyles.tdStyle}>options</td>
+                <td style={apiTableStyles.tdStyle}>选项数据</td>
+                <td style={apiTableStyles.tdStyle}>Option[]</td>
+                <td style={apiTableStyles.tdStyle}>[]</td>
               </tr>
               <tr>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>placeholder</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>选择框默认文字</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>string</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>-</td>
+                <td style={apiTableStyles.tdStyle}>placeholder</td>
+                <td style={apiTableStyles.tdStyle}>选择框默认文字</td>
+                <td style={apiTableStyles.tdStyle}>string</td>
+                <td style={apiTableStyles.tdStyle}>-</td>
               </tr>
               <tr>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>multiple</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>支持多选</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>boolean</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>false</td>
+                <td style={apiTableStyles.tdStyle}>multiple</td>
+                <td style={apiTableStyles.tdStyle}>支持多选</td>
+                <td style={apiTableStyles.tdStyle}>boolean</td>
+                <td style={apiTableStyles.tdStyle}>false</td>
               </tr>
               <tr>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>showSearch</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>是否可搜索</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>boolean</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>false</td>
+                <td style={apiTableStyles.tdStyle}>showSearch</td>
+                <td style={apiTableStyles.tdStyle}>是否可搜索</td>
+                <td style={apiTableStyles.tdStyle}>boolean</td>
+                <td style={apiTableStyles.tdStyle}>false</td>
               </tr>
               <tr>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>disabled</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>是否禁用</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>boolean</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>false</td>
+                <td style={apiTableStyles.tdStyle}>disabled</td>
+                <td style={apiTableStyles.tdStyle}>是否禁用</td>
+                <td style={apiTableStyles.tdStyle}>boolean</td>
+                <td style={apiTableStyles.tdStyle}>false</td>
               </tr>
               <tr>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>allowClear</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>是否显示清除按钮</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>
+                <td style={apiTableStyles.tdStyle}>allowClear</td>
+                <td style={apiTableStyles.tdStyle}>是否显示清除按钮</td>
+                <td style={apiTableStyles.tdStyle}>
                   boolean | {'{'} clearIcon?: ReactNode {'}'}
                 </td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>false</td>
+                <td style={apiTableStyles.tdStyle}>false</td>
               </tr>
               <tr>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>onClear</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>清除按钮点击回调</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>() =&gt; void</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>-</td>
+                <td style={apiTableStyles.tdStyle}>onClear</td>
+                <td style={apiTableStyles.tdStyle}>清除按钮点击回调</td>
+                <td style={apiTableStyles.tdStyle}>() =&gt; void</td>
+                <td style={apiTableStyles.tdStyle}>-</td>
               </tr>
               <tr>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>labelRender</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>自定义选中项显示内容</td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>
-                  (selectedOptions: Option | Option[] | null) =&gt; string
-                </td>
-                <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>-</td>
+                <td style={apiTableStyles.tdStyle}>labelRender</td>
+                <td style={apiTableStyles.tdStyle}>自定义选中项显示内容</td>
+                <td style={apiTableStyles.tdStyle}>(selectedOptions: Option | Option[] | null) =&gt; string</td>
+                <td style={apiTableStyles.tdStyle}>-</td>
               </tr>
             </tbody>
           </table>
