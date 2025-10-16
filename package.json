@@ -56,21 +56,6 @@
     "release:first": "standard-version --first-release && git push --follow-tags origin master",
     "release:dry-run": "standard-version --dry-run"
   },
-  "lint-staged": {
-    "src/**/*.{js,jsx,ts,tsx}": [
-      "eslint --fix",
-      "jest --findRelatedTests --passWithNoTests"
-    ],
-    "demo/**/*.{js,jsx,ts,tsx}": [
-      "prettier --write"
-    ],
-    "stories/**/*.{js,jsx,ts,tsx}": [
-      "prettier --write"
-    ],
-    "*.{json,md,yml,yaml}": [
-      "prettier --write"
-    ]
-  },
   "keywords": [
     "react",
     "typescript",

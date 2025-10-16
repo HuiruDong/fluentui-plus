@@ -1,0 +1,6 @@
+{
+  "src/**/*.{js,jsx,ts,tsx}": ["eslint --fix", "jest --findRelatedTests --passWithNoTests"],
+  "demo/**/*.{js,jsx,ts,tsx}": ["prettier --write"],
+  "stories/**/*.{js,jsx,ts,tsx}": ["prettier --write"],
+  "*.{json,md,yml,yaml}": ["prettier --write"]
+}
