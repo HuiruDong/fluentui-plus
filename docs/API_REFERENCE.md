@@ -836,6 +836,191 @@ setTimeout(() => {
 }, 5000);
 ```
 
+### Message 消息提示
+
+用于在页面顶部显示全局消息提示，支持多种类型和自定义内容。基于 FluentUI 的 Toast 组件实现，提供一致的用户体验。
+
+#### 特性
+
+- 支持多种消息类型：info、success、warning、error
+- 自动关闭或手动控制关闭时机
+- 支持自定义标题、内容和操作按钮
+- 轻量级 API，无需组件形式使用
+- 全局单例管理，避免重复渲染
+
+#### API 方法
+
+Message 提供了几个静态方法用于快速显示不同类型的消息：
+
+- `message.info(title, options?)` - 信息提示消息
+- `message.success(title, options?)` - 成功提示消息
+- `message.warning(title, options?)` - 警告提示消息
+- `message.error(title, options?)` - 错误提示消息
+- `message.open(options)` - 自定义消息
+- `message.destroy()` - 销毁所有消息
+
+##### 方法参数
+
+```typescript
+// 基础方法参数 (info, success, warning, error)
+type MessageMethod = (
+  title: React.ReactNode,          // 消息标题
+  options?: MessageOptions         // 可选配置
+) => MessageInstance;
+
+// 自定义方法参数
+type OpenMethod = (
+  options: MessageOptions          // 完整配置
+) => MessageInstance;
+
+// 配置项类型
+interface MessageOptions {
+  title?: React.ReactNode;         // 消息标题（主要内容）
+  content?: React.ReactNode;       // 消息内容（详细描述）
+  intent?: 'info' | 'success' | 'warning' | 'error'; // 消息类型
+  duration?: number;               // 自动关闭延迟时间（毫秒），0 表示不自动关闭
+  closable?: boolean;              // 是否显示关闭按钮，默认 true
+  onClose?: () => void;            // 关闭时的回调函数
+  action?: React.ReactNode;        // 自定义操作按钮
+}
+
+// 返回值类型
+interface MessageInstance {
+  close: () => void;               // 关闭当前消息
+}
+```
+
+#### 示例
+
+```jsx
+import { message } from '@luoluoyu/fluentui-plus';
+
+// 基础用法 - 信息提示
+message.info('这是一条信息提示');
+
+// 成功提示
+message.success('操作成功！');
+
+// 警告提示
+message.warning('请注意数据安全');
+
+// 错误提示
+message.error('操作失败，请重试');
+
+// 带详细内容的消息
+message.info('系统通知', {
+  content: '您有一条新的消息需要处理，请及时查看。',
+  duration: 5000 // 5秒后自动关闭
+});
+
+// 不自动关闭的消息
+message.warning('重要提醒', {
+  content: '此操作不可逆，请谨慎处理。',
+  duration: 0 // 不自动关闭，需要用户手动关闭
+});
+
+// 带操作按钮的消息
+message.success('文件上传成功', {
+  content: '文件已成功上传到服务器。',
+  action: (
+    <button onClick={() => console.log('查看详情')}>
+      查看详情
+    </button>
+  )
+});
+
+// 带关闭回调的消息
+message.info('正在处理...', {
+  onClose: () => {
+    console.log('消息已关闭');
+  }
+});
+
+// 使用 open 方法自定义消息
+message.open({
+  title: '自定义消息',
+  content: '这是一条自定义类型的消息。',
+  intent: 'success',
+  duration: 4000,
+  action: (
+    <div style={{ display: 'flex', gap: '8px' }}>
+      <button onClick={() => console.log('确认')}>确认</button>
+      <button onClick={() => console.log('取消')}>取消</button>
+    </div>
+  ),
+  onClose: () => {
+    console.log('自定义消息已关闭');
+  }
+});
+
+// 手动控制消息关闭
+const instance = message.info('加载中...', {
+  duration: 0 // 不自动关闭
+});
+
+// 3秒后手动关闭
+setTimeout(() => {
+  instance.close();
+}, 3000);
+
+// 清理所有消息（通常在应用卸载时使用）
+message.destroy();
+
+// 结合异步操作使用
+const handleSubmit = async () => {
+  const loadingMsg = message.info('正在提交...', { duration: 0 });
+  
+  try {
+    await submitData();
+    loadingMsg.close();
+    message.success('提交成功！');
+  } catch (error) {
+    loadingMsg.close();
+    message.error('提交失败，请重试');
+  }
+};
+
+// 多个消息同时显示
+message.info('第一条消息');
+message.success('第二条消息');
+message.warning('第三条消息');
+// 消息会按顺序在顶部堆叠显示
+```
+
+#### 最佳实践
+
+1. **合理设置 duration**: 
+   - 普通信息：3000ms (默认)
+   - 成功提示：2000-3000ms
+   - 警告/错误：4000-5000ms 或不自动关闭
+   - 需要用户操作的消息：设置为 0，不自动关闭
+
+2. **使用合适的消息类型**:
+   - `info`: 一般性提示信息
+   - `success`: 操作成功反馈
+   - `warning`: 警告或需要注意的信息
+   - `error`: 错误提示或操作失败
+
+3. **避免消息滥用**:
+   - 不要同时显示过多消息
+   - 重要操作才显示消息
+   - 避免频繁弹出相同内容
+
+4. **异步操作中的使用**:
+   ```jsx
+   const handleAction = async () => {
+     const hide = message.info('处理中...', { duration: 0 });
+     try {
+       await doSomething();
+       hide.close();
+       message.success('处理成功');
+     } catch (error) {
+       hide.close();
+       message.error('处理失败');
+     }
+   };
+   ```
+
 ## TypeScript 支持
 
 所有组件都提供完整的 TypeScript 类型定义。你可以从组件库导入类型：
@@ -858,7 +1043,10 @@ import type {
   CheckboxProps,
   GroupProps,
   ModalProps,
-  StaticModalProps
+  StaticModalProps,
+  MessageOptions,
+  MessageInstance,
+  MessageApi
 } from '@luoluoyu/fluentui-plus';
 
 // 使用类型
@@ -967,6 +1155,36 @@ const staticModalConfig: StaticModalProps = {
     console.log('异步确定操作');
   },
   onCancel: () => console.log('取消操作')
+};
+
+// Message 类型示例
+const messageOptions: MessageOptions = {
+  title: '系统通知',
+  content: '您有新的消息',
+  intent: 'info',
+  duration: 3000,
+  closable: true,
+  onClose: () => console.log('消息关闭'),
+  action: <button>查看详情</button>
+};
+
+// 使用 Message API
+const messageInstance: MessageInstance = message.info('操作成功');
+
+// 异步操作中使用 Message
+const handleAsyncAction = async () => {
+  const loadingMessage: MessageInstance = message.info('处理中...', { 
+    duration: 0 
+  });
+  
+  try {
+    await someAsyncOperation();
+    loadingMessage.close();
+    message.success('处理成功');
+  } catch (error) {
+    loadingMessage.close();
+    message.error('处理失败');
+  }
 };
 ```
 
