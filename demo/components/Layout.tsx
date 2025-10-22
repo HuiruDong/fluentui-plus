@@ -118,7 +118,10 @@ const Layout: React.FC = () => {
     },
     {
       title: '反馈组件',
-      items: [{ path: '/modal', label: 'Modal 对话框' }],
+      items: [
+        { path: '/modal', label: 'Modal 对话框' },
+        { path: '/message', label: 'Message 全局提示' },
+      ],
     },
   ];
 

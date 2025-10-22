@@ -9,6 +9,7 @@ import SelectPage from './pages/SelectPage';
 import CascaderPage from './pages/CascaderPage';
 import CheckboxPage from './pages/CheckboxPage';
 import ModalPage from './pages/ModalPage';
+import MessagePage from './pages/MessagePage';
 
 const router = createBrowserRouter([
   {
@@ -46,6 +47,10 @@ const router = createBrowserRouter([
       {
         path: '/modal',
         element: <ModalPage />,
+      },
+      {
+        path: '/message',
+        element: <MessagePage />,
       },
     ],
   },
