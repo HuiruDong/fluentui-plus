@@ -2,6 +2,7 @@ import React, { useRef, useEffect } from 'react';
 import clsx from 'clsx';
 import Header from './Header';
 import Body from './Body';
+import { useSelection } from './hooks';
 import type { TableProps } from './types';
 import './index.less';
 
@@ -22,9 +23,17 @@ const Table = <RecordType = Record<string, unknown>,>({
   showHeader = true,
   bordered = false,
   emptyText = '暂无数据',
+  rowSelection,
 }: TableProps<RecordType>) => {
   const headerRef = useRef<HTMLDivElement>(null);
   const bodyRef = useRef<HTMLDivElement>(null);
+
+  // 使用选择 hook
+  const { selectedRowKeys, handleSelect, handleSelectAll } = useSelection({
+    dataSource,
+    rowKey,
+    rowSelection,
+  });
 
   // 同步表头和表体的横向滚动
   useEffect(() => {
@@ -84,6 +93,7 @@ const Table = <RecordType = Record<string, unknown>,>({
       [`${prefixCls}--bordered`]: bordered,
       [`${prefixCls}--scroll-x`]: hasScrollX,
       [`${prefixCls}--scroll-y`]: hasScrollY,
+      [`${prefixCls}--has-selection`]: rowSelection,
     },
     className
   );
@@ -101,7 +111,15 @@ const Table = <RecordType = Record<string, unknown>,>({
           }}
         >
           <div style={tableStyle}>
-            <Header columns={columns} prefixCls={prefixCls} />
+            <Header
+              columns={columns}
+              prefixCls={prefixCls}
+              rowSelection={rowSelection}
+              onSelectAll={handleSelectAll}
+              selectedRowKeys={selectedRowKeys}
+              dataSource={dataSource}
+              rowKey={rowKey}
+            />
           </div>
         </div>
       )}
@@ -116,7 +134,16 @@ const Table = <RecordType = Record<string, unknown>,>({
         }}
       >
         <div style={tableStyle}>
-          <Body columns={columns} dataSource={dataSource} rowKey={rowKey} emptyText={emptyText} prefixCls={prefixCls} />
+          <Body
+            columns={columns}
+            dataSource={dataSource}
+            rowKey={rowKey}
+            emptyText={emptyText}
+            prefixCls={prefixCls}
+            rowSelection={rowSelection}
+            selectedRowKeys={selectedRowKeys}
+            onSelect={handleSelect}
+          />
         </div>
       </div>
     </div>
@@ -124,4 +151,4 @@ const Table = <RecordType = Record<string, unknown>,>({
 };
 
 export default Table;
-export type { TableProps, ColumnType, ScrollConfig } from './types';
+export type { TableProps, ColumnType, ScrollConfig, RowSelection, CheckboxProps } from './types';

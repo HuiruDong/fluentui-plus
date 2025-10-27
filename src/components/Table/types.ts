@@ -53,6 +53,50 @@ export interface ScrollConfig {
 }
 
 /**
+ * 选择框配置
+ */
+export interface CheckboxProps<RecordType = Record<string, unknown>> {
+  /**
+   * 是否禁用
+   */
+  disabled?: boolean;
+  /**
+   * 自定义渲染
+   */
+  render?: (record: RecordType, index: number) => React.ReactNode;
+}
+
+/**
+ * 行选择配置
+ */
+export interface RowSelection<RecordType = Record<string, unknown>> {
+  /**
+   * 选中的行 key 数组
+   */
+  selectedRowKeys?: React.Key[];
+  /**
+   * 选中项发生变化时的回调
+   */
+  onChange?: (selectedRowKeys: React.Key[], selectedRows: RecordType[]) => void;
+  /**
+   * 获取选择框的属性
+   */
+  getCheckboxProps?: (record: RecordType) => CheckboxProps<RecordType>;
+  /**
+   * 固定选择列
+   */
+  fixed?: boolean;
+  /**
+   * 选择列的宽度
+   */
+  columnWidth?: number | string;
+  /**
+   * 选择列的标题
+   */
+  columnTitle?: React.ReactNode;
+}
+
+/**
  * Table 组件属性
  */
 export interface TableProps<RecordType = Record<string, unknown>> {
@@ -92,6 +136,10 @@ export interface TableProps<RecordType = Record<string, unknown>> {
    * 是否显示边框
    */
   emptyText?: React.ReactNode;
+  /**
+   * 行选择配置
+   */
+  rowSelection?: RowSelection<RecordType>;
 }
 
 /**
@@ -99,6 +147,7 @@ export interface TableProps<RecordType = Record<string, unknown>> {
  */
 export interface ColGroupProps<RecordType = Record<string, unknown>> {
   columns: ColumnType<RecordType>[];
+  rowSelection?: RowSelection<RecordType>;
 }
 
 /**
@@ -108,6 +157,11 @@ export interface HeaderProps<RecordType = Record<string, unknown>> {
   columns: ColumnType<RecordType>[];
   className?: string;
   prefixCls: string;
+  rowSelection?: RowSelection<RecordType>;
+  onSelectAll?: (selected: boolean) => void;
+  selectedRowKeys?: React.Key[];
+  dataSource?: RecordType[];
+  rowKey?: string | ((record: RecordType) => string);
 }
 
 /**
@@ -120,6 +174,9 @@ export interface BodyProps<RecordType = Record<string, unknown>> {
   className?: string;
   emptyText?: React.ReactNode;
   prefixCls: string;
+  rowSelection?: RowSelection<RecordType>;
+  selectedRowKeys?: React.Key[];
+  onSelect?: (key: React.Key, selected: boolean) => void;
 }
 
 /**
@@ -131,4 +188,7 @@ export interface RowProps<RecordType = Record<string, unknown>> {
   index: number;
   rowKey: string;
   prefixCls: string;
+  rowSelection?: RowSelection<RecordType>;
+  selected?: boolean;
+  onSelect?: (selected: boolean) => void;
 }

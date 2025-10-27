@@ -231,4 +231,37 @@
     text-align: center;
     color: @color-neutral-foreground-3;
   }
+
+  // 选择列样式
+  &-cell-selection {
+    text-align: center;
+    vertical-align: middle;
+    overflow: visible; // 覆盖基础 cell 的 overflow: hidden
+    white-space: normal; // 覆盖基础 cell 的 white-space: nowrap
+
+    .fluentui-plus-checkbox {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
+  // 选择列 checkbox 样式
+  &-selection-checkbox {
+    cursor: pointer;
+  }
+
+  // 有选择列时的表格样式
+  &--has-selection {
+    .@{table-prefix-cls}-cell-selection {
+      // 选择列默认宽度
+      width: 60px;
+      min-width: 60px;
+      padding: 12px;
+
+      &:first-child {
+        padding-left: 16px;
+      }
+    }
+  }
 }

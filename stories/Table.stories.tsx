@@ -1111,3 +1111,207 @@ export const EnterpriseScenario: Story = {
     );
   },
 };
+
+/**
+ * 行选择功能
+ * 通过 `rowSelection` 配置可以实现多选功能，支持全选、单选、禁用等特性
+ */
+export const RowSelection: Story = {
+  render: () => {
+    const [selectedRowKeys, setSelectedRowKeys] = React.useState<React.Key[]>([]);
+
+    const dataSource = [
+      { key: '1', name: '张三', age: 32, address: '北京市朝阳区', department: '技术部' },
+      { key: '2', name: '李四', age: 42, address: '上海市浦东新区', department: '产品部' },
+      { key: '3', name: '王五', age: 28, address: '广州市天河区', department: '设计部' },
+      { key: '4', name: '赵六', age: 35, address: '深圳市南山区', department: '运营部' },
+      { key: '5', name: '孙七', age: 26, address: '杭州市西湖区', department: '市场部' },
+    ];
+
+    const columns: ColumnType<(typeof dataSource)[0]>[] = [
+      { key: 'name', title: '姓名', dataIndex: 'name', width: 120 },
+      { key: 'age', title: '年龄', dataIndex: 'age', width: 80, align: 'center' },
+      { key: 'address', title: '地址', dataIndex: 'address', width: 200 },
+      { key: 'department', title: '部门', dataIndex: 'department', width: 120 },
+    ];
+
+    return (
+      <div>
+        <div style={{ marginBottom: '16px', padding: '12px', background: '#f8f9fa', borderRadius: '6px' }}>
+          <div style={{ fontSize: '14px', color: '#495057' }}>
+            已选择 <strong style={{ color: '#228be6' }}>{selectedRowKeys.length}</strong> 项
+          </div>
+          {selectedRowKeys.length > 0 && (
+            <div style={{ marginTop: '8px', fontSize: '12px', color: '#868e96' }}>
+              选中的 Keys: {selectedRowKeys.join(', ')}
+            </div>
+          )}
+        </div>
+        <Table
+          dataSource={dataSource}
+          columns={columns}
+          bordered
+          rowSelection={{
+            selectedRowKeys,
+            onChange: (keys, rows) => {
+              console.log('Selected Keys:', keys);
+              console.log('Selected Rows:', rows);
+              setSelectedRowKeys(keys);
+            },
+          }}
+        />
+      </div>
+    );
+  },
+};
+
+/**
+ * 默认选中某些行
+ */
+export const DefaultSelected: Story = {
+  render: () => {
+    const [selectedRowKeys, setSelectedRowKeys] = React.useState<React.Key[]>(['2', '4']);
+
+    const dataSource = [
+      { key: '1', name: '张三', age: 32, address: '北京市朝阳区', department: '技术部' },
+      { key: '2', name: '李四', age: 42, address: '上海市浦东新区', department: '产品部' },
+      { key: '3', name: '王五', age: 28, address: '广州市天河区', department: '设计部' },
+      { key: '4', name: '赵六', age: 35, address: '深圳市南山区', department: '运营部' },
+      { key: '5', name: '孙七', age: 26, address: '杭州市西湖区', department: '市场部' },
+    ];
+
+    const columns: ColumnType<(typeof dataSource)[0]>[] = [
+      { key: 'name', title: '姓名', dataIndex: 'name', width: 120 },
+      { key: 'age', title: '年龄', dataIndex: 'age', width: 80, align: 'center' },
+      { key: 'address', title: '地址', dataIndex: 'address', width: 200 },
+      { key: 'department', title: '部门', dataIndex: 'department', width: 120 },
+    ];
+
+    return (
+      <div>
+        <div style={{ marginBottom: '16px', padding: '12px', background: '#f8f9fa', borderRadius: '6px' }}>
+          <div style={{ fontSize: '14px', color: '#495057' }}>
+            已选择 <strong style={{ color: '#228be6' }}>{selectedRowKeys.length}</strong> 项
+          </div>
+        </div>
+        <Table
+          dataSource={dataSource}
+          columns={columns}
+          bordered
+          rowSelection={{
+            selectedRowKeys,
+            onChange: keys => setSelectedRowKeys(keys),
+          }}
+        />
+      </div>
+    );
+  },
+};
+
+/**
+ * 禁用某些行的选择
+ * 通过 `getCheckboxProps` 可以设置某些行的 checkbox 为禁用状态
+ */
+export const DisabledRows: Story = {
+  render: () => {
+    const [selectedRowKeys, setSelectedRowKeys] = React.useState<React.Key[]>([]);
+
+    const dataSource = [
+      { key: '1', name: '张三', age: 32, address: '北京市朝阳区', status: 'active' },
+      { key: '2', name: '李四', age: 42, address: '上海市浦东新区', status: 'disabled' },
+      { key: '3', name: '王五', age: 28, address: '广州市天河区', status: 'active' },
+      { key: '4', name: '赵六', age: 35, address: '深圳市南山区', status: 'disabled' },
+      { key: '5', name: '孙七', age: 26, address: '杭州市西湖区', status: 'active' },
+    ];
+
+    const columns: ColumnType<(typeof dataSource)[0]>[] = [
+      { key: 'name', title: '姓名', dataIndex: 'name', width: 120 },
+      { key: 'age', title: '年龄', dataIndex: 'age', width: 80, align: 'center' },
+      { key: 'address', title: '地址', dataIndex: 'address', width: 200 },
+      {
+        key: 'status',
+        title: '状态',
+        dataIndex: 'status',
+        width: 100,
+        render: (value: unknown) => (
+          <span style={{ color: value === 'active' ? '#40c057' : '#868e96' }}>
+            {value === 'active' ? '可用' : '禁用'}
+          </span>
+        ),
+      },
+    ];
+
+    return (
+      <div>
+        <div style={{ marginBottom: '16px', padding: '12px', background: '#fff3cd', borderRadius: '6px' }}>
+          <div style={{ fontSize: '14px', color: '#856404' }}>💡 状态为"禁用"的行不可选择</div>
+        </div>
+        <div style={{ marginBottom: '16px', padding: '12px', background: '#f8f9fa', borderRadius: '6px' }}>
+          <div style={{ fontSize: '14px', color: '#495057' }}>
+            已选择 <strong style={{ color: '#228be6' }}>{selectedRowKeys.length}</strong> 项
+          </div>
+        </div>
+        <Table
+          dataSource={dataSource}
+          columns={columns}
+          bordered
+          rowSelection={{
+            selectedRowKeys,
+            onChange: keys => setSelectedRowKeys(keys),
+            getCheckboxProps: record => ({
+              disabled: record.status === 'disabled',
+            }),
+          }}
+        />
+      </div>
+    );
+  },
+};
+
+/**
+ * 固定选择列
+ * 当表格横向滚动时，选择列可以固定在左侧
+ */
+export const FixedSelectionColumn: Story = {
+  render: () => {
+    const [selectedRowKeys, setSelectedRowKeys] = React.useState<React.Key[]>([]);
+
+    const dataSource = [
+      { key: '1', name: '张三', age: 32, address: '北京市朝阳区', email: 'zhangsan@example.com', phone: '13800138000' },
+      { key: '2', name: '李四', age: 42, address: '上海市浦东新区', email: 'lisi@example.com', phone: '13800138001' },
+      { key: '3', name: '王五', age: 28, address: '广州市天河区', email: 'wangwu@example.com', phone: '13800138002' },
+      { key: '4', name: '赵六', age: 35, address: '深圳市南山区', email: 'zhaoliu@example.com', phone: '13800138003' },
+    ];
+
+    const columns: ColumnType<(typeof dataSource)[0]>[] = [
+      { key: 'name', title: '姓名', dataIndex: 'name', width: 120 },
+      { key: 'age', title: '年龄', dataIndex: 'age', width: 80, align: 'center' },
+      { key: 'address', title: '地址', dataIndex: 'address', width: 200 },
+      { key: 'email', title: '邮箱', dataIndex: 'email', width: 220 },
+      { key: 'phone', title: '电话', dataIndex: 'phone', width: 140 },
+    ];
+
+    return (
+      <div>
+        <div style={{ marginBottom: '16px', padding: '12px', background: '#f8f9fa', borderRadius: '6px' }}>
+          <div style={{ fontSize: '14px', color: '#495057' }}>
+            已选择 <strong style={{ color: '#228be6' }}>{selectedRowKeys.length}</strong> 项
+          </div>
+        </div>
+        <div style={{ width: '600px', border: '1px solid #dee2e6', borderRadius: '8px' }}>
+          <Table
+            dataSource={dataSource}
+            columns={columns}
+            scroll={{ x: 900 }}
+            bordered
+            rowSelection={{
+              selectedRowKeys,
+              onChange: keys => setSelectedRowKeys(keys),
+              fixed: true,
+            }}
+          />
+        </div>
+      </div>
+    );
+  },
+};

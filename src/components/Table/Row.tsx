@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import type { RowProps } from './types';
 import { get } from 'lodash';
 import { calculateFixedInfo, getFixedCellStyle } from './utils';
+import SelectionCell from './SelectionCell';
 
 /**
  * Row 组件
@@ -14,11 +15,38 @@ const Row = <RecordType = Record<string, unknown>,>({
   index,
   rowKey,
   prefixCls,
+  rowSelection,
+  selected,
+  onSelect,
 }: RowProps<RecordType>) => {
   const fixedInfo = useMemo(() => calculateFixedInfo(columns), [columns]);
 
   return (
     <tr className={`${prefixCls}-row`} data-row-key={rowKey}>
+      {/* 选择列 */}
+      {rowSelection && onSelect && (
+        <td
+          className={clsx(`${prefixCls}-cell`, `${prefixCls}-cell-selection`, {
+            [`${prefixCls}-cell-fixed-left`]: rowSelection.fixed,
+          })}
+          style={{
+            width: rowSelection.columnWidth || 60,
+            position: rowSelection.fixed ? 'sticky' : undefined,
+            left: rowSelection.fixed ? 0 : undefined,
+            zIndex: rowSelection.fixed ? 2 : undefined,
+          }}
+        >
+          <SelectionCell
+            record={record}
+            index={index}
+            selected={selected || false}
+            onSelect={onSelect}
+            rowSelection={rowSelection}
+            prefixCls={prefixCls}
+          />
+        </td>
+      )}
+
       {columns.map((column, columnIndex) => {
         const info = fixedInfo[columnIndex];
 

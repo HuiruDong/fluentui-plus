@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@fluentui/react-components';
 import { Table } from '../../src/components';
 import type { ColumnType } from '../../src/components';
@@ -38,6 +38,10 @@ const TablePage: React.FC = () => {
     ...commonStyles,
     ...customStyles,
   };
+
+  // 选择状态
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+  const [selectedRowKeys2, setSelectedRowKeys2] = useState<React.Key[]>(['2', '4']);
 
   // 基础数据
   const dataSource: DataType[] = [
@@ -356,6 +360,116 @@ const TablePage: React.FC = () => {
         </div>
       </div>
 
+      {/* 空状态 */}
+      <div className={styles.section}>
+        <div className={styles.sectionTitle}>空状态</div>
+        <div className={styles.sectionDescription}>当 dataSource 为空数组时，显示空状态提示。</div>
+        <div className={styles.demoContainer}>
+          <div className={styles.demoTitle}>默认空状态</div>
+          <div className={styles.demo}>
+            <Table dataSource={[]} columns={columns} bordered />
+          </div>
+        </div>
+        <div className={styles.demoContainer}>
+          <div className={styles.demoTitle}>自定义空状态文本</div>
+          <div className={styles.demo}>
+            <Table dataSource={[]} columns={columns} bordered emptyText='没有找到任何数据' />
+          </div>
+        </div>
+        <div className={styles.demoContainer}>
+          <div className={styles.demoTitle}>自定义空状态内容</div>
+          <div className={styles.demo}>
+            <Table
+              dataSource={[]}
+              columns={columns}
+              bordered
+              emptyText={
+                <div style={{ padding: '20px 0', color: '#999' }}>
+                  <div style={{ fontSize: '48px' }}>📭</div>
+                  <div style={{ marginTop: '8px' }}>暂时没有数据哦</div>
+                </div>
+              }
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* 行选择 */}
+      <div className={styles.section}>
+        <div className={styles.sectionTitle}>行选择</div>
+        <div className={styles.sectionDescription}>通过 rowSelection 配置可以实现多选功能。</div>
+        <div className={styles.demoContainer}>
+          <div className={styles.demoTitle}>基础行选择</div>
+          <div className={styles.demo}>
+            <div style={{ marginBottom: '16px' }}>
+              已选择: {selectedRowKeys.length} 项
+              {selectedRowKeys.length > 0 && <span style={{ marginLeft: '8px' }}>({selectedRowKeys.join(', ')})</span>}
+            </div>
+            <Table
+              dataSource={dataSource}
+              columns={columns}
+              bordered
+              rowSelection={{
+                selectedRowKeys,
+                onChange: (keys, rows) => {
+                  console.log('Selected Keys:', keys);
+                  console.log('Selected Rows:', rows);
+                  setSelectedRowKeys(keys);
+                },
+              }}
+            />
+          </div>
+        </div>
+        <div className={styles.demoContainer}>
+          <div className={styles.demoTitle}>默认选中</div>
+          <div className={styles.demo}>
+            <div style={{ marginBottom: '16px' }}>已选择: {selectedRowKeys2.length} 项</div>
+            <Table
+              dataSource={dataSource}
+              columns={columns}
+              bordered
+              rowSelection={{
+                selectedRowKeys: selectedRowKeys2,
+                onChange: keys => {
+                  setSelectedRowKeys2(keys);
+                },
+              }}
+            />
+          </div>
+        </div>
+        <div className={styles.demoContainer}>
+          <div className={styles.demoTitle}>禁用某些行</div>
+          <div className={styles.demo}>
+            <Table
+              dataSource={dataSource}
+              columns={columns}
+              bordered
+              rowSelection={{
+                getCheckboxProps: record => ({
+                  disabled: record.age > 30, // 年龄大于 30 的禁用
+                }),
+              }}
+            />
+          </div>
+        </div>
+        <div className={styles.demoContainer}>
+          <div className={styles.demoTitle}>固定选择列</div>
+          <div className={styles.demo}>
+            <div className={styles.tableWrapper}>
+              <Table
+                dataSource={dataSource}
+                columns={columns}
+                scroll={{ x: 1000 }}
+                bordered
+                rowSelection={{
+                  fixed: true,
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* 固定列 */}
       <div className={styles.section}>
         <div className={styles.sectionTitle}>固定列</div>
@@ -536,6 +650,12 @@ const TablePage: React.FC = () => {
                 <td style={apiTableStyles.tdStyle}>'暂无数据'</td>
               </tr>
               <tr>
+                <td style={apiTableStyles.tdStyle}>rowSelection</td>
+                <td style={apiTableStyles.tdStyle}>行选择配置</td>
+                <td style={apiTableStyles.tdStyle}>RowSelection</td>
+                <td style={apiTableStyles.tdStyle}>-</td>
+              </tr>
+              <tr>
                 <td style={apiTableStyles.tdStyle}>className</td>
                 <td style={apiTableStyles.tdStyle}>自定义类名</td>
                 <td style={apiTableStyles.tdStyle}>string</td>
@@ -613,6 +733,62 @@ const TablePage: React.FC = () => {
                 <td style={apiTableStyles.tdStyle}>className</td>
                 <td style={apiTableStyles.tdStyle}>列的类名</td>
                 <td style={apiTableStyles.tdStyle}>string</td>
+                <td style={apiTableStyles.tdStyle}>-</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* RowSelection API */}
+      <div className={styles.section}>
+        <div className={styles.sectionTitle}>RowSelection 配置</div>
+        <div className={styles.sectionDescription}>行选择配置项说明。</div>
+        <div className={styles.demoContainer}>
+          <table style={apiTableStyles.tableStyle}>
+            <thead>
+              <tr style={{ backgroundColor: '#f9fafb' }}>
+                <th style={apiTableStyles.thStyle}>参数</th>
+                <th style={apiTableStyles.thStyle}>说明</th>
+                <th style={apiTableStyles.thStyle}>类型</th>
+                <th style={apiTableStyles.thStyle}>默认值</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style={apiTableStyles.tdStyle}>selectedRowKeys</td>
+                <td style={apiTableStyles.tdStyle}>选中的行 key 数组（受控）</td>
+                <td style={apiTableStyles.tdStyle}>React.Key[]</td>
+                <td style={apiTableStyles.tdStyle}>-</td>
+              </tr>
+              <tr>
+                <td style={apiTableStyles.tdStyle}>onChange</td>
+                <td style={apiTableStyles.tdStyle}>选中项发生变化时的回调</td>
+                <td style={apiTableStyles.tdStyle}>(keys, rows) =&gt; void</td>
+                <td style={apiTableStyles.tdStyle}>-</td>
+              </tr>
+              <tr>
+                <td style={apiTableStyles.tdStyle}>getCheckboxProps</td>
+                <td style={apiTableStyles.tdStyle}>获取选择框的属性，可用于禁用某些行</td>
+                <td style={apiTableStyles.tdStyle}>(record) =&gt; CheckboxProps</td>
+                <td style={apiTableStyles.tdStyle}>-</td>
+              </tr>
+              <tr>
+                <td style={apiTableStyles.tdStyle}>fixed</td>
+                <td style={apiTableStyles.tdStyle}>是否固定选择列到左侧</td>
+                <td style={apiTableStyles.tdStyle}>boolean</td>
+                <td style={apiTableStyles.tdStyle}>false</td>
+              </tr>
+              <tr>
+                <td style={apiTableStyles.tdStyle}>columnWidth</td>
+                <td style={apiTableStyles.tdStyle}>选择列的宽度</td>
+                <td style={apiTableStyles.tdStyle}>number | string</td>
+                <td style={apiTableStyles.tdStyle}>60</td>
+              </tr>
+              <tr>
+                <td style={apiTableStyles.tdStyle}>columnTitle</td>
+                <td style={apiTableStyles.tdStyle}>选择列的标题</td>
+                <td style={apiTableStyles.tdStyle}>React.ReactNode</td>
                 <td style={apiTableStyles.tdStyle}>-</td>
               </tr>
             </tbody>

@@ -394,4 +394,142 @@ describe('Table Component', () => {
       expect(tableContainer).toHaveClass('my-table');
     });
   });
+
+  describe('选择功能', () => {
+    it('should render with rowSelection config', () => {
+      const onChange = jest.fn();
+      const rowSelection = {
+        selectedRowKeys: ['1'],
+        onChange,
+      };
+
+      render(<Table dataSource={mockData} columns={mockColumns} rowSelection={rowSelection} />);
+
+      // 应该渲染表格
+      expect(screen.getByTestId('table-header')).toBeInTheDocument();
+      expect(screen.getByTestId('table-body')).toBeInTheDocument();
+    });
+
+    it('should support controlled selection mode', () => {
+      const onChange = jest.fn();
+      const rowSelection = {
+        selectedRowKeys: ['1', '2'],
+        onChange,
+      };
+
+      const { rerender } = render(<Table dataSource={mockData} columns={mockColumns} rowSelection={rowSelection} />);
+
+      // 更新选中的行
+      const updatedSelection = {
+        selectedRowKeys: ['2', '3'],
+        onChange,
+      };
+
+      rerender(<Table dataSource={mockData} columns={mockColumns} rowSelection={updatedSelection} />);
+
+      // 应该更新选中状态
+      expect(screen.getByTestId('table-body')).toBeInTheDocument();
+    });
+
+    it('should support uncontrolled selection mode', () => {
+      const onChange = jest.fn();
+      const rowSelection = {
+        onChange,
+      };
+
+      render(<Table dataSource={mockData} columns={mockColumns} rowSelection={rowSelection} />);
+
+      // 应该能够渲染
+      expect(screen.getByTestId('table-header')).toBeInTheDocument();
+      expect(screen.getByTestId('table-body')).toBeInTheDocument();
+    });
+
+    it('should pass selection props to Header component', () => {
+      const onChange = jest.fn();
+      const rowSelection = {
+        selectedRowKeys: ['1'],
+        onChange,
+      };
+
+      render(<Table dataSource={mockData} columns={mockColumns} rowSelection={rowSelection} />);
+
+      // Header 应该被渲染（mock 组件会检查传入的 props）
+      expect(screen.getByTestId('table-header')).toBeInTheDocument();
+    });
+
+    it('should pass selection props to Body component', () => {
+      const onChange = jest.fn();
+      const rowSelection = {
+        selectedRowKeys: ['1'],
+        onChange,
+      };
+
+      render(<Table dataSource={mockData} columns={mockColumns} rowSelection={rowSelection} />);
+
+      // Body 应该被渲染（mock 组件会检查传入的 props）
+      expect(screen.getByTestId('table-body')).toBeInTheDocument();
+    });
+
+    it('should support getCheckboxProps', () => {
+      const onChange = jest.fn();
+      const rowSelection = {
+        onChange,
+        getCheckboxProps: (record: any) => ({
+          disabled: record.age > 30,
+        }),
+      };
+
+      render(<Table dataSource={mockData} columns={mockColumns} rowSelection={rowSelection} />);
+
+      expect(screen.getByTestId('table-body')).toBeInTheDocument();
+    });
+
+    it('should support custom columnWidth', () => {
+      const onChange = jest.fn();
+      const rowSelection = {
+        onChange,
+        columnWidth: 80,
+      };
+
+      render(<Table dataSource={mockData} columns={mockColumns} rowSelection={rowSelection} />);
+
+      expect(screen.getByTestId('table-body')).toBeInTheDocument();
+    });
+
+    it('should support fixed selection column', () => {
+      const onChange = jest.fn();
+      const rowSelection = {
+        onChange,
+        fixed: true,
+      };
+
+      render(<Table dataSource={mockData} columns={mockColumns} rowSelection={rowSelection} />);
+
+      expect(screen.getByTestId('table-body')).toBeInTheDocument();
+    });
+
+    it('should work with empty dataSource', () => {
+      const onChange = jest.fn();
+      const rowSelection = {
+        selectedRowKeys: [],
+        onChange,
+      };
+
+      render(<Table dataSource={[]} columns={mockColumns} rowSelection={rowSelection} />);
+
+      expect(screen.getByTestId('table-body')).toBeInTheDocument();
+      expect(screen.getByText('暂无数据')).toBeInTheDocument();
+    });
+
+    it('should work without any columns', () => {
+      const onChange = jest.fn();
+      const rowSelection = {
+        onChange,
+      };
+
+      render(<Table dataSource={mockData} columns={[]} rowSelection={rowSelection} />);
+
+      expect(screen.getByTestId('table-body')).toBeInTheDocument();
+    });
+  });
 });

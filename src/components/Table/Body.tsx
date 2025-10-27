@@ -15,6 +15,9 @@ const Body = <RecordType = Record<string, unknown>,>({
   className,
   emptyText = '暂无数据',
   prefixCls,
+  rowSelection,
+  selectedRowKeys,
+  onSelect,
 }: BodyProps<RecordType>) => {
   // 获取行的唯一 key
   const getRowKey = (record: RecordType, index: number): string => {
@@ -29,18 +32,38 @@ const Body = <RecordType = Record<string, unknown>,>({
 
   return (
     <table className={clsx(`${prefixCls}-body`, className)}>
-      <ColGroup columns={columns} />
+      <ColGroup columns={columns} rowSelection={rowSelection} />
       <tbody className={`${prefixCls}-tbody`}>
         {isEmpty ? (
           <tr className={`${prefixCls}-empty-row`}>
-            <td colSpan={columns.length} className={`${prefixCls}-empty`}>
+            <td colSpan={columns.length + (rowSelection ? 1 : 0)} className={`${prefixCls}-empty`}>
               {emptyText}
             </td>
           </tr>
         ) : (
           dataSource.map((record, index) => {
             const key = getRowKey(record, index);
-            return <Row key={key} columns={columns} record={record} index={index} rowKey={key} prefixCls={prefixCls} />;
+            const selected = selectedRowKeys?.includes(key) || false;
+
+            return (
+              <Row
+                key={key}
+                columns={columns}
+                record={record}
+                index={index}
+                rowKey={key}
+                prefixCls={prefixCls}
+                rowSelection={rowSelection}
+                selected={selected}
+                onSelect={
+                  onSelect
+                    ? (checked: boolean) => {
+                        onSelect(key, checked);
+                      }
+                    : undefined
+                }
+              />
+            );
           })
         )}
       </tbody>
