@@ -836,6 +836,271 @@ setTimeout(() => {
 }, 5000);
 ```
 
+### Table 表格
+
+用于展示行列数据的表格组件。基于 rc-table 实现逻辑，支持数据渲染、固定列、横向和纵向滚动等功能。适用于展示大量结构化数据的场景。
+
+#### 属性
+
+| 属性 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `dataSource` | `RecordType[]` | `[]` | 数据源数组 |
+| `columns` | `ColumnType<RecordType>[]` | `[]` | 列配置数组 |
+| `rowKey` | `string \| ((record: RecordType) => string)` | `'key'` | 数据行的唯一标识字段名或函数 |
+| `scroll` | `ScrollConfig` | - | 滚动配置，支持横向和纵向滚动 |
+| `showHeader` | `boolean` | `true` | 是否显示表头 |
+| `bordered` | `boolean` | `false` | 是否显示边框 |
+| `emptyText` | `React.ReactNode` | `'暂无数据'` | 空数据时显示的内容 |
+| `className` | `string` | - | 自定义样式类名 |
+| `style` | `React.CSSProperties` | - | 自定义内联样式 |
+
+#### ColumnType 列配置类型
+
+```typescript
+interface ColumnType<RecordType = Record<string, unknown>> {
+  key: string;                    // 列的唯一标识（必填）
+  title: React.ReactNode;         // 列头显示的文字
+  dataIndex?: string | string[];  // 数据在数据项中对应的路径
+  width?: number | string;        // 列宽度
+  render?: (value: unknown, record: RecordType, index: number) => React.ReactNode; // 自定义渲染函数
+  align?: 'left' | 'center' | 'right';  // 列的对齐方式
+  className?: string;             // 列的自定义样式类名
+  fixed?: 'left' | 'right';       // 固定列（配合 scroll.x 使用）
+}
+```
+
+#### ScrollConfig 滚动配置类型
+
+```typescript
+interface ScrollConfig {
+  x?: number | string | true;  // 横向滚动宽度，true 表示自动计算
+  y?: number | string;         // 纵向滚动高度，设置后表格体可纵向滚动
+}
+```
+
+#### 示例
+
+```jsx
+import { Table } from '@luoluoyu/fluentui-plus';
+
+// 基础数据类型
+interface DataType {
+  key: string;
+  name: string;
+  age: number;
+  address: string;
+}
+
+// 数据源
+const dataSource: DataType[] = [
+  { key: '1', name: '张三', age: 32, address: '北京市朝阳区' },
+  { key: '2', name: '李四', age: 42, address: '上海市浦东新区' },
+  { key: '3', name: '王五', age: 28, address: '广州市天河区' },
+];
+
+// 列配置
+const columns: ColumnType<DataType>[] = [
+  {
+    key: 'name',
+    title: '姓名',
+    dataIndex: 'name',
+    width: 120,
+  },
+  {
+    key: 'age',
+    title: '年龄',
+    dataIndex: 'age',
+    width: 100,
+  },
+  {
+    key: 'address',
+    title: '地址',
+    dataIndex: 'address',
+  },
+];
+
+// 基础用法
+<Table dataSource={dataSource} columns={columns} />
+
+// 带边框
+<Table dataSource={dataSource} columns={columns} bordered />
+
+// 隐藏表头
+<Table dataSource={dataSource} columns={columns} showHeader={false} />
+
+// 列对齐方式
+const alignColumns: ColumnType<DataType>[] = [
+  {
+    key: 'name',
+    title: '姓名（左对齐）',
+    dataIndex: 'name',
+    align: 'left',
+  },
+  {
+    key: 'age',
+    title: '年龄（居中）',
+    dataIndex: 'age',
+    align: 'center',
+  },
+  {
+    key: 'address',
+    title: '地址（右对齐）',
+    dataIndex: 'address',
+    align: 'right',
+  },
+];
+
+<Table dataSource={dataSource} columns={alignColumns} />
+
+// 自定义渲染
+const customColumns: ColumnType<DataType>[] = [
+  {
+    key: 'name',
+    title: '姓名',
+    dataIndex: 'name',
+  },
+  {
+    key: 'age',
+    title: '年龄',
+    dataIndex: 'age',
+    render: (value: unknown) => {
+      const age = value as number;
+      const color = age > 30 ? '#ff6b6b' : '#51cf66';
+      return <span style={{ color, fontWeight: '600' }}>{age} 岁</span>;
+    },
+  },
+  {
+    key: 'address',
+    title: '地址',
+    dataIndex: 'address',
+  },
+];
+
+<Table dataSource={dataSource} columns={customColumns} />
+
+// 固定列（需配合 scroll.x）
+const fixedColumns: ColumnType<DataType>[] = [
+  {
+    key: 'name',
+    title: '姓名',
+    dataIndex: 'name',
+    width: 100,
+    fixed: 'left',  // 固定在左侧
+  },
+  {
+    key: 'age',
+    title: '年龄',
+    dataIndex: 'age',
+    width: 100,
+  },
+  {
+    key: 'address',
+    title: '地址',
+    dataIndex: 'address',
+    width: 200,
+  },
+  {
+    key: 'email',
+    title: '邮箱',
+    dataIndex: 'email',
+    width: 200,
+  },
+  {
+    key: 'phone',
+    title: '电话',
+    dataIndex: 'phone',
+    width: 150,
+  },
+  {
+    key: 'actions',
+    title: '操作',
+    width: 120,
+    fixed: 'right',  // 固定在右侧
+    render: () => <button>操作</button>,
+  },
+];
+
+<Table 
+  dataSource={dataSource} 
+  columns={fixedColumns} 
+  scroll={{ x: 1000 }}  // 设置横向滚动宽度
+  bordered 
+/>
+
+// 横向滚动
+<Table 
+  dataSource={dataSource} 
+  columns={wideColumns} 
+  scroll={{ x: 1200 }}  // 表格总宽度超过容器宽度时出现横向滚动
+/>
+
+// 纵向滚动
+<Table 
+  dataSource={longDataSource} 
+  columns={columns} 
+  scroll={{ y: 300 }}  // 表格体最大高度 300px，超出可滚动
+/>
+
+// 横向和纵向滚动
+<Table 
+  dataSource={dataSource} 
+  columns={columns} 
+  scroll={{ x: 1200, y: 400 }}  // 同时支持横向和纵向滚动
+  bordered
+/>
+
+// 空数据自定义
+<Table 
+  dataSource={[]} 
+  columns={columns} 
+  emptyText={
+    <div style={{ padding: '40px', textAlign: 'center' }}>
+      <div style={{ fontSize: '48px' }}>📭</div>
+      <div>暂无数据</div>
+    </div>
+  }
+/>
+
+// 自定义 rowKey
+<Table 
+  dataSource={dataSource} 
+  columns={columns} 
+  rowKey="id"  // 使用数据项的 id 字段作为 key
+/>
+
+// 或使用函数
+<Table 
+  dataSource={dataSource} 
+  columns={columns} 
+  rowKey={record => record.id}  // 使用函数返回唯一标识
+/>
+```
+
+#### 最佳实践
+
+1. **数据唯一标识**:
+   - 确保每行数据都有唯一的 `key` 字段，或通过 `rowKey` 指定唯一标识
+   - 这对于 React 的高效渲染和更新至关重要
+
+2. **列宽设置**:
+   - 对于固定列，必须设置明确的宽度
+   - 建议为所有列设置合理的宽度，避免列宽不稳定
+
+3. **滚动配置**:
+   - 横向滚动 (`scroll.x`): 当列总宽度超过容器宽度时使用
+   - 纵向滚动 (`scroll.y`): 当数据量大需要固定高度时使用
+   - 固定列需要配合 `scroll.x` 使用
+
+4. **性能优化**:
+   - 对于大量数据，考虑使用虚拟滚动或分页
+   - 在 `render` 函数中避免创建新的对象或函数
+   - 合理使用 `React.memo` 包装自定义渲染组件
+
+5. **自定义渲染**:
+   - 使用 `render` 函数可以实现复杂的单元格内容
+   - 可以渲染任何 React 节点，包括按钮、标签、进度条等
+   - `render` 函数接收三个参数：当前单元格的值、当前行数据、行索引
+
 ### Message 消息提示
 
 用于在页面顶部显示全局消息提示，支持多种类型和自定义内容。基于 FluentUI 的 Toast 组件实现，提供一致的用户体验。
@@ -1046,7 +1311,10 @@ import type {
   StaticModalProps,
   MessageOptions,
   MessageInstance,
-  MessageApi
+  MessageApi,
+  TableProps,
+  ColumnType,
+  ScrollConfig
 } from '@luoluoyu/fluentui-plus';
 
 // 使用类型
@@ -1185,6 +1453,65 @@ const handleAsyncAction = async () => {
     loadingMessage.close();
     message.error('处理失败');
   }
+};
+
+// Table 类型示例
+interface UserData {
+  key: string;
+  name: string;
+  age: number;
+  email: string;
+  status: 'active' | 'inactive';
+}
+
+const tableColumns: ColumnType<UserData>[] = [
+  {
+    key: 'name',
+    title: '姓名',
+    dataIndex: 'name',
+    width: 120,
+  },
+  {
+    key: 'age',
+    title: '年龄',
+    dataIndex: 'age',
+    width: 100,
+    align: 'center',
+  },
+  {
+    key: 'email',
+    title: '邮箱',
+    dataIndex: 'email',
+    width: 200,
+  },
+  {
+    key: 'status',
+    title: '状态',
+    dataIndex: 'status',
+    width: 100,
+    render: (value, record, index) => {
+      const status = value as 'active' | 'inactive';
+      return <span>{status === 'active' ? '激活' : '未激活'}</span>;
+    },
+  },
+];
+
+const scrollConfig: ScrollConfig = {
+  x: 1200,
+  y: 400,
+};
+
+const tableProps: TableProps<UserData> = {
+  dataSource: [
+    { key: '1', name: '张三', age: 25, email: 'zhangsan@example.com', status: 'active' },
+    { key: '2', name: '李四', age: 30, email: 'lisi@example.com', status: 'inactive' },
+  ],
+  columns: tableColumns,
+  scroll: scrollConfig,
+  bordered: true,
+  showHeader: true,
+  rowKey: 'key',
+  emptyText: '暂无数据',
 };
 ```
 
