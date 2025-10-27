@@ -34,17 +34,29 @@ const Table = <RecordType = Record<string, unknown>,>({
 
     const bodyElement = bodyRef.current;
     const headerElement = headerRef.current;
+    let rafId: number | null = null;
 
     const handleScroll = () => {
-      if (headerElement) {
-        headerElement.scrollLeft = bodyElement.scrollLeft;
+      // 取消之前的 RAF，避免重复调用
+      if (rafId !== null) {
+        cancelAnimationFrame(rafId);
       }
+
+      // 在下一帧同步滚动位置，确保与浏览器渲染同步
+      rafId = requestAnimationFrame(() => {
+        if (headerElement) {
+          headerElement.scrollLeft = bodyElement.scrollLeft;
+        }
+      });
     };
 
-    bodyElement.addEventListener('scroll', handleScroll);
+    bodyElement.addEventListener('scroll', handleScroll, { passive: true });
 
     return () => {
       bodyElement.removeEventListener('scroll', handleScroll);
+      if (rafId !== null) {
+        cancelAnimationFrame(rafId);
+      }
     };
   }, [scroll?.x]);
 
