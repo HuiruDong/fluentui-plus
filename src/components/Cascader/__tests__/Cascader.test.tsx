@@ -220,10 +220,7 @@ jest.mock('../../Select/hooks', () => ({
   useSelectState: jest.fn(),
 }));
 
-// Mock @fluentui/react-components
-jest.mock('@fluentui/react-components', () => ({
-  mergeClasses: jest.fn((...classes) => classes.filter(Boolean).join(' ')),
-}));
+// Mock子组件 - CascaderPanel
 
 describe('Cascader Integration Tests', () => {
   // 测试数据

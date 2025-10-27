@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { mergeClasses } from '@fluentui/react-components';
+import clsx from 'clsx';
 import { NavProps } from './types';
 import { useNavigation } from './hooks/useNavigation';
 import NavItem from './NavItem';
@@ -33,7 +33,7 @@ const Nav: React.FC<NavProps> = ({
   });
 
   const navClasses = useMemo(
-    () => mergeClasses(prefixCls, `${prefixCls}--${mode}`, collapsed && `${prefixCls}--collapsed`, className),
+    () => clsx(prefixCls, `${prefixCls}--${mode}`, { [`${prefixCls}--collapsed`]: collapsed }, className),
     [mode, collapsed, className]
   );
 

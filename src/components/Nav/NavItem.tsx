@@ -1,9 +1,10 @@
 import React, { useState, useRef } from 'react';
-import { mergeClasses, Tooltip, Menu, MenuTrigger, MenuPopover, MenuList, Divider } from '@fluentui/react-components';
+import { Tooltip, Menu, MenuTrigger, MenuPopover, MenuList, Divider } from '@fluentui/react-components';
 import { ChevronRightRegular } from '@fluentui/react-icons';
 import { NavItemProps } from './types';
 import { hasChildren } from './utils';
 import NavSubmenu from './NavSubmenu';
+import clsx from 'clsx';
 
 const NavItem: React.FC<NavItemProps> = ({
   item,
@@ -28,7 +29,7 @@ const NavItem: React.FC<NavItemProps> = ({
   // 如果是分组类型，渲染分组标题和分组内容
   if (item.type === 'group') {
     return (
-      <div className={mergeClasses(`${prefixCls}__group`, item.className)} style={item.style}>
+      <div className={clsx(`${prefixCls}__group`, item.className)} style={item.style}>
         {!collapsed && item.label && (
           <div
             className={`${prefixCls}__group__title`}
@@ -137,7 +138,7 @@ const NavItem: React.FC<NavItemProps> = ({
         {renderIcon()}
         {!collapsed && <span className={`${prefixCls}__item__label`}>{item.label}</span>}
         {hasSubItems && !collapsed && (
-          <span className={mergeClasses(`${prefixCls}__item__arrow`, isOpen && `${prefixCls}__item__arrow--expanded`)}>
+          <span className={clsx(`${prefixCls}__item__arrow`, { [`${prefixCls}__item__arrow--expanded`]: isOpen })}>
             {expandIcon || <ChevronRightRegular />}
           </span>
         )}
@@ -148,12 +149,14 @@ const NavItem: React.FC<NavItemProps> = ({
   const itemWrapper = (
     <div className={`${prefixCls}__item__wrapper`} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       <div
-        className={mergeClasses(
+        className={clsx(
           `${prefixCls}__item`,
           `${prefixCls}__item--level-${level}`,
-          isSelected && `${prefixCls}__item--selected`,
-          item.disabled && `${prefixCls}__item--disabled`,
-          collapsed && `${prefixCls}__item--collapsed`,
+          {
+            [`${prefixCls}__item--selected`]: isSelected,
+            [`${prefixCls}__item--disabled`]: item.disabled,
+            [`${prefixCls}__item--collapsed`]: collapsed,
+          },
           item.className
         )}
         style={item.style}
@@ -167,7 +170,7 @@ const NavItem: React.FC<NavItemProps> = ({
       </div>
 
       {hasSubItems && isOpen && !collapsed && (
-        <div className={mergeClasses(`${prefixCls}__submenu`, `${prefixCls}__submenu--level-${level + 1}`)}>
+        <div className={clsx(`${prefixCls}__submenu`, `${prefixCls}__submenu--level-${level + 1}`)}>
           {item.children?.map(child => (
             <NavItem
               key={child.key}

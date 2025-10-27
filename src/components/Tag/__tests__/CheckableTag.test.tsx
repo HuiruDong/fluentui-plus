@@ -4,11 +4,6 @@ import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
 import CheckableTag from '../CheckableTag';
 
-// Mock FluentUI components
-jest.mock('@fluentui/react-components', () => ({
-  mergeClasses: (...classes: (string | undefined | false)[]) => classes.filter(Boolean).join(' '),
-}));
-
 // Mock Tag component
 jest.mock('../Tag', () => {
   return function MockTag({

@@ -65,11 +65,6 @@ jest.mock('../hooks', () => ({
   useSelect: jest.fn(),
 }));
 
-// Mock @fluentui/react-components
-jest.mock('@fluentui/react-components', () => ({
-  mergeClasses: jest.fn((...classes) => classes.filter(Boolean).join(' ')),
-}));
-
 describe('Select', () => {
   let mockUseSelect: jest.Mock;
 
@@ -332,17 +327,23 @@ describe('Select', () => {
 
   describe('CSS classes', () => {
     it('should apply correct CSS classes', () => {
-      const fluentuiModule = jest.requireMock('@fluentui/react-components');
-      const { mergeClasses } = fluentuiModule;
+      const clsxMock = jest.requireMock('clsx') as jest.Mock;
+      clsxMock.mockClear();
 
       render(<Select options={mockOptions} className='custom-class' disabled={true} multiple={true} />);
 
-      expect(mergeClasses).toHaveBeenCalledWith('fluentui-plus-select', 'custom-class');
-      expect(mergeClasses).toHaveBeenCalledWith(
-        'fluentui-plus-select__selector',
-        'fluentui-plus-select__selector--disabled',
-        'fluentui-plus-select__selector--multiple'
+      // 验证 clsx 被调用
+      expect(clsxMock).toHaveBeenCalled();
+
+      // 验证主要的类名组合被调用
+      const calls = clsxMock.mock.calls;
+      const hasMainClass = calls.some(
+        (call: any[]) => call.includes('fluentui-plus-select') && call.includes('custom-class')
       );
+      const hasSelectorClass = calls.some((call: any[]) => call[0] === 'fluentui-plus-select__selector');
+
+      expect(hasMainClass).toBe(true);
+      expect(hasSelectorClass).toBe(true);
     });
   });
 

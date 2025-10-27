@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
-import { mergeClasses } from '@fluentui/react-components';
+import clsx from 'clsx';
 import type { CascaderPanelProps, CascaderOption as CascaderOptionType } from './types';
 import CascaderColumn from './CascaderColumn';
 import CascaderEmpty from './CascaderEmpty';
@@ -232,7 +232,7 @@ const CascaderPanel: React.FC<CascaderPanelProps> = ({
   return (
     <div
       ref={floatingRef}
-      className={mergeClasses(`${prefixCls}__popover-surface`)}
+      className={clsx(`${prefixCls}__popover-surface`)}
       style={{
         ...floatingStyles,
         zIndex: 1000,

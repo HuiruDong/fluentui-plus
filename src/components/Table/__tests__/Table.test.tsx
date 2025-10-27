@@ -58,24 +58,6 @@ jest.mock('../Body', () => {
   };
 });
 
-// Mock clsx
-jest.mock('clsx', () => {
-  return jest.fn((...classes: (string | undefined | false | Record<string, boolean>)[]) => {
-    return classes
-      .map(cls => {
-        if (typeof cls === 'string') return cls;
-        if (typeof cls === 'object' && cls !== null) {
-          return Object.keys(cls)
-            .filter(key => cls[key])
-            .join(' ');
-        }
-        return '';
-      })
-      .filter(Boolean)
-      .join(' ');
-  });
-});
-
 describe('Table Component', () => {
   const mockColumns: ColumnType[] = [
     { key: 'name', title: '姓名', dataIndex: 'name' },

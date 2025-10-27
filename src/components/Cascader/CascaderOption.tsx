@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
-import { mergeClasses, Checkbox } from '@fluentui/react-components';
+import { Checkbox } from '@fluentui/react-components';
+import clsx from 'clsx';
 import { ChevronRightFilled } from '@fluentui/react-icons';
 import type { CascaderOptionProps } from './types';
 
@@ -78,12 +79,11 @@ const CascaderOption: React.FC<CascaderOptionProps> = ({
 
   return (
     <div
-      className={mergeClasses(
-        `${prefixCls}__option`,
-        (isSelected || isActive) && `${prefixCls}__option--selected`,
-        option.disabled && `${prefixCls}__option--disabled`,
-        multiple && `${prefixCls}__option--multiple`
-      )}
+      className={clsx(`${prefixCls}__option`, {
+        [`${prefixCls}__option--selected`]: isSelected || isActive,
+        [`${prefixCls}__option--disabled`]: option.disabled,
+        [`${prefixCls}__option--multiple`]: multiple,
+      })}
       onClick={handleClick}
       onMouseEnter={handleMouseEnter}
       title={option.title}

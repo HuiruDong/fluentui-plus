@@ -1,5 +1,5 @@
 import React, { useCallback, useRef } from 'react';
-import { mergeClasses } from '@fluentui/react-components';
+import clsx from 'clsx';
 import type { CascaderProps, CascaderOption } from './types';
 import type { Option } from '../Select/types';
 import CascaderPanel from './CascaderPanel';
@@ -236,14 +236,13 @@ const Cascader: React.FC<CascaderProps> = ({
   };
 
   return (
-    <div className={mergeClasses(prefixCls, className)} style={style}>
+    <div className={clsx(prefixCls, className)} style={style}>
       <div
         ref={selectorRef}
-        className={mergeClasses(
-          `${prefixCls}__selector`,
-          disabled && `${prefixCls}__selector--disabled`,
-          multiple && `${prefixCls}__selector--multiple`
-        )}
+        className={clsx(`${prefixCls}__selector`, {
+          [`${prefixCls}__selector--disabled`]: disabled,
+          [`${prefixCls}__selector--multiple`]: multiple,
+        })}
       >
         <SelectProvider value={selectorContextValue}>
           <Selector />

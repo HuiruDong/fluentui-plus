@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { mergeClasses } from '@fluentui/react-components';
+import clsx from 'clsx';
 import { ChevronDownRegular, DismissCircleFilled } from '@fluentui/react-icons';
 import TagList from '../InputTag/TagList';
 import SearchInput from './SearchInput';
@@ -37,11 +37,11 @@ const MultipleSelector: React.FC = () => {
 
   return (
     <div
-      className={mergeClasses(`${prefixCls}__selector-inner`, `${prefixCls}__selector-inner--multiple`)}
+      className={clsx(`${prefixCls}__selector-inner`, `${prefixCls}__selector-inner--multiple`)}
       onClick={onClick}
       tabIndex={showSearch ? undefined : 0}
     >
-      <div className={mergeClasses(`${prefixCls}__tags-container`)}>
+      <div className={clsx(`${prefixCls}__tags-container`)}>
         <TagList tags={tags} disabled={disabled} onTagRemove={onTagRemove} />
 
         {showSearch && (
@@ -57,16 +57,14 @@ const MultipleSelector: React.FC = () => {
         )}
 
         {!showSearch && !hasSelectedItems && placeholder && (
-          <span className={mergeClasses(`${prefixCls}__selector-text`, `${prefixCls}__selector-text--placeholder`)}>
+          <span className={clsx(`${prefixCls}__selector-text`, `${prefixCls}__selector-text--placeholder`)}>
             {placeholder}
           </span>
         )}
       </div>
-      <div className={mergeClasses(`${prefixCls}__selector-suffix`)}>
-        {showClear && (
-          <DismissCircleFilled className={mergeClasses(`${prefixCls}__selector-clear`)} onClick={onClear} />
-        )}
-        <ChevronDownRegular className={mergeClasses(`${prefixCls}__selector-arrow`)} />
+      <div className={clsx(`${prefixCls}__selector-suffix`)}>
+        {showClear && <DismissCircleFilled className={clsx(`${prefixCls}__selector-clear`)} onClick={onClear} />}
+        <ChevronDownRegular className={clsx(`${prefixCls}__selector-arrow`)} />
       </div>
     </div>
   );

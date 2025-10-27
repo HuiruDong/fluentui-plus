@@ -68,11 +68,6 @@ jest.mock('../MultipleSelector', () => {
   return MockMultipleSelector;
 });
 
-// Mock @fluentui/react-components and icons
-jest.mock('@fluentui/react-components', () => ({
-  mergeClasses: jest.fn((...classes) => classes.filter(Boolean).join(' ')),
-}));
-
 jest.mock('@fluentui/react-icons', () => ({
   ChevronDownRegular: ({ className }: { className?: string }) => (
     <span className={className} data-testid='chevron-down'>

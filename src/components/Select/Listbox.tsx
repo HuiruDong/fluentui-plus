@@ -1,5 +1,5 @@
 import React from 'react';
-import { mergeClasses } from '@fluentui/react-components';
+import clsx from 'clsx';
 import type { ListboxProps } from './types';
 import OptionItem from './OptionItem';
 import OptionGroup from './OptionGroup';
@@ -37,9 +37,9 @@ const Listbox: React.FC<ListboxProps> = ({
 
   // 原始选项列表节点
   const optionsNode = (
-    <div className={mergeClasses(`${prefixCls}__listbox`)} style={{ maxHeight: listHeight }}>
+    <div className={clsx(`${prefixCls}__listbox`)} style={{ maxHeight: listHeight }}>
       {options.length === 0 ? (
-        <div className={mergeClasses(`${prefixCls}__option`, `${prefixCls}__option--empty`)}>暂无数据</div>
+        <div className={clsx(`${prefixCls}__option`, `${prefixCls}__option--empty`)}>暂无数据</div>
       ) : (
         options.map((item, index) => {
           if (isOptionGroup(item)) {
@@ -65,7 +65,7 @@ const Listbox: React.FC<ListboxProps> = ({
   return (
     <div
       ref={floatingRef}
-      className={mergeClasses(`${prefixCls}__popover-surface`)}
+      className={clsx(`${prefixCls}__popover-surface`)}
       style={{
         ...floatingStyles,
         zIndex: 1000,

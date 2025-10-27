@@ -64,11 +64,6 @@ jest.mock('../SearchInput', () => {
   return MockSearchInput;
 });
 
-// Mock @fluentui/react-components and icons
-jest.mock('@fluentui/react-components', () => ({
-  mergeClasses: jest.fn((...classes) => classes.filter(Boolean).join(' ')),
-}));
-
 jest.mock('@fluentui/react-icons', () => ({
   ChevronDownRegular: ({ className }: { className?: string }) => (
     <span className={className} data-testid='chevron-down'>
@@ -321,19 +316,17 @@ describe('MultipleSelector', () => {
 
   describe('CSS classes', () => {
     it('should apply correct CSS classes', () => {
-      const fluentuiModule = jest.requireMock('@fluentui/react-components');
-      const { mergeClasses } = fluentuiModule;
+      const clsx = jest.requireMock('clsx');
 
       renderWithProvider();
 
-      expect(mergeClasses).toHaveBeenCalledWith('test-select__selector-inner', 'test-select__selector-inner--multiple');
-      expect(mergeClasses).toHaveBeenCalledWith('test-select__tags-container');
-      expect(mergeClasses).toHaveBeenCalledWith('test-select__selector-arrow');
+      expect(clsx).toHaveBeenCalledWith('test-select__selector-inner', 'test-select__selector-inner--multiple');
+      expect(clsx).toHaveBeenCalledWith('test-select__tags-container');
+      expect(clsx).toHaveBeenCalledWith('test-select__selector-arrow');
     });
 
     it('should apply placeholder classes when showing placeholder', () => {
-      const fluentuiModule = jest.requireMock('@fluentui/react-components');
-      const { mergeClasses } = fluentuiModule;
+      const clsx = jest.requireMock('clsx');
 
       renderWithProvider({
         ...defaultContextValue,
@@ -342,10 +335,7 @@ describe('MultipleSelector', () => {
         placeholder: 'Select items',
       });
 
-      expect(mergeClasses).toHaveBeenCalledWith(
-        'test-select__selector-text',
-        'test-select__selector-text--placeholder'
-      );
+      expect(clsx).toHaveBeenCalledWith('test-select__selector-text', 'test-select__selector-text--placeholder');
     });
   });
 

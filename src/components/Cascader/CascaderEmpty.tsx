@@ -1,9 +1,9 @@
 import React from 'react';
-import { mergeClasses } from '@fluentui/react-components';
+import clsx from 'clsx';
 import type { CascaderEmptyProps } from './types';
 
 const CascaderEmpty: React.FC<CascaderEmptyProps> = ({ prefixCls, text = '暂无数据', className, style }) => {
-  const emptyClasses = mergeClasses(`${prefixCls}__empty`, className);
+  const emptyClasses = clsx(`${prefixCls}__empty`, className);
 
   return (
     <div className={emptyClasses} style={style}>

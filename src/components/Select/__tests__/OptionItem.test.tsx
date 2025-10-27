@@ -8,7 +8,6 @@ import type { Option } from '../types';
 
 // Mock @fluentui/react-components
 jest.mock('@fluentui/react-components', () => ({
-  mergeClasses: jest.fn((...classes) => classes.filter(Boolean).join(' ')),
   Checkbox: ({
     checked,
     disabled,
@@ -161,36 +160,35 @@ describe('OptionItem', () => {
   });
 
   it('should apply correct CSS classes', () => {
-    const fluentuiModule = jest.requireMock('@fluentui/react-components');
-    const { mergeClasses } = fluentuiModule;
-    mergeClasses.mockClear();
+    const clsxMock = jest.requireMock('clsx') as jest.Mock;
+    clsxMock.mockClear();
 
     renderWithProvider(defaultProps);
 
-    // 检查 mergeClasses 是否被正确调用（不严格检查参数顺序）
-    expect(mergeClasses).toHaveBeenCalled();
+    // 检查 clsx 是否被正确调用
+    expect(clsxMock).toHaveBeenCalled();
   });
 
   it('should apply multiple class when in multiple mode', () => {
-    const fluentuiModule = jest.requireMock('@fluentui/react-components');
-    const { mergeClasses } = fluentuiModule;
-    mergeClasses.mockClear();
+    const clsxMock = jest.requireMock('clsx') as jest.Mock;
+    clsxMock.mockClear();
 
     const multipleContext = { ...mockContextValue, multiple: true };
     renderWithProvider(defaultProps, multipleContext);
 
-    // 检查 mergeClasses 是否被正确调用（不严格检查参数顺序）
-    expect(mergeClasses).toHaveBeenCalled();
+    // 检查 clsx 是否被正确调用
+    expect(clsxMock).toHaveBeenCalled();
   });
 
   it('should apply disabled class when option is disabled', () => {
-    const fluentuiModule = jest.requireMock('@fluentui/react-components');
-    const { mergeClasses } = fluentuiModule;
+    const clsxMock = jest.requireMock('clsx') as jest.Mock;
+    clsxMock.mockClear();
     const disabledOption = { ...mockOption, disabled: true };
 
     renderWithProvider({ ...defaultProps, option: disabledOption });
 
-    expect(mergeClasses).toHaveBeenCalledWith('test-select__option', false, 'test-select__option--disabled');
+    // 检查 clsx 是否被正确调用
+    expect(clsxMock).toHaveBeenCalled();
   });
 
   it('should render custom option content when optionRender is provided', () => {

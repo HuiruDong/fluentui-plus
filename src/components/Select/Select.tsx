@@ -1,5 +1,5 @@
 import React, { useCallback, useRef } from 'react';
-import { mergeClasses } from '@fluentui/react-components';
+import clsx from 'clsx';
 import type { SelectProps, Option } from './types';
 import Selector from './Selector';
 import Listbox from './Listbox';
@@ -171,14 +171,13 @@ const Select: React.FC<SelectProps> = ({
 
   return (
     <SelectProvider value={contextValue}>
-      <div className={mergeClasses(prefixCls, className)} style={style}>
+      <div className={clsx(prefixCls, className)} style={style}>
         <div
           ref={selectorRef}
-          className={mergeClasses(
-            `${prefixCls}__selector`,
-            disabled && `${prefixCls}__selector--disabled`,
-            multiple && `${prefixCls}__selector--multiple`
-          )}
+          className={clsx(`${prefixCls}__selector`, {
+            [`${prefixCls}__selector--disabled`]: disabled,
+            [`${prefixCls}__selector--multiple`]: multiple,
+          })}
         >
           <Selector />
         </div>

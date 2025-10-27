@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { mergeClasses } from '@fluentui/react-components';
+import clsx from 'clsx';
 import type { CascaderColumnProps, CascaderOption as CascaderOptionType, CheckedStatus } from './types';
 import CascaderOption from './CascaderOption';
 import { hasChildren, getNodeCheckedStatus } from './utils';
@@ -41,7 +41,7 @@ const CascaderColumn: React.FC<CascaderColumnProps> = ({
   );
 
   return (
-    <div className={mergeClasses(`${prefixCls}__column`)}>
+    <div className={clsx(`${prefixCls}__column`)}>
       {options.map((option, index) => {
         const optionValue = option.value;
         const selectedValue = selectedOption?.value;

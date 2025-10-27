@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
-import { mergeClasses } from '@fluentui/react-components';
+import clsx from 'clsx';
 import { DismissFilled } from '@fluentui/react-icons';
 import CheckableTag from './CheckableTag';
 import type { TagProps, CheckableTagProps } from './types';
@@ -11,7 +11,15 @@ const Tag: React.FC<TagProps> & { CheckableTag?: typeof CheckableTag } = ({ chil
   const { closeIcon = false, color, bordered = true, className, style, onClick, onClose } = props;
 
   const cs = useMemo(
-    () => mergeClasses(prefixCls, bordered ? `${prefixCls}--bordered` : `${prefixCls}--borderless`, className),
+    () =>
+      clsx(
+        prefixCls,
+        {
+          [`${prefixCls}--bordered`]: bordered,
+          [`${prefixCls}--borderless`]: !bordered,
+        },
+        className
+      ),
     [bordered, className]
   );
 

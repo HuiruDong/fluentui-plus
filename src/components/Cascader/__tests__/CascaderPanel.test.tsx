@@ -5,11 +5,6 @@ import '@testing-library/jest-dom';
 import CascaderPanel from '../CascaderPanel';
 import type { CascaderOption, CascaderPanelProps, CascaderSearchResult } from '../types';
 
-// Mock FluentUI components
-jest.mock('@fluentui/react-components', () => ({
-  mergeClasses: (...classes: (string | undefined | false)[]) => classes.filter(Boolean).join(' '),
-}));
-
 // Mock子组件
 jest.mock('../CascaderColumn', () => {
   return function MockCascaderColumn({

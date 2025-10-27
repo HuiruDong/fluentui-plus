@@ -4,11 +4,6 @@ import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
 import Tag from '../Tag';
 
-// Mock FluentUI components
-jest.mock('@fluentui/react-components', () => ({
-  mergeClasses: (...classes: (string | undefined | false)[]) => classes.filter(Boolean).join(' '),
-}));
-
 jest.mock('@fluentui/react-icons', () => ({
   DismissFilled: () => <span data-testid='dismiss-icon'>×</span>,
 }));

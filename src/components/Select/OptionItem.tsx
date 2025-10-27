@@ -1,5 +1,5 @@
 import React from 'react';
-import { mergeClasses } from '@fluentui/react-components';
+import clsx from 'clsx';
 import type { OptionItemProps } from './types';
 import { CheckmarkRegular } from '@fluentui/react-icons';
 import { Checkbox } from '@fluentui/react-components';
@@ -18,26 +18,25 @@ const OptionItem: React.FC<OptionItemProps> = ({ option, index, isSelected }) =>
   return (
     <div
       key={option.value !== undefined ? option.value : index}
-      className={mergeClasses(
-        `${prefixCls}__option`,
-        multiple && `${prefixCls}__option--multiple`,
-        isDisabled && `${prefixCls}__option--disabled`
-      )}
+      className={clsx(`${prefixCls}__option`, {
+        [`${prefixCls}__option--multiple`]: multiple,
+        [`${prefixCls}__option--disabled`]: isDisabled,
+      })}
       title={option.title ?? option.label}
       onClick={handleClick}
     >
       {optionRender ? (
         optionRender(option)
       ) : (
-        <div className={mergeClasses(`${prefixCls}__option-content`)}>
+        <div className={clsx(`${prefixCls}__option-content`)}>
           {multiple ? (
-            <div className={mergeClasses(`${prefixCls}__option-checkbox`)}>
+            <div className={clsx(`${prefixCls}__option-checkbox`)}>
               <Checkbox checked={isSelected} disabled={isDisabled} />
             </div>
           ) : (
-            <div className={mergeClasses(`${prefixCls}__option-checkmark`)}>{isSelected && <CheckmarkRegular />}</div>
+            <div className={clsx(`${prefixCls}__option-checkmark`)}>{isSelected && <CheckmarkRegular />}</div>
           )}
-          <span className={mergeClasses(`${prefixCls}__option-label`)}>{option.label || option.value}</span>
+          <span className={clsx(`${prefixCls}__option-label`)}>{option.label || option.value}</span>
         </div>
       )}
     </div>

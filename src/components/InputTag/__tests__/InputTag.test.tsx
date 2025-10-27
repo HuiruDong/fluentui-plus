@@ -4,11 +4,6 @@ import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
 import InputTag from '../InputTag';
 
-// Mock FluentUI components
-jest.mock('@fluentui/react-components', () => ({
-  mergeClasses: (...classes: (string | undefined | false)[]) => classes.filter(Boolean).join(' '),
-}));
-
 // Mock子组件
 jest.mock('../Input', () => {
   return function MockInput({

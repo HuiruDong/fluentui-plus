@@ -14,3 +14,21 @@ Object.defineProperty(window, 'matchMedia', {
     dispatchEvent: jest.fn(),
   })),
 });
+
+// Mock clsx - 全局 mock，支持字符串、条件表达式和对象语法
+jest.mock('clsx', () =>
+  jest.fn((...classes) =>
+    classes
+      .map(cls => {
+        if (typeof cls === 'string') return cls;
+        if (typeof cls === 'object' && cls !== null && !Array.isArray(cls)) {
+          return Object.keys(cls)
+            .filter(key => cls[key])
+            .join(' ');
+        }
+        return '';
+      })
+      .filter(Boolean)
+      .join(' ')
+  )
+);

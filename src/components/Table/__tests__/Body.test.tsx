@@ -40,13 +40,6 @@ jest.mock('../Row', () => {
   };
 });
 
-// Mock clsx
-jest.mock('clsx', () => {
-  return jest.fn((...classes: (string | undefined)[]) => {
-    return classes.filter(Boolean).join(' ');
-  });
-});
-
 describe('Body Component', () => {
   const mockColumns: ColumnType[] = [
     { key: 'name', title: '姓名', dataIndex: 'name' },

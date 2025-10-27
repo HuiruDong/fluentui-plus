@@ -4,11 +4,6 @@ import '@testing-library/jest-dom';
 import CascaderEmpty from '../CascaderEmpty';
 import type { CascaderEmptyProps } from '../types';
 
-// Mock FluentUI components
-jest.mock('@fluentui/react-components', () => ({
-  mergeClasses: (...classes: (string | undefined | false)[]) => classes.filter(Boolean).join(' '),
-}));
-
 const defaultProps: CascaderEmptyProps = {
   prefixCls: 'fluentui-plus-cascader',
 };

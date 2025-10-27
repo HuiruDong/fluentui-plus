@@ -6,7 +6,6 @@ import { NavItemType } from '../types';
 
 // Mock FluentUI components
 jest.mock('@fluentui/react-components', () => ({
-  mergeClasses: (...classes: (string | undefined | false)[]) => classes.filter(Boolean).join(' '),
   Tooltip: ({ children, content }: { children: React.ReactNode; content: string }) => (
     <div data-testid='tooltip' title={content}>
       {children}

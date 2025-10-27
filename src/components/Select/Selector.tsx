@@ -1,5 +1,5 @@
 import React from 'react';
-import { mergeClasses } from '@fluentui/react-components';
+import clsx from 'clsx';
 import type { Option } from './types';
 import { ChevronDownRegular, DismissRegular } from '@fluentui/react-icons';
 import SearchInput from './SearchInput';
@@ -70,7 +70,7 @@ const Selector: React.FC = () => {
         : placeholder || '';
 
       return (
-        <div className={mergeClasses(`${prefixCls}__selector-inner`)} onClick={onClick}>
+        <div className={clsx(`${prefixCls}__selector-inner`)} onClick={onClick}>
           <SearchInput
             value={searchValue || ''}
             placeholder={searchPlaceholder}
@@ -80,9 +80,9 @@ const Selector: React.FC = () => {
             onFocus={onSearchFocus}
             onBlur={onSearchBlur}
           />
-          <div className={mergeClasses(`${prefixCls}__selector-suffix`)}>
-            {showClear && <DismissRegular className={mergeClasses(`${prefixCls}__selector-clear`)} onClick={onClear} />}
-            <ChevronDownRegular className={mergeClasses(`${prefixCls}__selector-arrow`)} />
+          <div className={clsx(`${prefixCls}__selector-suffix`)}>
+            {showClear && <DismissRegular className={clsx(`${prefixCls}__selector-clear`)} onClick={onClear} />}
+            <ChevronDownRegular className={clsx(`${prefixCls}__selector-arrow`)} />
           </div>
         </div>
       );

@@ -48,11 +48,6 @@ jest.mock('../hooks', () => ({
   })),
 }));
 
-// Mock @fluentui/react-components
-jest.mock('@fluentui/react-components', () => ({
-  mergeClasses: jest.fn((...classes: (string | undefined | false)[]) => classes.filter(Boolean).join(' ')),
-}));
-
 describe('Listbox', () => {
   let mockUseFloatingPosition: jest.Mock;
   let mockUseOptionSelection: jest.Mock;
@@ -192,11 +187,11 @@ describe('Listbox', () => {
   });
 
   it('should render custom empty state with correct classes', () => {
-    const { mergeClasses } = jest.requireMock('@fluentui/react-components');
+    const clsx = jest.requireMock('clsx');
 
     renderWithProvider({ ...defaultProps, options: [] });
 
-    expect(mergeClasses).toHaveBeenCalledWith('test-select__option', 'test-select__option--empty');
+    expect(clsx).toHaveBeenCalledWith('test-select__option', 'test-select__option--empty');
   });
 
   it('should use custom option render function', () => {
@@ -222,11 +217,11 @@ describe('Listbox', () => {
   });
 
   it('should apply correct styles to popup surface', () => {
-    const { mergeClasses } = jest.requireMock('@fluentui/react-components');
+    const clsx = jest.requireMock('clsx');
 
     renderWithProvider({ ...defaultProps, options: mockOptions });
 
-    expect(mergeClasses).toHaveBeenCalledWith('test-select__popover-surface');
+    expect(clsx).toHaveBeenCalledWith('test-select__popover-surface');
 
     // Check that the popup surface is rendered with the expected class
     const popupElement = screen.getByTestId('option-item-0').closest('.test-select__popover-surface');
@@ -240,11 +235,11 @@ describe('Listbox', () => {
   });
 
   it('should apply correct styles to listbox', () => {
-    const { mergeClasses } = jest.requireMock('@fluentui/react-components');
+    const clsx = jest.requireMock('clsx');
 
     renderWithProvider({ ...defaultProps, options: mockOptions, listHeight: 300 });
 
-    expect(mergeClasses).toHaveBeenCalledWith('test-select__listbox');
+    expect(clsx).toHaveBeenCalledWith('test-select__listbox');
 
     const listboxElement = screen.getByTestId('option-item-0').parentElement;
     expect(listboxElement).toHaveStyle({ maxHeight: '300px' });

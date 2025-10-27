@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef } from 'react';
-import { mergeClasses } from '@fluentui/react-components';
+import clsx from 'clsx';
 import { useInputTag, useInputHandlers } from './hooks';
 import TagList from './TagList';
 import Input from './Input';
@@ -89,10 +89,9 @@ const InputTag: React.FC<InputTagProps> = props => {
 
   return (
     <div
-      className={mergeClasses(
+      className={clsx(
         prefixCls,
-        isFocused && `${prefixCls}--focused`,
-        disabled && `${prefixCls}--disabled`,
+        { [`${prefixCls}--focused`]: isFocused, [`${prefixCls}--disabled`]: disabled },
         className
       )}
       style={style}
