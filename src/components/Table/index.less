@@ -1,0 +1,234 @@
+@table-prefix-cls: ~"fluentui-plus-table";
+
+.@{table-prefix-cls} {
+  box-sizing: border-box;
+  font-size: @font-size-300;
+  line-height: @line-height-300;
+  color: @color-neutral-foreground-1;
+
+  // 表格容器样式
+  &-body-wrapper {
+    &::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: @color-neutral-stroke-1;
+      border-radius: @border-radius-medium;
+
+      &:hover {
+        background-color: @color-neutral-stroke-2;
+      }
+    }
+
+    &::-webkit-scrollbar-track {
+      background-color: transparent;
+    }
+  }
+
+  // 表格样式
+  &-header,
+  &-body {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+
+  // 表头
+  &-thead {
+    > tr > th {
+      padding: 12px 16px;
+      font-weight: @font-weight-semibold;
+      background-color: @color-neutral-background-2;
+      border-bottom: 1px solid @color-neutral-stroke-1;
+      transition: background-color 0.2s;
+
+      &:first-child {
+        padding-left: 24px;
+      }
+
+      &:last-child {
+        padding-right: 24px;
+      }
+    }
+  }
+
+  // 表体
+  &-tbody {
+    > tr {
+      transition: background-color 0.2s;
+
+      &:hover {
+        background-color: @color-neutral-background-1-hover;
+
+        // hover 时固定列也需要显示 hover 背景色
+        > td.@{table-prefix-cls}-cell-fixed-left,
+        > td.@{table-prefix-cls}-cell-fixed-right {
+          background-color: @color-neutral-background-1-hover;
+        }
+      }
+
+      > td {
+        padding: 12px 16px;
+        border-bottom: 1px solid @color-neutral-stroke-1;
+        transition: background-color 0.2s;
+
+        &:first-child {
+          padding-left: 24px;
+        }
+
+        &:last-child {
+          padding-right: 24px;
+        }
+      }
+
+      &:last-child > td {
+        border-bottom: none;
+      }
+    }
+  }
+
+  // 单元格
+  &-cell {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: left; // 默认左对齐
+    background-color: inherit;
+
+    // 对齐方式
+    &-align-left {
+      text-align: left;
+    }
+
+    &-align-center {
+      text-align: center;
+    }
+
+    &-align-right {
+      text-align: right;
+    }
+
+    // 固定列
+    &-fixed-left,
+    &-fixed-right {
+      position: sticky !important;
+      background-color: @color-neutral-background-1;
+      z-index: 2;
+    }
+
+    // 表头固定列背景色
+    &-header.@{table-prefix-cls}-cell-fixed-left,
+    &-header.@{table-prefix-cls}-cell-fixed-right {
+      background-color: @color-neutral-background-2;
+      z-index: 3;
+    }
+
+    // 固定列阴影
+    &-fixed-left-last::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: -1px;
+      width: 30px;
+      transform: translateX(100%);
+      transition: box-shadow 0.3s;
+      pointer-events: none;
+    }
+
+    &-fixed-right-first::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: -1px;
+      width: 30px;
+      transform: translateX(-100%);
+      transition: box-shadow 0.3s;
+      pointer-events: none;
+    }
+  }
+
+  // 当表格横向滚动时显示固定列阴影
+  &--scroll-x {
+    .@{table-prefix-cls}-cell-fixed-left-last::after {
+      box-shadow: inset 10px 0 8px -8px rgba(0, 0, 0, 0.15);
+    }
+
+    .@{table-prefix-cls}-cell-fixed-right-first::before {
+      box-shadow: inset -10px 0 8px -8px rgba(0, 0, 0, 0.15);
+    }
+  }
+
+  // 带边框
+  &--bordered {
+    border: 1px solid @color-neutral-stroke-1;
+    border-radius: @border-radius-medium;
+
+    .@{table-prefix-cls}-header,
+    .@{table-prefix-cls}-body {
+      border-radius: @border-radius-medium;
+    }
+
+    .@{table-prefix-cls}-thead > tr > th,
+    .@{table-prefix-cls}-tbody > tr > td {
+      border-right: 1px solid @color-neutral-stroke-1;
+
+      &:last-child {
+        border-right: none;
+      }
+    }
+
+    .@{table-prefix-cls}-tbody > tr:last-child > td {
+      border-bottom: none;
+    }
+  }
+
+  // 横向滚动
+  &--scroll-x {
+    .@{table-prefix-cls}-header-wrapper {
+      overflow-x: hidden;
+    }
+
+    .@{table-prefix-cls}-body-wrapper {
+      overflow-x: auto;
+    }
+  }
+
+  // 纵向滚动
+  &--scroll-y {
+    .@{table-prefix-cls}-header-wrapper {
+      overflow-y: scroll;
+      scrollbar-gutter: stable;
+      background-color: @color-neutral-background-2;
+
+      // 隐藏表头的滚动条
+      &::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background-color: transparent;
+      }
+
+      &::-webkit-scrollbar-track {
+        background-color: transparent;
+      }
+    }
+
+    .@{table-prefix-cls}-body-wrapper {
+      overflow-y: auto;
+    }
+  }
+
+  // 空状态
+  &-empty {
+    padding: 48px 24px;
+    text-align: center;
+    color: @color-neutral-foreground-3;
+  }
+}

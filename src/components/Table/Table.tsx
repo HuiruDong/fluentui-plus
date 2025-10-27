@@ -1,0 +1,115 @@
+import React, { useRef, useEffect } from 'react';
+import clsx from 'clsx';
+import Header from './Header';
+import Body from './Body';
+import type { TableProps } from './types';
+import './index.less';
+
+const prefixCls = 'fluentui-plus-table';
+
+/**
+ * Table 组件
+ * 基于 rc-table 实现逻辑的基础表格组件
+ * 支持数据渲染和 scroll 配置
+ */
+const Table = <RecordType = Record<string, unknown>,>({
+  dataSource = [],
+  columns = [],
+  rowKey = 'key',
+  scroll,
+  className,
+  style,
+  showHeader = true,
+  bordered = false,
+  emptyText = '暂无数据',
+}: TableProps<RecordType>) => {
+  const headerRef = useRef<HTMLDivElement>(null);
+  const bodyRef = useRef<HTMLDivElement>(null);
+
+  // 同步表头和表体的横向滚动
+  useEffect(() => {
+    if (!scroll?.x || !headerRef.current || !bodyRef.current) {
+      return;
+    }
+
+    const bodyElement = bodyRef.current;
+    const headerElement = headerRef.current;
+
+    const handleScroll = () => {
+      if (headerElement) {
+        headerElement.scrollLeft = bodyElement.scrollLeft;
+      }
+    };
+
+    bodyElement.addEventListener('scroll', handleScroll);
+
+    return () => {
+      bodyElement.removeEventListener('scroll', handleScroll);
+    };
+  }, [scroll?.x]);
+
+  // 计算容器样式
+  const containerStyle: React.CSSProperties = { ...style };
+
+  // 处理纵向滚动
+  const hasScrollY = scroll?.y !== undefined;
+  const bodyStyle: React.CSSProperties = {};
+  if (hasScrollY) {
+    bodyStyle.maxHeight = typeof scroll.y === 'number' ? `${scroll.y}px` : scroll.y;
+    bodyStyle.overflowY = 'auto';
+  }
+
+  // 处理横向滚动
+  const hasScrollX = scroll?.x !== undefined;
+  const tableStyle: React.CSSProperties = {};
+  if (hasScrollX && scroll.x !== true) {
+    tableStyle.width = typeof scroll.x === 'number' ? `${scroll.x}px` : scroll.x;
+  }
+
+  const classes = clsx(
+    prefixCls,
+    {
+      [`${prefixCls}--bordered`]: bordered,
+      [`${prefixCls}--scroll-x`]: hasScrollX,
+      [`${prefixCls}--scroll-y`]: hasScrollY,
+    },
+    className
+  );
+
+  return (
+    <div className={classes} style={containerStyle}>
+      {/* 表头容器 */}
+      {showHeader && (
+        <div
+          ref={headerRef}
+          className={`${prefixCls}-header-wrapper`}
+          style={{
+            overflowX: hasScrollX ? 'hidden' : undefined,
+            overflowY: hasScrollY ? 'scroll' : undefined,
+          }}
+        >
+          <div style={tableStyle}>
+            <Header columns={columns} />
+          </div>
+        </div>
+      )}
+
+      {/* 表体容器 */}
+      <div
+        ref={bodyRef}
+        className={`${prefixCls}-body-wrapper`}
+        style={{
+          ...bodyStyle,
+          overflowX: hasScrollX ? 'auto' : undefined,
+        }}
+      >
+        <div style={tableStyle}>
+          <Body columns={columns} dataSource={dataSource} rowKey={rowKey} emptyText={emptyText} />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Table;
+export type { TableProps, ColumnType, ScrollConfig } from './types';

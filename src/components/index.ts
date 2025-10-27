@@ -32,3 +32,7 @@ export type { ModalProps } from './Modal';
 // Message 组件
 export { message } from './Message';
 export type { MessageOptions, MessageInstance, MessageApi, MessageConfig } from './Message';
+
+// Table 组件
+export { Table } from './Table';
+export type { TableProps, ColumnType, ScrollConfig } from './Table';
