@@ -36,3 +36,7 @@ export type { MessageOptions, MessageInstance, MessageApi, MessageConfig } from 
 // Table 组件
 export { Table } from './Table';
 export type { TableProps, ColumnType, ScrollConfig } from './Table';
+
+// Spin 组件
+export { Spin } from './Spin';
+export type { SpinProps } from './Spin';

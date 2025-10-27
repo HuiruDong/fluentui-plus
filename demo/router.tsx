@@ -11,6 +11,7 @@ import CheckboxPage from './pages/CheckboxPage';
 import ModalPage from './pages/ModalPage';
 import MessagePage from './pages/MessagePage';
 import TablePage from './pages/TablePage';
+import SpinPage from './pages/SpinPage';
 
 const router = createBrowserRouter([
   {
@@ -56,6 +57,10 @@ const router = createBrowserRouter([
       {
         path: '/table',
         element: <TablePage />,
+      },
+      {
+        path: '/spin',
+        element: <SpinPage />,
       },
     ],
   },

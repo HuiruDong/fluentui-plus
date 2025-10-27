@@ -1,0 +1,64 @@
+.fluentui-plus-spin {
+  display: inline-block;
+  text-align: center;
+
+  // 全屏模式
+  &--fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.4);
+    transition: opacity 0.3s;
+
+    &.fluentui-plus-spin--hidden {
+      display: none;
+    }
+  }
+
+  // 嵌套模式
+  &--nested {
+    position: relative;
+  }
+
+  &--spinning {
+    .fluentui-plus-spin__container {
+      opacity: 0.5;
+      pointer-events: none;
+      user-select: none;
+    }
+  }
+
+  // 遮罩层
+  &__mask {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.4);
+    transition: opacity 0.3s;
+  }
+
+  // 内容区域
+  &__content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  // 被包裹的内容
+  &__container {
+    transition: opacity 0.3s;
+  }
+}

@@ -125,6 +125,7 @@ const Layout: React.FC = () => {
       items: [
         { path: '/modal', label: 'Modal 对话框' },
         { path: '/message', label: 'Message 全局提示' },
+        { path: '/spin', label: 'Spin 加载中' },
       ],
     },
   ];

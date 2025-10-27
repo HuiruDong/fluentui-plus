@@ -1286,6 +1286,228 @@ message.warning('第三条消息');
    };
    ```
 
+### Spin 加载中
+
+用于页面和区块的加载中状态，提供直观的用户反馈。支持简单模式、嵌套模式和全屏模式。
+
+#### 属性
+
+| 属性 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `spinning` | `boolean` | `true` | 是否为加载中状态 |
+| `size` | `'tiny' \| 'extra-small' \| 'small' \| 'medium' \| 'large' \| 'extra-large' \| 'huge'` | `'medium'` | 组件大小 |
+| `tip` | `string` | - | 自定义描述文案 |
+| `delay` | `number` | `0` | 延迟显示加载效果的时间（防止闪烁），单位：毫秒 |
+| `fullscreen` | `boolean` | `false` | 是否全屏展示 |
+| `children` | `React.ReactNode` | - | 包裹的内容 |
+| `className` | `string` | - | 自定义样式类名 |
+| `style` | `React.CSSProperties` | - | 自定义内联样式 |
+
+#### 使用模式
+
+##### 1. 简单模式
+
+最基础的加载状态，仅显示一个加载图标。
+
+```jsx
+import { Spin } from '@luoluoyu/fluentui-plus';
+
+// 基础用法
+<Spin />
+
+// 不同尺寸
+<Spin size="small" />
+<Spin size="medium" />
+<Spin size="large" />
+
+// 带提示文案
+<Spin tip="加载中..." />
+```
+
+##### 2. 嵌套模式
+
+可以嵌套在任何元素中，为其增加加载效果。加载时会显示半透明遮罩层。
+
+```jsx
+import { Spin } from '@luoluoyu/fluentui-plus';
+import { useState } from 'react';
+
+const MyComponent = () => {
+  const [loading, setLoading] = useState(false);
+
+  return (
+    <Spin spinning={loading} tip="加载中...">
+      <div className="content">
+        <h3>卡片内容</h3>
+        <p>这是一段示例内容。当加载状态开启时，会显示半透明遮罩层和加载图标。</p>
+        <button onClick={() => setLoading(true)}>开始加载</button>
+      </div>
+    </Spin>
+  );
+};
+```
+
+##### 3. 全屏模式
+
+显示全屏的加载状态，适用于页面级别的加载场景。
+
+```jsx
+import { Spin } from '@luoluoyu/fluentui-plus';
+import { useState } from 'react';
+
+const MyComponent = () => {
+  const [loading, setLoading] = useState(false);
+
+  const handleLoad = () => {
+    setLoading(true);
+    // 模拟异步操作
+    setTimeout(() => setLoading(false), 2000);
+  };
+
+  return (
+    <>
+      <button onClick={handleLoad}>显示全屏加载</button>
+      <Spin fullscreen spinning={loading} tip="正在加载..." size="extra-large" />
+    </>
+  );
+};
+```
+
+#### 延迟显示
+
+为了避免加载时间过短导致的闪烁问题，可以设置延迟显示时间。如果加载在延迟时间内完成，则不会显示加载状态。
+
+```jsx
+import { Spin } from '@luoluoyu/fluentui-plus';
+import { useState } from 'react';
+
+const MyComponent = () => {
+  const [loading, setLoading] = useState(false);
+
+  const handleQuickLoad = () => {
+    setLoading(true);
+    // 快速完成的操作（300ms）
+    setTimeout(() => setLoading(false), 300);
+  };
+
+  return (
+    <>
+      <button onClick={handleQuickLoad}>快速加载（不会闪烁）</button>
+      {/* 设置 delay=500，如果在 500ms 内完成则不显示 */}
+      <Spin spinning={loading} delay={500} tip="加载中..." />
+    </>
+  );
+};
+```
+
+#### 完整示例
+
+```jsx
+import { Spin } from '@luoluoyu/fluentui-plus';
+import { useState } from 'react';
+
+const DataTable = () => {
+  const [loading, setLoading] = useState(false);
+  const [fullscreenLoading, setFullscreenLoading] = useState(false);
+
+  const handleRefresh = async () => {
+    setLoading(true);
+    try {
+      await fetchData();
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePageLoad = async () => {
+    setFullscreenLoading(true);
+    try {
+      await loadPageData();
+    } finally {
+      setFullscreenLoading(false);
+    }
+  };
+
+  return (
+    <div>
+      {/* 嵌套模式 - 表格加载 */}
+      <Spin spinning={loading} tip="正在加载数据...">
+        <div className="data-table">
+          <button onClick={handleRefresh}>刷新数据</button>
+          <table>
+            <thead>
+              <tr>
+                <th>姓名</th>
+                <th>年龄</th>
+                <th>地址</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>张三</td>
+                <td>28</td>
+                <td>北京</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </Spin>
+
+      {/* 全屏模式 - 页面加载 */}
+      <button onClick={handlePageLoad}>加载页面</button>
+      <Spin 
+        fullscreen 
+        spinning={fullscreenLoading} 
+        tip="正在加载页面..." 
+        size="extra-large" 
+      />
+    </div>
+  );
+};
+```
+
+#### 最佳实践
+
+1. **合理使用延迟显示**:
+   - 对于可能快速完成的操作，设置 `delay` 可以避免闪烁
+   - 推荐延迟时间：300-500ms
+
+2. **选择合适的尺寸**:
+   - 简单模式：`medium` 或 `large`
+   - 嵌套模式：根据容器大小选择 `small` 到 `large`
+   - 全屏模式：`extra-large` 或 `huge`
+
+3. **提供有意义的提示文案**:
+   ```jsx
+   <Spin tip="正在加载数据..." />
+   <Spin tip="正在提交表单..." />
+   <Spin tip="正在生成报告..." />
+   ```
+
+4. **嵌套模式的容器要求**:
+   - 确保父容器有明确的尺寸
+   - 避免在没有内容的空容器中使用
+
+5. **全屏模式的使用场景**:
+   - 页面初始化加载
+   - 重要的全局操作
+   - 需要阻止用户交互的场景
+
+6. **结合异步操作**:
+   ```jsx
+   const handleSubmit = async () => {
+     setLoading(true);
+     try {
+       await submitForm();
+       message.success('提交成功');
+     } catch (error) {
+       message.error('提交失败');
+     } finally {
+       setLoading(false);
+     }
+   };
+   ```
+
 ## TypeScript 支持
 
 所有组件都提供完整的 TypeScript 类型定义。你可以从组件库导入类型：
@@ -1314,7 +1536,8 @@ import type {
   MessageApi,
   TableProps,
   ColumnType,
-  ScrollConfig
+  ScrollConfig,
+  SpinProps
 } from '@luoluoyu/fluentui-plus';
 
 // 使用类型
@@ -1512,6 +1735,54 @@ const tableProps: TableProps<UserData> = {
   showHeader: true,
   rowKey: 'key',
   emptyText: '暂无数据',
+};
+
+// Spin 类型示例
+const spinProps: SpinProps = {
+  spinning: true,
+  size: 'large',
+  tip: '加载中...',
+  delay: 300,
+  fullscreen: false,
+};
+
+// 嵌套模式使用
+const SpinWithContent = () => {
+  const [loading, setLoading] = useState(false);
+  
+  const spinConfig: SpinProps = {
+    spinning: loading,
+    tip: '正在加载数据...',
+    size: 'medium',
+    delay: 500,
+  };
+
+  return (
+    <Spin {...spinConfig}>
+      <div className="content">
+        <button onClick={() => setLoading(true)}>加载数据</button>
+      </div>
+    </Spin>
+  );
+};
+
+// 全屏模式使用
+const FullscreenSpinExample = () => {
+  const [pageLoading, setPageLoading] = useState(false);
+  
+  const fullscreenSpinConfig: SpinProps = {
+    fullscreen: true,
+    spinning: pageLoading,
+    tip: '正在加载页面...',
+    size: 'extra-large',
+  };
+
+  return (
+    <>
+      <button onClick={() => setPageLoading(true)}>加载页面</button>
+      <Spin {...fullscreenSpinConfig} />
+    </>
+  );
 };
 ```
 
