@@ -101,7 +101,7 @@ const Table = <RecordType = Record<string, unknown>,>({
           }}
         >
           <div style={tableStyle}>
-            <Header columns={columns} />
+            <Header columns={columns} prefixCls={prefixCls} />
           </div>
         </div>
       )}
@@ -116,7 +116,7 @@ const Table = <RecordType = Record<string, unknown>,>({
         }}
       >
         <div style={tableStyle}>
-          <Body columns={columns} dataSource={dataSource} rowKey={rowKey} emptyText={emptyText} />
+          <Body columns={columns} dataSource={dataSource} rowKey={rowKey} emptyText={emptyText} prefixCls={prefixCls} />
         </div>
       </div>
     </div>

@@ -82,7 +82,7 @@ describe('Row Component', () => {
       const { container } = render(
         <table>
           <tbody>
-            <Row columns={mockColumns} record={mockRecord} index={0} rowKey='1' />
+            <Row prefixCls="fluentui-plus-table" columns={mockColumns} record={mockRecord} index={0} rowKey='1' />
           </tbody>
         </table>
       );
@@ -96,7 +96,7 @@ describe('Row Component', () => {
       const { container } = render(
         <table>
           <tbody>
-            <Row columns={mockColumns} record={mockRecord} index={0} rowKey='1' />
+            <Row prefixCls="fluentui-plus-table" columns={mockColumns} record={mockRecord} index={0} rowKey='1' />
           </tbody>
         </table>
       );
@@ -109,7 +109,7 @@ describe('Row Component', () => {
       const { container } = render(
         <table>
           <tbody>
-            <Row columns={mockColumns} record={mockRecord} index={0} rowKey='custom-key-123' />
+            <Row prefixCls="fluentui-plus-table" columns={mockColumns} record={mockRecord} index={0} rowKey='custom-key-123' />
           </tbody>
         </table>
       );
@@ -124,7 +124,7 @@ describe('Row Component', () => {
       render(
         <table>
           <tbody>
-            <Row columns={mockColumns} record={mockRecord} index={0} rowKey='1' />
+            <Row prefixCls="fluentui-plus-table" columns={mockColumns} record={mockRecord} index={0} rowKey='1' />
           </tbody>
         </table>
       );
@@ -149,7 +149,7 @@ describe('Row Component', () => {
       render(
         <table>
           <tbody>
-            <Row columns={nestedColumns} record={nestedRecord} index={0} rowKey='1' />
+            <Row prefixCls="fluentui-plus-table" columns={nestedColumns} record={nestedRecord} index={0} rowKey='1' />
           </tbody>
         </table>
       );
@@ -163,7 +163,7 @@ describe('Row Component', () => {
       const { container } = render(
         <table>
           <tbody>
-            <Row columns={columnsWithoutDataIndex} record={mockRecord} index={0} rowKey='1' />
+            <Row prefixCls="fluentui-plus-table" columns={columnsWithoutDataIndex} record={mockRecord} index={0} rowKey='1' />
           </tbody>
         </table>
       );
@@ -183,7 +183,7 @@ describe('Row Component', () => {
       render(
         <table>
           <tbody>
-            <Row columns={mockColumns} record={recordWithUndefined} index={0} rowKey='1' />
+            <Row prefixCls="fluentui-plus-table" columns={mockColumns} record={recordWithUndefined} index={0} rowKey='1' />
           </tbody>
         </table>
       );
@@ -206,7 +206,7 @@ describe('Row Component', () => {
       render(
         <table>
           <tbody>
-            <Row columns={columnsWithRender} record={mockRecord} index={0} rowKey='1' />
+            <Row prefixCls="fluentui-plus-table" columns={columnsWithRender} record={mockRecord} index={0} rowKey='1' />
           </tbody>
         </table>
       );
@@ -231,7 +231,7 @@ describe('Row Component', () => {
       render(
         <table>
           <tbody>
-            <Row columns={columnsWithRender} record={mockRecord} index={5} rowKey='1' />
+            <Row prefixCls="fluentui-plus-table" columns={columnsWithRender} record={mockRecord} index={5} rowKey='1' />
           </tbody>
         </table>
       );
@@ -258,7 +258,7 @@ describe('Row Component', () => {
       render(
         <table>
           <tbody>
-            <Row columns={columnsWithRender} record={mockRecord} index={0} rowKey='1' />
+            <Row prefixCls="fluentui-plus-table" columns={columnsWithRender} record={mockRecord} index={0} rowKey='1' />
           </tbody>
         </table>
       );
@@ -280,7 +280,7 @@ describe('Row Component', () => {
       const { container } = render(
         <table>
           <tbody>
-            <Row columns={columnsWithRender} record={mockRecord} index={0} rowKey='1' />
+            <Row prefixCls="fluentui-plus-table" columns={columnsWithRender} record={mockRecord} index={0} rowKey='1' />
           </tbody>
         </table>
       );
@@ -295,7 +295,7 @@ describe('Row Component', () => {
       const { container } = render(
         <table>
           <tbody>
-            <Row columns={mockColumns} record={mockRecord} index={0} rowKey='1' />
+            <Row prefixCls="fluentui-plus-table" columns={mockColumns} record={mockRecord} index={0} rowKey='1' />
           </tbody>
         </table>
       );
@@ -309,7 +309,7 @@ describe('Row Component', () => {
       const { container } = render(
         <table>
           <tbody>
-            <Row columns={mockColumns} record={mockRecord} index={0} rowKey='1' />
+            <Row prefixCls="fluentui-plus-table" columns={mockColumns} record={mockRecord} index={0} rowKey='1' />
           </tbody>
         </table>
       );
@@ -330,7 +330,7 @@ describe('Row Component', () => {
       const { container } = render(
         <table>
           <tbody>
-            <Row columns={columnsWithUndefined} record={recordWithUndefined} index={0} rowKey='1' />
+            <Row prefixCls="fluentui-plus-table" columns={columnsWithUndefined} record={recordWithUndefined} index={0} rowKey='1' />
           </tbody>
         </table>
       );
@@ -351,7 +351,7 @@ describe('Row Component', () => {
       const { container } = render(
         <table>
           <tbody>
-            <Row columns={columnsWithAlign} record={mockRecord} index={0} rowKey='1' />
+            <Row prefixCls="fluentui-plus-table" columns={columnsWithAlign} record={mockRecord} index={0} rowKey='1' />
           </tbody>
         </table>
       );
@@ -366,7 +366,7 @@ describe('Row Component', () => {
       const { container } = render(
         <table>
           <tbody>
-            <Row columns={mockColumns} record={mockRecord} index={0} rowKey='1' />
+            <Row prefixCls="fluentui-plus-table" columns={mockColumns} record={mockRecord} index={0} rowKey='1' />
           </tbody>
         </table>
       );
@@ -388,7 +388,7 @@ describe('Row Component', () => {
       const { container } = render(
         <table>
           <tbody>
-            <Row columns={columnsWithFixed} record={mockRecord} index={0} rowKey='1' />
+            <Row prefixCls="fluentui-plus-table" columns={columnsWithFixed} record={mockRecord} index={0} rowKey='1' />
           </tbody>
         </table>
       );
@@ -406,7 +406,7 @@ describe('Row Component', () => {
       const { container } = render(
         <table>
           <tbody>
-            <Row columns={columnsWithFixed} record={mockRecord} index={0} rowKey='1' />
+            <Row prefixCls="fluentui-plus-table" columns={columnsWithFixed} record={mockRecord} index={0} rowKey='1' />
           </tbody>
         </table>
       );
@@ -424,7 +424,7 @@ describe('Row Component', () => {
       const { container } = render(
         <table>
           <tbody>
-            <Row columns={columnsWithFixed} record={mockRecord} index={0} rowKey='1' />
+            <Row prefixCls="fluentui-plus-table" columns={columnsWithFixed} record={mockRecord} index={0} rowKey='1' />
           </tbody>
         </table>
       );
@@ -446,7 +446,7 @@ describe('Row Component', () => {
       const { container } = render(
         <table>
           <tbody>
-            <Row columns={columnsWithClassName} record={mockRecord} index={0} rowKey='1' />
+            <Row prefixCls="fluentui-plus-table" columns={columnsWithClassName} record={mockRecord} index={0} rowKey='1' />
           </tbody>
         </table>
       );
@@ -464,7 +464,7 @@ describe('Row Component', () => {
       render(
         <table>
           <tbody>
-            <Row columns={mockColumns} record={emptyRecord} index={0} rowKey='1' />
+            <Row prefixCls="fluentui-plus-table" columns={mockColumns} record={emptyRecord} index={0} rowKey='1' />
           </tbody>
         </table>
       );
@@ -483,7 +483,7 @@ describe('Row Component', () => {
       render(
         <table>
           <tbody>
-            <Row columns={mockColumns} record={recordWithNull} index={0} rowKey='1' />
+            <Row prefixCls="fluentui-plus-table" columns={mockColumns} record={recordWithNull} index={0} rowKey='1' />
           </tbody>
         </table>
       );
@@ -509,7 +509,7 @@ describe('Row Component', () => {
       render(
         <table>
           <tbody>
-            <Row columns={mixedColumns} record={mixedRecord} index={0} rowKey='1' />
+            <Row prefixCls="fluentui-plus-table" columns={mixedColumns} record={mixedRecord} index={0} rowKey='1' />
           </tbody>
         </table>
       );
@@ -522,7 +522,7 @@ describe('Row Component', () => {
       const { container } = render(
         <table>
           <tbody>
-            <Row columns={mockColumns} record={mockRecord} index={0} rowKey='1' />
+            <Row prefixCls="fluentui-plus-table" columns={mockColumns} record={mockRecord} index={0} rowKey='1' />
           </tbody>
         </table>
       );
@@ -534,7 +534,7 @@ describe('Row Component', () => {
       const { container } = render(
         <table>
           <tbody>
-            <Row columns={mockColumns} record={mockRecord} index={9999} rowKey='1' />
+            <Row prefixCls="fluentui-plus-table" columns={mockColumns} record={mockRecord} index={9999} rowKey='1' />
           </tbody>
         </table>
       );
@@ -550,7 +550,7 @@ describe('Row Component', () => {
       render(
         <table>
           <tbody>
-            <Row columns={mockColumns} record={mockRecord} index={0} rowKey='1' />
+            <Row prefixCls="fluentui-plus-table" columns={mockColumns} record={mockRecord} index={0} rowKey='1' />
           </tbody>
         </table>
       );

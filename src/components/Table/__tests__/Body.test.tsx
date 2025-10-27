@@ -66,7 +66,7 @@ describe('Body Component', () => {
 
   describe('基础渲染', () => {
     it('should render correctly with data', () => {
-      render(<Body columns={mockColumns} dataSource={mockData} rowKey='key' />);
+      render(<Body prefixCls='fluentui-plus-table' columns={mockColumns} dataSource={mockData} rowKey='key' />);
 
       expect(screen.getByTestId('colgroup')).toBeInTheDocument();
       expect(screen.getByTestId('row-1')).toBeInTheDocument();
@@ -75,7 +75,9 @@ describe('Body Component', () => {
     });
 
     it('should render correct table structure', () => {
-      const { container } = render(<Body columns={mockColumns} dataSource={mockData} rowKey='key' />);
+      const { container } = render(
+        <Body prefixCls='fluentui-plus-table' columns={mockColumns} dataSource={mockData} rowKey='key' />
+      );
 
       const tbody = container.querySelector('tbody');
       expect(tbody).toHaveClass('fluentui-plus-table-tbody');
@@ -83,7 +85,13 @@ describe('Body Component', () => {
 
     it('should apply custom className', () => {
       const { container } = render(
-        <Body columns={mockColumns} dataSource={mockData} rowKey='key' className='custom-body' />
+        <Body
+          prefixCls='fluentui-plus-table'
+          columns={mockColumns}
+          dataSource={mockData}
+          rowKey='key'
+          className='custom-body'
+        />
       );
 
       const bodyTable = container.querySelector('table');
@@ -93,13 +101,15 @@ describe('Body Component', () => {
 
   describe('空数据处理', () => {
     it('should render empty state with default text', () => {
-      render(<Body columns={mockColumns} dataSource={[]} rowKey='key' />);
+      render(<Body prefixCls='fluentui-plus-table' columns={mockColumns} dataSource={[]} rowKey='key' />);
 
       expect(screen.getByText('暂无数据')).toBeInTheDocument();
     });
 
     it('should render empty state with custom emptyText', () => {
-      render(<Body columns={mockColumns} dataSource={[]} rowKey='key' emptyText='没有数据' />);
+      render(
+        <Body prefixCls='fluentui-plus-table' columns={mockColumns} dataSource={[]} rowKey='key' emptyText='没有数据' />
+      );
 
       expect(screen.getByText('没有数据')).toBeInTheDocument();
     });
@@ -107,20 +117,32 @@ describe('Body Component', () => {
     it('should render custom React node as emptyText', () => {
       const CustomEmpty = () => <div data-testid='custom-empty'>自定义空状态</div>;
 
-      render(<Body columns={mockColumns} dataSource={[]} rowKey='key' emptyText={<CustomEmpty />} />);
+      render(
+        <Body
+          prefixCls='fluentui-plus-table'
+          columns={mockColumns}
+          dataSource={[]}
+          rowKey='key'
+          emptyText={<CustomEmpty />}
+        />
+      );
 
       expect(screen.getByTestId('custom-empty')).toBeInTheDocument();
     });
 
     it('should span empty cell across all columns', () => {
-      const { container } = render(<Body columns={mockColumns} dataSource={[]} rowKey='key' />);
+      const { container } = render(
+        <Body prefixCls='fluentui-plus-table' columns={mockColumns} dataSource={[]} rowKey='key' />
+      );
 
       const emptyCell = container.querySelector('.fluentui-plus-table-empty');
       expect(emptyCell).toHaveAttribute('colSpan', String(mockColumns.length));
     });
 
     it('should render empty row with correct class', () => {
-      const { container } = render(<Body columns={mockColumns} dataSource={[]} rowKey='key' />);
+      const { container } = render(
+        <Body prefixCls='fluentui-plus-table' columns={mockColumns} dataSource={[]} rowKey='key' />
+      );
 
       const emptyRow = container.querySelector('.fluentui-plus-table-empty-row');
       expect(emptyRow).toBeInTheDocument();
@@ -129,7 +151,7 @@ describe('Body Component', () => {
 
   describe('rowKey 处理', () => {
     it('should use string rowKey to get key from record', () => {
-      render(<Body columns={mockColumns} dataSource={mockData} rowKey='key' />);
+      render(<Body prefixCls='fluentui-plus-table' columns={mockColumns} dataSource={mockData} rowKey='key' />);
 
       expect(screen.getByTestId('row-1')).toBeInTheDocument();
       expect(screen.getByTestId('row-2')).toBeInTheDocument();
@@ -139,7 +161,7 @@ describe('Body Component', () => {
     it('should use function rowKey to generate key', () => {
       const rowKeyFn = (record: any) => `custom-${record.key}`;
 
-      render(<Body columns={mockColumns} dataSource={mockData} rowKey={rowKeyFn} />);
+      render(<Body prefixCls='fluentui-plus-table' columns={mockColumns} dataSource={mockData} rowKey={rowKeyFn} />);
 
       expect(screen.getByTestId('row-custom-1')).toBeInTheDocument();
       expect(screen.getByTestId('row-custom-2')).toBeInTheDocument();
@@ -152,7 +174,7 @@ describe('Body Component', () => {
         { name: '李四', age: 32 },
       ];
 
-      render(<Body columns={mockColumns} dataSource={dataWithoutKey} rowKey='key' />);
+      render(<Body prefixCls='fluentui-plus-table' columns={mockColumns} dataSource={dataWithoutKey} rowKey='key' />);
 
       expect(screen.getByTestId('row-0')).toBeInTheDocument();
       expect(screen.getByTestId('row-1')).toBeInTheDocument();
@@ -164,7 +186,7 @@ describe('Body Component', () => {
         { id: 'user-2', name: '李四', age: 32 },
       ];
 
-      render(<Body columns={mockColumns} dataSource={dataWithId} rowKey='id' />);
+      render(<Body prefixCls='fluentui-plus-table' columns={mockColumns} dataSource={dataWithId} rowKey='id' />);
 
       expect(screen.getByTestId('row-user-1')).toBeInTheDocument();
       expect(screen.getByTestId('row-user-2')).toBeInTheDocument();
@@ -173,7 +195,7 @@ describe('Body Component', () => {
 
   describe('数据渲染', () => {
     it('should render all rows in order', () => {
-      render(<Body columns={mockColumns} dataSource={mockData} rowKey='key' />);
+      render(<Body prefixCls='fluentui-plus-table' columns={mockColumns} dataSource={mockData} rowKey='key' />);
 
       const row1 = screen.getByTestId('row-1');
       const row2 = screen.getByTestId('row-2');
@@ -185,7 +207,7 @@ describe('Body Component', () => {
     });
 
     it('should pass correct props to Row component', () => {
-      render(<Body columns={mockColumns} dataSource={mockData} rowKey='key' />);
+      render(<Body prefixCls='fluentui-plus-table' columns={mockColumns} dataSource={mockData} rowKey='key' />);
 
       // 验证所有行都被渲染
       mockData.forEach((_, index) => {
@@ -196,7 +218,7 @@ describe('Body Component', () => {
     it('should handle single row', () => {
       const singleData = [mockData[0]];
 
-      render(<Body columns={mockColumns} dataSource={singleData} rowKey='key' />);
+      render(<Body prefixCls='fluentui-plus-table' columns={mockColumns} dataSource={singleData} rowKey='key' />);
 
       expect(screen.getByTestId('row-1')).toBeInTheDocument();
       expect(screen.queryByTestId('row-2')).not.toBeInTheDocument();
@@ -210,7 +232,7 @@ describe('Body Component', () => {
         address: '地址',
       }));
 
-      render(<Body columns={mockColumns} dataSource={largeData} rowKey='key' />);
+      render(<Body prefixCls='fluentui-plus-table' columns={mockColumns} dataSource={largeData} rowKey='key' />);
 
       expect(screen.getByTestId('row-0')).toBeInTheDocument();
       expect(screen.getByTestId('row-99')).toBeInTheDocument();
@@ -219,13 +241,15 @@ describe('Body Component', () => {
 
   describe('ColGroup 集成', () => {
     it('should render ColGroup with columns', () => {
-      render(<Body columns={mockColumns} dataSource={mockData} rowKey='key' />);
+      render(<Body prefixCls='fluentui-plus-table' columns={mockColumns} dataSource={mockData} rowKey='key' />);
 
       expect(screen.getByTestId('colgroup')).toBeInTheDocument();
     });
 
     it('should pass columns to ColGroup', () => {
-      const { container } = render(<Body columns={mockColumns} dataSource={mockData} rowKey='key' />);
+      const { container } = render(
+        <Body prefixCls='fluentui-plus-table' columns={mockColumns} dataSource={mockData} rowKey='key' />
+      );
 
       const colgroup = container.querySelector('colgroup');
       const cols = colgroup?.querySelectorAll('col');
@@ -235,7 +259,7 @@ describe('Body Component', () => {
 
   describe('边界情况', () => {
     it('should handle empty columns array', () => {
-      render(<Body columns={[]} dataSource={mockData} rowKey='key' />);
+      render(<Body prefixCls='fluentui-plus-table' columns={[]} dataSource={mockData} rowKey='key' />);
 
       expect(screen.getByTestId('colgroup')).toBeInTheDocument();
     });
@@ -246,7 +270,7 @@ describe('Body Component', () => {
         { key: '2', x: 3, y: 4 },
       ];
 
-      render(<Body columns={mockColumns} dataSource={differentData} rowKey='key' />);
+      render(<Body prefixCls='fluentui-plus-table' columns={mockColumns} dataSource={differentData} rowKey='key' />);
 
       expect(screen.getByTestId('row-1')).toBeInTheDocument();
       expect(screen.getByTestId('row-2')).toBeInTheDocument();
@@ -258,7 +282,7 @@ describe('Body Component', () => {
         { key: 2, name: '李四' },
       ];
 
-      render(<Body columns={mockColumns} dataSource={numericKeyData} rowKey='key' />);
+      render(<Body prefixCls='fluentui-plus-table' columns={mockColumns} dataSource={numericKeyData} rowKey='key' />);
 
       expect(screen.getByTestId('row-1')).toBeInTheDocument();
       expect(screen.getByTestId('row-2')).toBeInTheDocument();
@@ -268,21 +292,25 @@ describe('Body Component', () => {
       const dataWithNulls = [{ key: '1', name: null, age: undefined, address: '北京' }];
 
       expect(() => {
-        render(<Body columns={mockColumns} dataSource={dataWithNulls} rowKey='key' />);
+        render(<Body prefixCls='fluentui-plus-table' columns={mockColumns} dataSource={dataWithNulls} rowKey='key' />);
       }).not.toThrow();
     });
   });
 
   describe('类名和样式', () => {
     it('should apply correct CSS classes to table', () => {
-      const { container } = render(<Body columns={mockColumns} dataSource={mockData} rowKey='key' />);
+      const { container } = render(
+        <Body prefixCls='fluentui-plus-table' columns={mockColumns} dataSource={mockData} rowKey='key' />
+      );
 
       const bodyTable = container.querySelector('table');
       expect(bodyTable).toHaveClass('fluentui-plus-table-body');
     });
 
     it('should apply correct CSS classes to tbody', () => {
-      const { container } = render(<Body columns={mockColumns} dataSource={mockData} rowKey='key' />);
+      const { container } = render(
+        <Body prefixCls='fluentui-plus-table' columns={mockColumns} dataSource={mockData} rowKey='key' />
+      );
 
       const tbody = container.querySelector('tbody');
       expect(tbody).toHaveClass('fluentui-plus-table-tbody');
@@ -290,7 +318,13 @@ describe('Body Component', () => {
 
     it('should merge custom className with default classes', () => {
       const { container } = render(
-        <Body columns={mockColumns} dataSource={mockData} rowKey='key' className='custom-body-class' />
+        <Body
+          prefixCls='fluentui-plus-table'
+          columns={mockColumns}
+          dataSource={mockData}
+          rowKey='key'
+          className='custom-body-class'
+        />
       );
 
       const bodyTable = container.querySelector('table');

@@ -4,13 +4,11 @@ import ColGroup from './ColGroup';
 import type { HeaderProps } from './types';
 import { calculateFixedInfo, getFixedCellStyle } from './utils';
 
-const prefixCls = 'fluentui-plus-table';
-
 /**
  * Header 组件
  * 表格表头，支持固定表头
  */
-const Header = <RecordType = Record<string, unknown>,>({ columns, className }: HeaderProps<RecordType>) => {
+const Header = <RecordType = Record<string, unknown>,>({ columns, className, prefixCls }: HeaderProps<RecordType>) => {
   const fixedInfo = useMemo(() => calculateFixedInfo(columns), [columns]);
 
   return (

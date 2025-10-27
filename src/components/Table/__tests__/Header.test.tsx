@@ -75,14 +75,14 @@ describe('Header Component', () => {
 
   describe('基础渲染', () => {
     it('should render correctly with basic columns', () => {
-      const { container } = render(<Header columns={basicColumns} />);
+      const { container } = render(<Header prefixCls="fluentui-plus-table" columns={basicColumns} />);
 
       const thead = container.querySelector('.fluentui-plus-table-thead');
       expect(thead).toBeInTheDocument();
     });
 
     it('should render all column headers', () => {
-      render(<Header columns={basicColumns} />);
+      render(<Header prefixCls="fluentui-plus-table" columns={basicColumns} />);
 
       expect(screen.getByText('姓名')).toBeInTheDocument();
       expect(screen.getByText('年龄')).toBeInTheDocument();
@@ -90,7 +90,7 @@ describe('Header Component', () => {
     });
 
     it('should render complete table structure', () => {
-      const { container } = render(<Header columns={basicColumns} />);
+      const { container } = render(<Header prefixCls="fluentui-plus-table" columns={basicColumns} />);
 
       const table = container.querySelector('.fluentui-plus-table-header');
       expect(table).toBeInTheDocument();
@@ -103,7 +103,7 @@ describe('Header Component', () => {
     });
 
     it('should apply custom className', () => {
-      const { container } = render(<Header columns={basicColumns} className='custom-header' />);
+      const { container } = render(<Header prefixCls="fluentui-plus-table" columns={basicColumns} className='custom-header' />);
 
       const headerTable = container.querySelector('table');
       expect(headerTable).toHaveClass('custom-header');
@@ -112,7 +112,7 @@ describe('Header Component', () => {
 
   describe('列标题渲染', () => {
     it('should render string titles', () => {
-      render(<Header columns={basicColumns} />);
+      render(<Header prefixCls="fluentui-plus-table" columns={basicColumns} />);
 
       expect(screen.getByText('姓名')).toBeInTheDocument();
       expect(screen.getByText('年龄')).toBeInTheDocument();
@@ -127,7 +127,7 @@ describe('Header Component', () => {
         },
       ];
 
-      render(<Header columns={columnsWithReactTitle} />);
+      render(<Header prefixCls="fluentui-plus-table" columns={columnsWithReactTitle} />);
 
       expect(screen.getByTestId('custom-title')).toBeInTheDocument();
     });
@@ -146,7 +146,7 @@ describe('Header Component', () => {
         },
       ];
 
-      render(<Header columns={columnsWithComplexTitle} />);
+      render(<Header prefixCls="fluentui-plus-table" columns={columnsWithComplexTitle} />);
 
       expect(screen.getByTestId('icon')).toBeInTheDocument();
       expect(screen.getByText('统计数据')).toBeInTheDocument();
@@ -155,7 +155,7 @@ describe('Header Component', () => {
     it('should render empty title', () => {
       const columnsWithEmptyTitle: ColumnType[] = [{ key: 'col1', title: '', dataIndex: 'col1' }];
 
-      const { container } = render(<Header columns={columnsWithEmptyTitle} />);
+      const { container } = render(<Header prefixCls="fluentui-plus-table" columns={columnsWithEmptyTitle} />);
 
       const th = container.querySelector('th');
       expect(th).toBeInTheDocument();
@@ -165,7 +165,7 @@ describe('Header Component', () => {
 
   describe('title 属性', () => {
     it('should add title attribute for string titles', () => {
-      const { container } = render(<Header columns={basicColumns} />);
+      const { container } = render(<Header prefixCls="fluentui-plus-table" columns={basicColumns} />);
 
       const headers = container.querySelectorAll('th');
       expect(headers[0]).toHaveAttribute('title', '姓名');
@@ -182,7 +182,7 @@ describe('Header Component', () => {
         },
       ];
 
-      const { container } = render(<Header columns={columnsWithReactTitle} />);
+      const { container } = render(<Header prefixCls="fluentui-plus-table" columns={columnsWithReactTitle} />);
 
       const th = container.querySelector('th');
       expect(th).not.toHaveAttribute('title');
@@ -197,7 +197,7 @@ describe('Header Component', () => {
         { key: 'address', title: '地址', dataIndex: 'address', align: 'right' },
       ];
 
-      const { container } = render(<Header columns={columnsWithAlign} />);
+      const { container } = render(<Header prefixCls="fluentui-plus-table" columns={columnsWithAlign} />);
 
       const headers = container.querySelectorAll('th');
       expect(headers[0]).toHaveClass('fluentui-plus-table-cell-align-left');
@@ -206,7 +206,7 @@ describe('Header Component', () => {
     });
 
     it('should not apply align class when not specified', () => {
-      const { container } = render(<Header columns={basicColumns} />);
+      const { container } = render(<Header prefixCls="fluentui-plus-table" columns={basicColumns} />);
 
       const headers = container.querySelectorAll('th');
       headers.forEach(th => {
@@ -222,7 +222,7 @@ describe('Header Component', () => {
         { key: 'age', title: '年龄', dataIndex: 'age' },
       ];
 
-      const { container } = render(<Header columns={columnsWithFixedLeft} />);
+      const { container } = render(<Header prefixCls="fluentui-plus-table" columns={columnsWithFixedLeft} />);
 
       const headers = container.querySelectorAll('th');
       expect(headers[0]).toHaveClass('fluentui-plus-table-cell-fixed-left');
@@ -235,7 +235,7 @@ describe('Header Component', () => {
         { key: 'action', title: '操作', dataIndex: 'action', fixed: 'right' },
       ];
 
-      const { container } = render(<Header columns={columnsWithFixedRight} />);
+      const { container } = render(<Header prefixCls="fluentui-plus-table" columns={columnsWithFixedRight} />);
 
       const headers = container.querySelectorAll('th');
       expect(headers[0]).not.toHaveClass('fluentui-plus-table-cell-fixed-right');
@@ -249,7 +249,7 @@ describe('Header Component', () => {
         { key: 'action', title: '操作', dataIndex: 'action', fixed: 'right' },
       ];
 
-      const { container } = render(<Header columns={columnsWithFixed} />);
+      const { container } = render(<Header prefixCls="fluentui-plus-table" columns={columnsWithFixed} />);
 
       const headers = container.querySelectorAll('th');
       const leftFixed = headers[0] as HTMLElement;
@@ -274,7 +274,7 @@ describe('Header Component', () => {
         { key: 'age', title: '年龄', dataIndex: 'age' },
       ];
 
-      const { container } = render(<Header columns={columnsWithFixedLeft} />);
+      const { container } = render(<Header prefixCls="fluentui-plus-table" columns={columnsWithFixedLeft} />);
 
       const headers = container.querySelectorAll('th');
       expect(headers[0]).toHaveClass('fluentui-plus-table-cell-fixed-left-last');
@@ -292,7 +292,7 @@ describe('Header Component', () => {
         { key: 'action', title: '操作', dataIndex: 'action', fixed: 'right' },
       ];
 
-      const { container } = render(<Header columns={columnsWithFixedRight} />);
+      const { container } = render(<Header prefixCls="fluentui-plus-table" columns={columnsWithFixedRight} />);
 
       const headers = container.querySelectorAll('th');
       expect(headers[1]).toHaveClass('fluentui-plus-table-cell-fixed-right-first');
@@ -306,7 +306,7 @@ describe('Header Component', () => {
         { key: 'age', title: '年龄', dataIndex: 'age', className: 'custom-age-header' },
       ];
 
-      const { container } = render(<Header columns={columnsWithClassName} />);
+      const { container } = render(<Header prefixCls="fluentui-plus-table" columns={columnsWithClassName} />);
 
       const headers = container.querySelectorAll('th');
       expect(headers[0]).toHaveClass('custom-name-header');
@@ -324,7 +324,7 @@ describe('Header Component', () => {
         },
       ];
 
-      const { container } = render(<Header columns={columnsWithClassName} />);
+      const { container } = render(<Header prefixCls="fluentui-plus-table" columns={columnsWithClassName} />);
 
       const header = container.querySelector('th');
       expect(header).toHaveClass('fluentui-plus-table-cell');
@@ -336,13 +336,13 @@ describe('Header Component', () => {
 
   describe('ColGroup 集成', () => {
     it('should render ColGroup', () => {
-      render(<Header columns={basicColumns} />);
+      render(<Header prefixCls="fluentui-plus-table" columns={basicColumns} />);
 
       expect(screen.getByTestId('colgroup')).toBeInTheDocument();
     });
 
     it('should pass columns to ColGroup', () => {
-      const { container } = render(<Header columns={basicColumns} />);
+      const { container } = render(<Header prefixCls="fluentui-plus-table" columns={basicColumns} />);
 
       const colgroup = container.querySelector('colgroup');
       const cols = colgroup?.querySelectorAll('col');
@@ -352,7 +352,7 @@ describe('Header Component', () => {
 
   describe('边界情况', () => {
     it('should handle empty columns array', () => {
-      const { container } = render(<Header columns={[]} />);
+      const { container } = render(<Header prefixCls="fluentui-plus-table" columns={[]} />);
 
       const thead = container.querySelector('thead');
       expect(thead).toBeInTheDocument();
@@ -364,7 +364,7 @@ describe('Header Component', () => {
     it('should handle single column', () => {
       const singleColumn: ColumnType[] = [{ key: 'name', title: '姓名', dataIndex: 'name' }];
 
-      render(<Header columns={singleColumn} />);
+      render(<Header prefixCls="fluentui-plus-table" columns={singleColumn} />);
 
       expect(screen.getByText('姓名')).toBeInTheDocument();
     });
@@ -376,7 +376,7 @@ describe('Header Component', () => {
         dataIndex: `col${i}`,
       }));
 
-      const { container } = render(<Header columns={manyColumns} />);
+      const { container } = render(<Header prefixCls="fluentui-plus-table" columns={manyColumns} />);
 
       const headers = container.querySelectorAll('th');
       expect(headers).toHaveLength(50);
@@ -395,7 +395,7 @@ describe('Header Component', () => {
         },
       ];
 
-      const { container } = render(<Header columns={fullColumns} />);
+      const { container } = render(<Header prefixCls="fluentui-plus-table" columns={fullColumns} />);
 
       const header = container.querySelector('th');
       expect(header).toHaveClass('fluentui-plus-table-cell');
@@ -408,7 +408,7 @@ describe('Header Component', () => {
 
   describe('CSS 类名', () => {
     it('should apply correct base classes', () => {
-      const { container } = render(<Header columns={basicColumns} />);
+      const { container } = render(<Header prefixCls="fluentui-plus-table" columns={basicColumns} />);
 
       const headerTable = container.querySelector('table');
       expect(headerTable).toHaveClass('fluentui-plus-table-header');
@@ -438,7 +438,7 @@ describe('Header Component', () => {
       const utils = jest.requireMock('../utils');
       utils.calculateFixedInfo.mockReturnValueOnce([{ fixed: 'left', left: 0, isLastLeft: true }]);
 
-      const { container } = render(<Header columns={complexColumns} />);
+      const { container } = render(<Header prefixCls="fluentui-plus-table" columns={complexColumns} />);
 
       const header = container.querySelector('th');
       expect(header).toHaveClass('fluentui-plus-table-cell');
@@ -454,7 +454,7 @@ describe('Header Component', () => {
     it('should memoize fixedInfo calculation', () => {
       const utils = jest.requireMock('../utils');
 
-      render(<Header columns={basicColumns} />);
+      render(<Header prefixCls="fluentui-plus-table" columns={basicColumns} />);
 
       expect(utils.calculateFixedInfo).toHaveBeenCalledWith(basicColumns);
     });
@@ -462,10 +462,10 @@ describe('Header Component', () => {
     it('should not recalculate fixedInfo on same columns', () => {
       const utils = jest.requireMock('../utils');
 
-      const { rerender } = render(<Header columns={basicColumns} />);
+      const { rerender } = render(<Header prefixCls="fluentui-plus-table" columns={basicColumns} />);
 
       // 使用相同的 columns 重新渲染
-      rerender(<Header columns={basicColumns} />);
+      rerender(<Header prefixCls="fluentui-plus-table" columns={basicColumns} />);
 
       // useMemo 应该阻止重新计算（但在测试中可能会被调用多次）
       // 这里主要验证 calculateFixedInfo 被正确调用

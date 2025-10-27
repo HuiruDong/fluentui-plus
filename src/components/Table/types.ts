@@ -107,6 +107,7 @@ export interface ColGroupProps<RecordType = Record<string, unknown>> {
 export interface HeaderProps<RecordType = Record<string, unknown>> {
   columns: ColumnType<RecordType>[];
   className?: string;
+  prefixCls: string;
 }
 
 /**
@@ -118,6 +119,7 @@ export interface BodyProps<RecordType = Record<string, unknown>> {
   rowKey: string | ((record: RecordType) => string);
   className?: string;
   emptyText?: React.ReactNode;
+  prefixCls: string;
 }
 
 /**
@@ -128,4 +130,5 @@ export interface RowProps<RecordType = Record<string, unknown>> {
   record: RecordType;
   index: number;
   rowKey: string;
+  prefixCls: string;
 }

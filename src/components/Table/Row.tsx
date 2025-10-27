@@ -4,13 +4,17 @@ import type { RowProps } from './types';
 import { get } from 'lodash';
 import { calculateFixedInfo, getFixedCellStyle } from './utils';
 
-const prefixCls = 'fluentui-plus-table';
-
 /**
  * Row 组件
  * 表格行组件
  */
-const Row = <RecordType = Record<string, unknown>,>({ columns, record, index, rowKey }: RowProps<RecordType>) => {
+const Row = <RecordType = Record<string, unknown>,>({
+  columns,
+  record,
+  index,
+  rowKey,
+  prefixCls,
+}: RowProps<RecordType>) => {
   const fixedInfo = useMemo(() => calculateFixedInfo(columns), [columns]);
 
   return (
