@@ -118,7 +118,10 @@ const Layout: React.FC = () => {
     },
     {
       title: '数据展示',
-      items: [{ path: '/table', label: 'Table 表格' }],
+      items: [
+        { path: '/table', label: 'Table 表格' },
+        { path: '/pagination', label: 'Pagination 分页' },
+      ],
     },
     {
       title: '反馈组件',

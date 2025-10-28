@@ -40,3 +40,7 @@ export type { TableProps, ColumnType, ScrollConfig } from './Table';
 // Spin 组件
 export { Spin } from './Spin';
 export type { SpinProps } from './Spin';
+
+// Pagination 组件
+export { Pagination } from './Pagination';
+export type { PaginationProps } from './Pagination';

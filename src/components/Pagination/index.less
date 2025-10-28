@@ -1,0 +1,118 @@
+.fluentui-plus-pagination {
+  display: inline-flex;
+  flex-wrap: nowrap;
+  gap: 0 8px;
+  align-items: center;
+  --colorNeutralStroke1Hover: @color-brand-background;
+  --colorNeutralForeground1Hover: @color-brand-background;
+  --colorNeutralStroke1Pressed: @color-brand-background;
+  --colorNeutralForeground1Pressed: @color-brand-background;
+  --fontWeightSemibold: 400;
+
+  &--disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+
+    button,
+    input {
+      cursor: not-allowed;
+    }
+  }
+
+  button {
+    min-width: 32px !important;
+  }
+
+  &__total {
+    font-size: @font-size-300;
+    margin-right: @spacing-horizontal-s;
+  }
+
+  &__jumper {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 0 8px;
+    align-items: center;
+    font-size: @font-size-300;
+
+    &__input {
+      width: 50px;
+      --colorNeutralStrokeAccessible: rgb(209, 209, 209);
+      --colorNeutralStrokeAccessibleHover: @color-brand-background;
+      --colorNeutralStrokeAccessiblePressed: @color-brand-background;
+
+      &::after {
+        border-bottom: none;
+      }
+    }
+  }
+
+  &__list {
+    display: inline-flex;
+    flex-wrap: nowrap;
+    gap: 0 8px;
+    align-items: center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    &__button {
+      height: 32px;
+      padding: 0 8px;
+      justify-content: center;
+      text-align: center;
+
+      &--active {
+        --colorNeutralForeground1: @color-brand-background;
+        --colorNeutralStroke1: @color-brand-background;
+        font-weight: @font-weight-semibold;
+      }
+    }
+  }
+
+  &__simple {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    &__button {
+      min-width: 32px !important;
+    }
+
+    &__input-container {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    &__input {
+      width: 50px;
+      text-align: center;
+      --colorNeutralStrokeAccessible: rgb(209, 209, 209);
+      --colorNeutralStrokeAccessibleHover: @color-brand-background;
+      --colorNeutralStrokeAccessiblePressed: @color-brand-background;
+
+      input {
+        text-align: center;
+      }
+
+      &::after {
+        border-bottom: none;
+      }
+    }
+
+    &__separator {
+      margin: 0 4px;
+      color: @color-neutral-foreground-1;
+    }
+
+    &__total {
+      color: @color-neutral-foreground-1;
+    }
+  }
+
+  &__size-changer {
+    display: inline-flex;
+    align-items: center;
+  }
+}
