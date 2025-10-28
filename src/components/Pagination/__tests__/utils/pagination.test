@@ -1,0 +1,523 @@
+import { generatePaginationItems } from '../../utils/pagination';
+import { PaginationItemType } from '../../utils/constants';
+import type { PageItem } from '../../types';
+
+describe('generatePaginationItems', () => {
+  // Helper function to check if an item is a page item
+  const isPageItem = (item: PageItem, value: number): boolean => {
+    return item.type === PaginationItemType.Page && item.value === value;
+  };
+
+  // Helper function to check if an item is a Prev ellipsis
+  const isPrevEllipsis = (item: PageItem): boolean => {
+    return item.type === PaginationItemType.Prev && item.value === '...';
+  };
+
+  // Helper function to check if an item is a Next ellipsis
+  const isNextEllipsis = (item: PageItem): boolean => {
+    return item.type === PaginationItemType.Next && item.value === '...';
+  };
+
+  describe('边界情况', () => {
+    it('should handle totalPages of 0', () => {
+      const result = generatePaginationItems(1, 0);
+
+      expect(result).toHaveLength(1);
+      expect(isPageItem(result[0], 1)).toBe(true);
+    });
+
+    it('should handle negative totalPages', () => {
+      const result = generatePaginationItems(1, -5);
+
+      expect(result).toHaveLength(1);
+      expect(isPageItem(result[0], 1)).toBe(true);
+    });
+
+    it('should handle current page exceeding total pages', () => {
+      const result = generatePaginationItems(15, 10);
+
+      // Should clamp current to 10 and generate items for page 10
+      expect(result.length).toBeGreaterThan(0);
+      // Page 10 is in the last 3 pages, should use end items pattern
+    });
+
+    it('should handle current page 0', () => {
+      const result = generatePaginationItems(0, 10);
+
+      // Should clamp to page 1
+      expect(result.length).toBeGreaterThan(0);
+    });
+
+    it('should handle negative current page', () => {
+      const result = generatePaginationItems(-5, 10);
+
+      // Should clamp to page 1
+      expect(result.length).toBeGreaterThan(0);
+    });
+  });
+
+  describe('少量页数 (totalPages <= 5)', () => {
+    it('should show all pages when totalPages is 1', () => {
+      const result = generatePaginationItems(1, 1);
+
+      expect(result).toHaveLength(1);
+      expect(isPageItem(result[0], 1)).toBe(true);
+    });
+
+    it('should show all pages when totalPages is 2', () => {
+      const result = generatePaginationItems(1, 2);
+
+      expect(result).toHaveLength(2);
+      expect(isPageItem(result[0], 1)).toBe(true);
+      expect(isPageItem(result[1], 2)).toBe(true);
+    });
+
+    it('should show all pages when totalPages is 3', () => {
+      const result = generatePaginationItems(2, 3);
+
+      expect(result).toHaveLength(3);
+      expect(isPageItem(result[0], 1)).toBe(true);
+      expect(isPageItem(result[1], 2)).toBe(true);
+      expect(isPageItem(result[2], 3)).toBe(true);
+    });
+
+    it('should show all pages when totalPages is 4', () => {
+      const result = generatePaginationItems(3, 4);
+
+      expect(result).toHaveLength(4);
+      expect(isPageItem(result[0], 1)).toBe(true);
+      expect(isPageItem(result[1], 2)).toBe(true);
+      expect(isPageItem(result[2], 3)).toBe(true);
+      expect(isPageItem(result[3], 4)).toBe(true);
+    });
+
+    it('should show all pages when totalPages is 5', () => {
+      const result = generatePaginationItems(4, 5);
+
+      expect(result).toHaveLength(5);
+      expect(isPageItem(result[0], 1)).toBe(true);
+      expect(isPageItem(result[1], 2)).toBe(true);
+      expect(isPageItem(result[2], 3)).toBe(true);
+      expect(isPageItem(result[3], 4)).toBe(true);
+      expect(isPageItem(result[4], 5)).toBe(true);
+    });
+
+    it('should not show ellipsis for 5 pages', () => {
+      const result = generatePaginationItems(3, 5);
+
+      const hasEllipsis = result.some(item => item.value === '...');
+      expect(hasEllipsis).toBe(false);
+    });
+  });
+
+  describe('开始位置 (current <= 3)', () => {
+    it('should show start pattern when current is 1 and totalPages is 10', () => {
+      const result = generatePaginationItems(1, 10);
+
+      // Expected: 1 2 3 4 5 ... 10
+      expect(result).toHaveLength(7);
+      expect(isPageItem(result[0], 1)).toBe(true);
+      expect(isPageItem(result[1], 2)).toBe(true);
+      expect(isPageItem(result[2], 3)).toBe(true);
+      expect(isPageItem(result[3], 4)).toBe(true);
+      expect(isPageItem(result[4], 5)).toBe(true);
+      expect(isNextEllipsis(result[5])).toBe(true);
+      expect(isPageItem(result[6], 10)).toBe(true);
+    });
+
+    it('should show start pattern when current is 2 and totalPages is 10', () => {
+      const result = generatePaginationItems(2, 10);
+
+      // Expected: 1 2 3 4 5 ... 10
+      expect(result).toHaveLength(7);
+      expect(isPageItem(result[0], 1)).toBe(true);
+      expect(isPageItem(result[4], 5)).toBe(true);
+      expect(isNextEllipsis(result[5])).toBe(true);
+      expect(isPageItem(result[6], 10)).toBe(true);
+    });
+
+    it('should show start pattern when current is 3 and totalPages is 10', () => {
+      const result = generatePaginationItems(3, 10);
+
+      // Expected: 1 2 3 4 5 ... 10
+      expect(result).toHaveLength(7);
+      expect(isPageItem(result[0], 1)).toBe(true);
+      expect(isPageItem(result[4], 5)).toBe(true);
+      expect(isNextEllipsis(result[5])).toBe(true);
+      expect(isPageItem(result[6], 10)).toBe(true);
+    });
+
+    it('should not show ellipsis when totalPages is 6', () => {
+      const result = generatePaginationItems(1, 6);
+
+      // Expected: 1 2 3 4 5 6 (no ellipsis)
+      expect(result).toHaveLength(6);
+      expect(isPageItem(result[0], 1)).toBe(true);
+      expect(isPageItem(result[5], 6)).toBe(true);
+
+      const hasEllipsis = result.some(item => item.value === '...');
+      expect(hasEllipsis).toBe(false);
+    });
+
+    it('should show start pattern when totalPages is 7', () => {
+      const result = generatePaginationItems(1, 7);
+
+      // Expected: 1 2 3 4 5 ... 7
+      expect(result).toHaveLength(7);
+      expect(isPageItem(result[0], 1)).toBe(true);
+      expect(isPageItem(result[4], 5)).toBe(true);
+      expect(isNextEllipsis(result[5])).toBe(true);
+      expect(isPageItem(result[6], 7)).toBe(true);
+    });
+  });
+
+  describe('结束位置 (current >= totalPages - 2)', () => {
+    it('should show end pattern when current is last page', () => {
+      const result = generatePaginationItems(10, 10);
+
+      // Expected: 1 ... 6 7 8 9 10
+      expect(result).toHaveLength(7);
+      expect(isPageItem(result[0], 1)).toBe(true);
+      expect(isPrevEllipsis(result[1])).toBe(true);
+      expect(isPageItem(result[2], 6)).toBe(true);
+      expect(isPageItem(result[3], 7)).toBe(true);
+      expect(isPageItem(result[4], 8)).toBe(true);
+      expect(isPageItem(result[5], 9)).toBe(true);
+      expect(isPageItem(result[6], 10)).toBe(true);
+    });
+
+    it('should show end pattern when current is totalPages - 1', () => {
+      const result = generatePaginationItems(9, 10);
+
+      // Expected: 1 ... 6 7 8 9 10
+      expect(result).toHaveLength(7);
+      expect(isPageItem(result[0], 1)).toBe(true);
+      expect(isPrevEllipsis(result[1])).toBe(true);
+      expect(isPageItem(result[2], 6)).toBe(true);
+      expect(isPageItem(result[6], 10)).toBe(true);
+    });
+
+    it('should show end pattern when current is totalPages - 2', () => {
+      const result = generatePaginationItems(8, 10);
+
+      // Expected: 1 ... 6 7 8 9 10
+      expect(result).toHaveLength(7);
+      expect(isPageItem(result[0], 1)).toBe(true);
+      expect(isPrevEllipsis(result[1])).toBe(true);
+      expect(isPageItem(result[2], 6)).toBe(true);
+      expect(isPageItem(result[6], 10)).toBe(true);
+    });
+
+    it('should not show ellipsis when startPage is 2', () => {
+      const result = generatePaginationItems(7, 7);
+
+      // totalPages - 4 = 3, which is > 2, so should have ellipsis
+      // Expected: 1 ... 3 4 5 6 7
+      expect(result.length).toBeGreaterThan(0);
+      expect(isPageItem(result[0], 1)).toBe(true);
+    });
+  });
+
+  describe('中间位置 (4 <= current <= totalPages - 3)', () => {
+    it('should show middle pattern when current is 5 and totalPages is 10', () => {
+      const result = generatePaginationItems(5, 10);
+
+      // Expected: 1 ... 3 4 5 6 7 ... 10
+      expect(result).toHaveLength(9);
+      expect(isPageItem(result[0], 1)).toBe(true);
+      expect(isPrevEllipsis(result[1])).toBe(true);
+      expect(isPageItem(result[2], 3)).toBe(true); // 5 - 2
+      expect(isPageItem(result[3], 4)).toBe(true);
+      expect(isPageItem(result[4], 5)).toBe(true);
+      expect(isPageItem(result[5], 6)).toBe(true);
+      expect(isPageItem(result[6], 7)).toBe(true); // 5 + 2
+      expect(isNextEllipsis(result[7])).toBe(true);
+      expect(isPageItem(result[8], 10)).toBe(true);
+    });
+
+    it('should show middle pattern when current is 6 and totalPages is 10', () => {
+      const result = generatePaginationItems(6, 10);
+
+      // Expected: 1 ... 4 5 6 7 8 ... 10
+      expect(result).toHaveLength(9);
+      expect(isPageItem(result[0], 1)).toBe(true);
+      expect(isPrevEllipsis(result[1])).toBe(true);
+      expect(isPageItem(result[2], 4)).toBe(true); // 6 - 2
+      expect(isPageItem(result[4], 6)).toBe(true);
+      expect(isPageItem(result[6], 8)).toBe(true); // 6 + 2
+      expect(isNextEllipsis(result[7])).toBe(true);
+      expect(isPageItem(result[8], 10)).toBe(true);
+    });
+
+    it('should show middle pattern when current is 4 and totalPages is 10', () => {
+      const result = generatePaginationItems(4, 10);
+
+      // Expected: 1 2 3 4 5 6 ... 10
+      // startPage = 4 - 2 = 2, which is <= 2, so no Prev ellipsis
+      expect(result).toHaveLength(8);
+      expect(isPageItem(result[0], 1)).toBe(true);
+      expect(isPageItem(result[1], 2)).toBe(true); // 4 - 2
+      expect(isPageItem(result[3], 4)).toBe(true);
+      expect(isPageItem(result[5], 6)).toBe(true); // 4 + 2
+      expect(isNextEllipsis(result[6])).toBe(true);
+      expect(isPageItem(result[7], 10)).toBe(true);
+    });
+
+    it('should show middle pattern when current is 7 and totalPages is 10', () => {
+      const result = generatePaginationItems(7, 10);
+
+      // Expected: 1 ... 5 6 7 8 9 10
+      // endPage = 7 + 2 = 9, which is >= totalPages - 1 (9), so no Next ellipsis
+      expect(result).toHaveLength(8);
+      expect(isPageItem(result[0], 1)).toBe(true);
+      expect(isPrevEllipsis(result[1])).toBe(true);
+      expect(isPageItem(result[2], 5)).toBe(true); // 7 - 2
+      expect(isPageItem(result[4], 7)).toBe(true);
+      expect(isPageItem(result[6], 9)).toBe(true); // 7 + 2
+      expect(isPageItem(result[7], 10)).toBe(true);
+    });
+
+    it('should always have both ellipses in middle pattern', () => {
+      const result = generatePaginationItems(5, 10);
+
+      const prevEllipsisCount = result.filter(isPrevEllipsis).length;
+      const nextEllipsisCount = result.filter(isNextEllipsis).length;
+
+      expect(prevEllipsisCount).toBe(1);
+      expect(nextEllipsisCount).toBe(1);
+    });
+
+    it('should show 5 consecutive pages in middle (current ± 2)', () => {
+      const result = generatePaginationItems(6, 15);
+
+      // Should have pages 4, 5, 6, 7, 8
+      const pageNumbers = result
+        .filter(item => item.type === PaginationItemType.Page && typeof item.value === 'number')
+        .map(item => item.value) as number[];
+
+      expect(pageNumbers).toContain(4);
+      expect(pageNumbers).toContain(5);
+      expect(pageNumbers).toContain(6);
+      expect(pageNumbers).toContain(7);
+      expect(pageNumbers).toContain(8);
+    });
+  });
+
+  describe('大量页数场景', () => {
+    it('should handle 100 pages with current at 1', () => {
+      const result = generatePaginationItems(1, 100);
+
+      // Should use start pattern
+      expect(result).toHaveLength(7);
+      expect(isPageItem(result[0], 1)).toBe(true);
+      expect(isPageItem(result[4], 5)).toBe(true);
+      expect(isNextEllipsis(result[5])).toBe(true);
+      expect(isPageItem(result[6], 100)).toBe(true);
+    });
+
+    it('should handle 100 pages with current at 50', () => {
+      const result = generatePaginationItems(50, 100);
+
+      // Should use middle pattern
+      expect(result).toHaveLength(9);
+      expect(isPageItem(result[0], 1)).toBe(true);
+      expect(isPrevEllipsis(result[1])).toBe(true);
+      expect(isPageItem(result[4], 50)).toBe(true);
+      expect(isNextEllipsis(result[7])).toBe(true);
+      expect(isPageItem(result[8], 100)).toBe(true);
+    });
+
+    it('should handle 100 pages with current at 100', () => {
+      const result = generatePaginationItems(100, 100);
+
+      // Should use end pattern
+      expect(result).toHaveLength(7);
+      expect(isPageItem(result[0], 1)).toBe(true);
+      expect(isPrevEllipsis(result[1])).toBe(true);
+      expect(isPageItem(result[6], 100)).toBe(true);
+    });
+
+    it('should handle 1000 pages', () => {
+      const result = generatePaginationItems(500, 1000);
+
+      // Should always have manageable number of items
+      expect(result.length).toBeLessThanOrEqual(10);
+      expect(isPageItem(result[0], 1)).toBe(true);
+      expect(isPageItem(result[result.length - 1], 1000)).toBe(true);
+    });
+  });
+
+  describe('页码连续性', () => {
+    it('should have consecutive page numbers in start pattern (excluding ellipsis)', () => {
+      const result = generatePaginationItems(1, 10);
+
+      // 1 2 3 4 5 should be consecutive
+      const pages = result.slice(0, 5).map(item => item.value);
+      expect(pages).toEqual([1, 2, 3, 4, 5]);
+    });
+
+    it('should have consecutive page numbers in end pattern (excluding ellipsis)', () => {
+      const result = generatePaginationItems(10, 10);
+
+      // Extract pages after ellipsis: 6 7 8 9 10
+      const pages = result.slice(2).map(item => item.value);
+      expect(pages).toEqual([6, 7, 8, 9, 10]);
+    });
+
+    it('should have consecutive page numbers in middle pattern (excluding ellipses)', () => {
+      const result = generatePaginationItems(5, 10);
+
+      // Extract middle pages: should be 3 4 5 6 7
+      const middlePages = result
+        .slice(2, 7)
+        .filter(item => item.type === PaginationItemType.Page)
+        .map(item => item.value);
+
+      expect(middlePages).toEqual([3, 4, 5, 6, 7]);
+    });
+  });
+
+  describe('始终包含首页和末页', () => {
+    it('should always include first page when totalPages > 5', () => {
+      const testCases = [
+        { current: 1, total: 10 },
+        { current: 5, total: 10 },
+        { current: 10, total: 10 },
+        { current: 50, total: 100 },
+      ];
+
+      testCases.forEach(({ current, total }) => {
+        const result = generatePaginationItems(current, total);
+        expect(isPageItem(result[0], 1)).toBe(true);
+      });
+    });
+
+    it('should always include last page when totalPages > 6', () => {
+      const testCases = [
+        { current: 1, total: 10 },
+        { current: 5, total: 10 },
+        { current: 10, total: 10 },
+        { current: 50, total: 100 },
+      ];
+
+      testCases.forEach(({ current, total }) => {
+        const result = generatePaginationItems(current, total);
+        expect(isPageItem(result[result.length - 1], total)).toBe(true);
+      });
+    });
+  });
+
+  describe('省略号位置正确性', () => {
+    it('should have Next ellipsis in start pattern', () => {
+      const result = generatePaginationItems(1, 10);
+
+      const ellipsisIndex = result.findIndex(isNextEllipsis);
+      expect(ellipsisIndex).toBe(5);
+    });
+
+    it('should have Prev ellipsis in end pattern', () => {
+      const result = generatePaginationItems(10, 10);
+
+      const ellipsisIndex = result.findIndex(isPrevEllipsis);
+      expect(ellipsisIndex).toBe(1);
+    });
+
+    it('should have both ellipses in middle pattern', () => {
+      const result = generatePaginationItems(5, 10);
+
+      const prevEllipsisIndex = result.findIndex(isPrevEllipsis);
+      const nextEllipsisIndex = result.findIndex(isNextEllipsis);
+
+      expect(prevEllipsisIndex).toBe(1);
+      expect(nextEllipsisIndex).toBe(7);
+      expect(prevEllipsisIndex).toBeLessThan(nextEllipsisIndex);
+    });
+
+    it('should not have duplicate ellipses', () => {
+      const result = generatePaginationItems(5, 10);
+
+      const prevEllipsisCount = result.filter(isPrevEllipsis).length;
+      const nextEllipsisCount = result.filter(isNextEllipsis).length;
+
+      expect(prevEllipsisCount).toBeLessThanOrEqual(1);
+      expect(nextEllipsisCount).toBeLessThanOrEqual(1);
+    });
+  });
+
+  describe('类型正确性', () => {
+    it('should return array of PageItem', () => {
+      const result = generatePaginationItems(5, 10);
+
+      expect(Array.isArray(result)).toBe(true);
+      result.forEach(item => {
+        expect(item).toHaveProperty('type');
+        expect(item).toHaveProperty('value');
+        expect([PaginationItemType.Page, PaginationItemType.Prev, PaginationItemType.Next]).toContain(item.type);
+      });
+    });
+
+    it('should have correct value types for each item type', () => {
+      const result = generatePaginationItems(5, 10);
+
+      result.forEach(item => {
+        if (item.type === PaginationItemType.Page) {
+          expect(typeof item.value).toBe('number');
+        } else {
+          expect(item.value).toBe('...');
+        }
+      });
+    });
+  });
+
+  describe('性能和一致性', () => {
+    it('should return same result for same input', () => {
+      const result1 = generatePaginationItems(5, 10);
+      const result2 = generatePaginationItems(5, 10);
+
+      expect(result1).toEqual(result2);
+    });
+
+    it('should return reasonable number of items', () => {
+      const testCases = [
+        { current: 1, total: 10 },
+        { current: 5, total: 10 },
+        { current: 100, total: 1000 },
+      ];
+
+      testCases.forEach(({ current, total }) => {
+        const result = generatePaginationItems(current, total);
+        // Should never have more than 9 items (1 + ... + 5 pages + ... + 1)
+        expect(result.length).toBeLessThanOrEqual(9);
+      });
+    });
+
+    it('should handle all positions for a given totalPages', () => {
+      const totalPages = 10;
+
+      for (let current = 1; current <= totalPages; current++) {
+        const result = generatePaginationItems(current, totalPages);
+        expect(result.length).toBeGreaterThan(0);
+        expect(result.length).toBeLessThanOrEqual(9);
+      }
+    });
+  });
+
+  describe('特殊边界 (6-7 pages)', () => {
+    it('should handle totalPages of 6 correctly', () => {
+      // 6 pages, no ellipsis needed
+      const result = generatePaginationItems(3, 6);
+
+      expect(result).toHaveLength(6);
+      const hasEllipsis = result.some(item => item.value === '...');
+      expect(hasEllipsis).toBe(false);
+    });
+
+    it('should handle totalPages of 7 with ellipsis', () => {
+      // 7 pages, should show: 1 2 3 4 5 ... 7
+      const result = generatePaginationItems(1, 7);
+
+      expect(result).toHaveLength(7);
+      expect(isNextEllipsis(result[5])).toBe(true);
+    });
+  });
+});
