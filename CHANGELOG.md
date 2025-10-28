@@ -4,6 +4,26 @@
 
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，项目遵循 [语义化版本](https://semver.org/lang/zh-CN/) 规范。
 
+## [2.4.0](https://github.com/HuiruDong/fluentui-plus/compare/v2.3.0...v2.4.0) (2025-10-28)
+
+### Changed
+
+- extract lint-staged config to separate file ([e8fca10](https://github.com/HuiruDong/fluentui-plus/commit/e8fca10a63b85593afdfe49a5258ee40e1479fbf))
+- **Message:** add Storybook stories and API reference documentation ([81ba4d1](https://github.com/HuiruDong/fluentui-plus/commit/81ba4d1ffc6577f55dda29496336bd6577702cad))
+- replace mergeClasses with clsx for class name management ([c2fdbcc](https://github.com/HuiruDong/fluentui-plus/commit/c2fdbcc9ee03b1cbd5098add5d4fc89a9b33f18a))
+- **Table:** add comprehensive API documentation and Storybook stories ([390b37b](https://github.com/HuiruDong/fluentui-plus/commit/390b37b175abb419feea1dae3864dfdd0947d914))
+- **Table:** optimize scroll synchronization with requestAnimationFrame ([0f70414](https://github.com/HuiruDong/fluentui-plus/commit/0f70414d26e4c887efc93915b6e6d33363cca23e))
+- **Table:** pass prefixCls as prop through component hierarchy ([b30b0b7](https://github.com/HuiruDong/fluentui-plus/commit/b30b0b7406f7710c8f2689691b01fa7dcafbc19b))
+
+### Added
+
+- **Message:** add global message notification component ([1e2cb14](https://github.com/HuiruDong/fluentui-plus/commit/1e2cb14d880a0ffc9e5b00a926507988ed83d6af))
+- **Pagination:** add Pagination component with full functionality ([93c0944](https://github.com/HuiruDong/fluentui-plus/commit/93c09444992386985d2ca09fdfeb573fff9c71aa))
+- **Spin:** add Spin loading component with comprehensive features ([41f04c0](https://github.com/HuiruDong/fluentui-plus/commit/41f04c0e3b9c7c4c291018efae1384a9be2472e7))
+- **Table:** add pagination support ([d625aca](https://github.com/HuiruDong/fluentui-plus/commit/d625aca42944c6b56548cf0dbefa273da3e5ba7c))
+- **Table:** add row selection functionality ([663e1f4](https://github.com/HuiruDong/fluentui-plus/commit/663e1f464a1028ea7e0feff540b56d298ed8cc86))
+- **Table:** add Table component with scroll and fixed columns support ([88007af](https://github.com/HuiruDong/fluentui-plus/commit/88007af02522af78eb45a10c1b9b6774e415c77b))
+
 ## [2.3.0](https://github.com/HuiruDong/fluentui-plus/compare/v2.2.0...v2.3.0) (2025-10-15)
 
 ### Added
