@@ -1315,3 +1315,147 @@ export const FixedSelectionColumn: Story = {
     );
   },
 };
+
+/**
+ * 分页功能
+ * 内置分页器，支持自定义每页显示数量、快速跳转等功能
+ */
+export const WithPagination: Story = {
+  render: () => {
+    const dataSource = Array.from({ length: 50 }, (_, index) => ({
+      key: `${index + 1}`,
+      name: `员工${index + 1}`,
+      age: 20 + Math.floor(Math.random() * 30),
+      address: ['北京', '上海', '广州', '深圳', '杭州'][Math.floor(Math.random() * 5)] + '市某区某路某号',
+      department: ['技术部', '产品部', '设计部', '运营部', '市场部'][Math.floor(Math.random() * 5)],
+    }));
+
+    const columns: ColumnType<(typeof dataSource)[0]>[] = [
+      { key: 'name', title: '姓名', dataIndex: 'name', width: 120 },
+      { key: 'age', title: '年龄', dataIndex: 'age', width: 80, align: 'center' },
+      { key: 'address', title: '地址', dataIndex: 'address', width: 250 },
+      { key: 'department', title: '部门', dataIndex: 'department', width: 120 },
+    ];
+
+    return (
+      <Table
+        dataSource={dataSource}
+        columns={columns}
+        bordered
+        pagination={{
+          total: dataSource.length,
+          pageSize: 10,
+          showTotal: true,
+          showQuickJumper: true,
+          showSizeChanger: true,
+        }}
+      />
+    );
+  },
+};
+
+/**
+ * 简单分页
+ * 简洁模式的分页器，适用于移动端或空间受限的场景
+ */
+export const SimplePagination: Story = {
+  render: () => {
+    const dataSource = Array.from({ length: 50 }, (_, index) => ({
+      key: `${index + 1}`,
+      name: `员工${index + 1}`,
+      age: 20 + Math.floor(Math.random() * 30),
+      address: ['北京', '上海', '广州', '深圳', '杭州'][Math.floor(Math.random() * 5)] + '市某区某路某号',
+    }));
+
+    const columns: ColumnType<(typeof dataSource)[0]>[] = [
+      { key: 'name', title: '姓名', dataIndex: 'name', width: 120 },
+      { key: 'age', title: '年龄', dataIndex: 'age', width: 80, align: 'center' },
+      { key: 'address', title: '地址', dataIndex: 'address', width: 250 },
+    ];
+
+    return (
+      <Table
+        dataSource={dataSource}
+        columns={columns}
+        bordered
+        pagination={{
+          total: dataSource.length,
+          pageSize: 10,
+          simple: true,
+        }}
+      />
+    );
+  },
+};
+
+/**
+ * 行选择与分页结合
+ * 在分页场景下使用行选择功能
+ */
+export const RowSelectionWithPagination: Story = {
+  render: () => {
+    const [selectedRowKeys, setSelectedRowKeys] = React.useState<React.Key[]>([]);
+
+    const dataSource = Array.from({ length: 50 }, (_, index) => ({
+      key: `${index + 1}`,
+      name: `员工${index + 1}`,
+      age: 20 + Math.floor(Math.random() * 30),
+      address: ['北京', '上海', '广州', '深圳', '杭州'][Math.floor(Math.random() * 5)] + '市某区某路某号',
+      department: ['技术部', '产品部', '设计部', '运营部', '市场部'][Math.floor(Math.random() * 5)],
+    }));
+
+    const columns: ColumnType<(typeof dataSource)[0]>[] = [
+      { key: 'name', title: '姓名', dataIndex: 'name', width: 120 },
+      { key: 'age', title: '年龄', dataIndex: 'age', width: 80, align: 'center' },
+      { key: 'address', title: '地址', dataIndex: 'address', width: 250 },
+      { key: 'department', title: '部门', dataIndex: 'department', width: 120 },
+    ];
+
+    return (
+      <div>
+        <div style={{ marginBottom: '16px', padding: '12px', background: '#f8f9fa', borderRadius: '6px' }}>
+          <div style={{ fontSize: '14px', color: '#495057' }}>
+            已选择 <strong style={{ color: '#228be6' }}>{selectedRowKeys.length}</strong> 项（跨页选择）
+          </div>
+          {selectedRowKeys.length > 0 && (
+            <div style={{ marginTop: '8px' }}>
+              <button
+                onClick={() => setSelectedRowKeys([])}
+                style={{
+                  padding: '4px 12px',
+                  fontSize: '12px',
+                  border: '1px solid #dee2e6',
+                  background: 'white',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                }}
+              >
+                清空选择
+              </button>
+            </div>
+          )}
+        </div>
+        <Table
+          dataSource={dataSource}
+          columns={columns}
+          bordered
+          rowSelection={{
+            selectedRowKeys,
+            onChange: (keys, rows) => {
+              console.log('Selected Keys:', keys);
+              console.log('Selected Rows:', rows);
+              setSelectedRowKeys(keys);
+            },
+          }}
+          pagination={{
+            total: dataSource.length,
+            pageSize: 10,
+            showTotal: (total, range) => `显示 ${range[0]}-${range[1]} 条，共 ${total} 条`,
+            showQuickJumper: true,
+            showSizeChanger: true,
+          }}
+        />
+      </div>
+    );
+  },
+};

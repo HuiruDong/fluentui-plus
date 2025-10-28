@@ -1,5 +1,18 @@
 @table-prefix-cls: ~"fluentui-plus-table";
 
+// 表格包装器（包含表格和分页器）
+.@{table-prefix-cls}-wrapper {
+  box-sizing: border-box;
+
+  // 分页器容器
+  .@{table-prefix-cls}-pagination {
+    margin-top: 16px;
+    display: flex;
+    justify-content: flex-end;
+  }
+}
+
+// 表格主体
 .@{table-prefix-cls} {
   box-sizing: border-box;
   font-size: @font-size-300;

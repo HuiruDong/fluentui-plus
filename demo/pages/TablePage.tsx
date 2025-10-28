@@ -360,40 +360,6 @@ const TablePage: React.FC = () => {
         </div>
       </div>
 
-      {/* 空状态 */}
-      <div className={styles.section}>
-        <div className={styles.sectionTitle}>空状态</div>
-        <div className={styles.sectionDescription}>当 dataSource 为空数组时，显示空状态提示。</div>
-        <div className={styles.demoContainer}>
-          <div className={styles.demoTitle}>默认空状态</div>
-          <div className={styles.demo}>
-            <Table dataSource={[]} columns={columns} bordered />
-          </div>
-        </div>
-        <div className={styles.demoContainer}>
-          <div className={styles.demoTitle}>自定义空状态文本</div>
-          <div className={styles.demo}>
-            <Table dataSource={[]} columns={columns} bordered emptyText='没有找到任何数据' />
-          </div>
-        </div>
-        <div className={styles.demoContainer}>
-          <div className={styles.demoTitle}>自定义空状态内容</div>
-          <div className={styles.demo}>
-            <Table
-              dataSource={[]}
-              columns={columns}
-              bordered
-              emptyText={
-                <div style={{ padding: '20px 0', color: '#999' }}>
-                  <div style={{ fontSize: '48px' }}>📭</div>
-                  <div style={{ marginTop: '8px' }}>暂时没有数据哦</div>
-                </div>
-              }
-            />
-          </div>
-        </div>
-      </div>
-
       {/* 行选择 */}
       <div className={styles.section}>
         <div className={styles.sectionTitle}>行选择</div>
@@ -558,35 +524,75 @@ const TablePage: React.FC = () => {
         </div>
       </div>
 
-      {/* 空状态 */}
+      {/* 分页功能 */}
       <div className={styles.section}>
-        <div className={styles.sectionTitle}>空状态</div>
-        <div className={styles.sectionDescription}>当 dataSource 为空数组时，显示空状态提示。</div>
-        <div className={styles.demoContainer}>
-          <div className={styles.demoTitle}>默认空状态</div>
-          <div className={styles.demo}>
-            <Table dataSource={[]} columns={columns} bordered />
-          </div>
+        <div className={styles.sectionTitle}>分页功能</div>
+        <div className={styles.sectionDescription}>
+          通过 pagination 配置可以为表格添加分页功能，支持快速跳转、页码切换等特性。
         </div>
         <div className={styles.demoContainer}>
-          <div className={styles.demoTitle}>自定义空状态文本</div>
-          <div className={styles.demo}>
-            <Table dataSource={[]} columns={columns} bordered emptyText='没有找到任何数据' />
-          </div>
-        </div>
-        <div className={styles.demoContainer}>
-          <div className={styles.demoTitle}>自定义空状态内容</div>
+          <div className={styles.demoTitle}>基础分页</div>
           <div className={styles.demo}>
             <Table
-              dataSource={[]}
+              dataSource={largeDataSource}
               columns={columns}
               bordered
-              emptyText={
-                <div style={{ padding: '20px 0', color: '#999' }}>
-                  <div style={{ fontSize: '48px' }}>📭</div>
-                  <div style={{ marginTop: '8px' }}>暂时没有数据哦</div>
-                </div>
-              }
+              pagination={{
+                pageSize: 10,
+              }}
+            />
+          </div>
+        </div>
+        <div className={styles.demoContainer}>
+          <div className={styles.demoTitle}>完整分页配置</div>
+          <div className={styles.demo}>
+            <Table
+              dataSource={largeDataSource}
+              columns={columns}
+              bordered
+              pagination={{
+                pageSize: 10,
+                showQuickJumper: true,
+                showSizeChanger: true,
+                showTotal: true,
+                pageSizeOptions: [10, 20, 30, 50],
+              }}
+            />
+          </div>
+        </div>
+        <div className={styles.demoContainer}>
+          <div className={styles.demoTitle}>简单分页</div>
+          <div className={styles.demo}>
+            <Table
+              dataSource={largeDataSource}
+              columns={columns}
+              bordered
+              pagination={{
+                pageSize: 10,
+                simple: true,
+              }}
+            />
+          </div>
+        </div>
+        <div className={styles.demoContainer}>
+          <div className={styles.demoTitle}>不显示分页器</div>
+          <div className={styles.demo}>
+            <Table dataSource={largeDataSource} columns={columns} bordered pagination={false} />
+          </div>
+        </div>
+        <div className={styles.demoContainer}>
+          <div className={styles.demoTitle}>分页与滚动结合</div>
+          <div className={styles.demo}>
+            <Table
+              dataSource={largeDataSource}
+              columns={columns}
+              bordered
+              scroll={{ y: 300 }}
+              pagination={{
+                pageSize: 10,
+                showQuickJumper: true,
+                showSizeChanger: true,
+              }}
             />
           </div>
         </div>
@@ -653,6 +659,12 @@ const TablePage: React.FC = () => {
                 <td style={apiTableStyles.tdStyle}>rowSelection</td>
                 <td style={apiTableStyles.tdStyle}>行选择配置</td>
                 <td style={apiTableStyles.tdStyle}>RowSelection</td>
+                <td style={apiTableStyles.tdStyle}>-</td>
+              </tr>
+              <tr>
+                <td style={apiTableStyles.tdStyle}>pagination</td>
+                <td style={apiTableStyles.tdStyle}>分页配置，设置为 false 时不显示分页器</td>
+                <td style={apiTableStyles.tdStyle}>false | PaginationProps</td>
                 <td style={apiTableStyles.tdStyle}>-</td>
               </tr>
               <tr>

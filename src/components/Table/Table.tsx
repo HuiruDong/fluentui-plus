@@ -2,7 +2,8 @@ import React, { useRef, useEffect } from 'react';
 import clsx from 'clsx';
 import Header from './Header';
 import Body from './Body';
-import { useSelection } from './hooks';
+import { useSelection, usePagination } from './hooks';
+import { Pagination } from '../Pagination';
 import type { TableProps } from './types';
 import './index.less';
 
@@ -24,13 +25,20 @@ const Table = <RecordType = Record<string, unknown>,>({
   bordered = false,
   emptyText = '暂无数据',
   rowSelection,
+  pagination,
 }: TableProps<RecordType>) => {
   const headerRef = useRef<HTMLDivElement>(null);
   const bodyRef = useRef<HTMLDivElement>(null);
 
+  // 使用分页 hook
+  const { paginatedData, paginationConfig, currentPage, pageSize, handlePaginationChange } = usePagination({
+    dataSource,
+    pagination,
+  });
+
   // 使用选择 hook
   const { selectedRowKeys, handleSelect, handleSelectAll } = useSelection({
-    dataSource,
+    dataSource: paginatedData,
     rowKey,
     rowSelection,
   });
@@ -98,54 +106,74 @@ const Table = <RecordType = Record<string, unknown>,>({
     className
   );
 
+  const wrapperClasses = clsx(`${prefixCls}-wrapper`, {
+    [`${prefixCls}-wrapper--with-pagination`]: paginationConfig !== false,
+  });
+
   return (
-    <div className={classes} style={containerStyle}>
-      {/* 表头容器 */}
-      {showHeader && (
+    <div className={wrapperClasses} style={containerStyle}>
+      {/* 表格容器 */}
+      <div className={classes}>
+        {/* 表头容器 */}
+        {showHeader && (
+          <div
+            ref={headerRef}
+            className={`${prefixCls}-header-wrapper`}
+            style={{
+              overflowX: hasScrollX ? 'hidden' : undefined,
+              overflowY: hasScrollY ? 'scroll' : undefined,
+            }}
+          >
+            <div style={tableStyle}>
+              <Header
+                columns={columns}
+                prefixCls={prefixCls}
+                rowSelection={rowSelection}
+                onSelectAll={handleSelectAll}
+                selectedRowKeys={selectedRowKeys}
+                dataSource={paginatedData}
+                rowKey={rowKey}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* 表体容器 */}
         <div
-          ref={headerRef}
-          className={`${prefixCls}-header-wrapper`}
+          ref={bodyRef}
+          className={`${prefixCls}-body-wrapper`}
           style={{
-            overflowX: hasScrollX ? 'hidden' : undefined,
-            overflowY: hasScrollY ? 'scroll' : undefined,
+            ...bodyStyle,
+            overflowX: hasScrollX ? 'auto' : undefined,
           }}
         >
           <div style={tableStyle}>
-            <Header
+            <Body
               columns={columns}
+              dataSource={paginatedData}
+              rowKey={rowKey}
+              emptyText={emptyText}
               prefixCls={prefixCls}
               rowSelection={rowSelection}
-              onSelectAll={handleSelectAll}
               selectedRowKeys={selectedRowKeys}
-              dataSource={dataSource}
-              rowKey={rowKey}
+              onSelect={handleSelect}
             />
           </div>
         </div>
-      )}
+      </div>
 
-      {/* 表体容器 */}
-      <div
-        ref={bodyRef}
-        className={`${prefixCls}-body-wrapper`}
-        style={{
-          ...bodyStyle,
-          overflowX: hasScrollX ? 'auto' : undefined,
-        }}
-      >
-        <div style={tableStyle}>
-          <Body
-            columns={columns}
-            dataSource={dataSource}
-            rowKey={rowKey}
-            emptyText={emptyText}
-            prefixCls={prefixCls}
-            rowSelection={rowSelection}
-            selectedRowKeys={selectedRowKeys}
-            onSelect={handleSelect}
+      {/* 分页器 */}
+      {paginationConfig !== false && (
+        <div className={`${prefixCls}-pagination`}>
+          <Pagination
+            {...paginationConfig}
+            total={dataSource.length}
+            current={paginationConfig.current ?? currentPage}
+            pageSize={paginationConfig.pageSize ?? pageSize}
+            onChange={handlePaginationChange}
           />
         </div>
-      </div>
+      )}
     </div>
   );
 };

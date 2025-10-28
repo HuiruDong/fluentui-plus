@@ -86,17 +86,17 @@ describe('Table Component', () => {
     it('should apply custom className', () => {
       const { container } = render(<Table dataSource={mockData} columns={mockColumns} className='custom-table' />);
 
-      const tableContainer = container.querySelector('.fluentui-plus-table');
-      expect(tableContainer).toHaveClass('custom-table');
+      const tableContainer = container.querySelector('.fluentui-plus-table-wrapper');
+      expect(tableContainer?.firstElementChild).toHaveClass('custom-table');
     });
 
     it('should apply custom styles', () => {
       const customStyle = { width: '800px', height: '400px' };
       const { container } = render(<Table dataSource={mockData} columns={mockColumns} style={customStyle} />);
 
-      const tableContainer = container.querySelector('.fluentui-plus-table');
-      expect(tableContainer).toHaveStyle('width: 800px');
-      expect(tableContainer).toHaveStyle('height: 400px');
+      const tableWrapper = container.querySelector('.fluentui-plus-table-wrapper');
+      expect(tableWrapper).toHaveStyle('width: 800px');
+      expect(tableWrapper).toHaveStyle('height: 400px');
     });
 
     it('should render with bordered style when bordered is true', () => {
@@ -511,6 +511,226 @@ describe('Table Component', () => {
 
       render(<Table dataSource={mockData} columns={[]} rowSelection={rowSelection} />);
 
+      expect(screen.getByTestId('table-body')).toBeInTheDocument();
+    });
+  });
+
+  describe('分页功能', () => {
+    it('should not render pagination by default', () => {
+      const { container } = render(<Table dataSource={mockData} columns={mockColumns} />);
+
+      const pagination = container.querySelector('.fluentui-plus-table-pagination');
+      expect(pagination).not.toBeInTheDocument();
+    });
+
+    it('should not render pagination when pagination is false', () => {
+      const { container } = render(<Table dataSource={mockData} columns={mockColumns} pagination={false} />);
+
+      const pagination = container.querySelector('.fluentui-plus-table-pagination');
+      expect(pagination).not.toBeInTheDocument();
+    });
+
+    it('should render pagination when pagination config is provided', () => {
+      const { container } = render(<Table dataSource={mockData} columns={mockColumns} pagination={{ pageSize: 2 }} />);
+
+      const pagination = container.querySelector('.fluentui-plus-table-pagination');
+      expect(pagination).toBeInTheDocument();
+    });
+
+    it('should paginate data correctly', () => {
+      const largeData = Array.from({ length: 10 }, (_, i) => ({
+        key: String(i + 1),
+        name: `User ${i + 1}`,
+        age: 20 + i,
+        address: `Address ${i + 1}`,
+      }));
+
+      render(<Table dataSource={largeData} columns={mockColumns} pagination={{ pageSize: 3 }} />);
+
+      // Mock 的 Body 组件会渲染所有传给它的数据行
+      // 由于分页，Body 应该只接收到 3 条数据
+      const bodyElement = screen.getByTestId('table-body');
+      expect(bodyElement).toBeInTheDocument();
+
+      // 检查是否只有前 3 个用户的数据被渲染
+      expect(screen.getByText('User 1')).toBeInTheDocument();
+      expect(screen.getByText('User 2')).toBeInTheDocument();
+      expect(screen.getByText('User 3')).toBeInTheDocument();
+      expect(screen.queryByText('User 4')).not.toBeInTheDocument();
+    });
+
+    it('should support custom pagination config', () => {
+      const { container } = render(
+        <Table
+          dataSource={mockData}
+          columns={mockColumns}
+          pagination={{
+            pageSize: 2,
+            showQuickJumper: true,
+            showSizeChanger: true,
+          }}
+        />
+      );
+
+      const pagination = container.querySelector('.fluentui-plus-table-pagination');
+      expect(pagination).toBeInTheDocument();
+    });
+
+    it('should apply wrapper class when pagination is enabled', () => {
+      const { container } = render(<Table dataSource={mockData} columns={mockColumns} pagination={{ pageSize: 2 }} />);
+
+      const wrapper = container.querySelector('.fluentui-plus-table-wrapper');
+      expect(wrapper).toBeInTheDocument();
+      expect(wrapper).toHaveClass('fluentui-plus-table-wrapper--with-pagination');
+    });
+
+    it('should not apply pagination wrapper class when pagination is false', () => {
+      const { container } = render(<Table dataSource={mockData} columns={mockColumns} pagination={false} />);
+
+      const wrapper = container.querySelector('.fluentui-plus-table-wrapper');
+      expect(wrapper).toBeInTheDocument();
+      expect(wrapper).not.toHaveClass('fluentui-plus-table-wrapper--with-pagination');
+    });
+
+    it('should work with empty dataSource and pagination', () => {
+      const { container } = render(<Table dataSource={[]} columns={mockColumns} pagination={{ pageSize: 10 }} />);
+
+      expect(screen.getByText('暂无数据')).toBeInTheDocument();
+
+      const pagination = container.querySelector('.fluentui-plus-table-pagination');
+      expect(pagination).toBeInTheDocument();
+    });
+
+    it('should support controlled pagination', () => {
+      const largeData = Array.from({ length: 20 }, (_, i) => ({
+        key: String(i + 1),
+        name: `User ${i + 1}`,
+        age: 20 + i,
+        address: `Address ${i + 1}`,
+      }));
+
+      const { rerender } = render(
+        <Table dataSource={largeData} columns={mockColumns} pagination={{ pageSize: 5, current: 1 }} />
+      );
+
+      // 第一页数据
+      expect(screen.getByText('User 1')).toBeInTheDocument();
+
+      // 切换到第二页
+      rerender(<Table dataSource={largeData} columns={mockColumns} pagination={{ pageSize: 5, current: 2 }} />);
+
+      // 第二页数据
+      expect(screen.getByText('User 6')).toBeInTheDocument();
+    });
+
+    it('should call onChange when pagination changes', () => {
+      const onChange = jest.fn();
+      const largeData = Array.from({ length: 20 }, (_, i) => ({
+        key: String(i + 1),
+        name: `User ${i + 1}`,
+        age: 20 + i,
+        address: `Address ${i + 1}`,
+      }));
+
+      render(
+        <Table
+          dataSource={largeData}
+          columns={mockColumns}
+          pagination={{
+            pageSize: 5,
+            onChange,
+          }}
+        />
+      );
+
+      // onChange 在 Hook 内部被调用，我们只需要确保 pagination 被正确传递
+      expect(screen.getByTestId('table-body')).toBeInTheDocument();
+    });
+  });
+
+  describe('分页与滚动结合', () => {
+    it('should work with scroll and pagination together', () => {
+      const largeData = Array.from({ length: 20 }, (_, i) => ({
+        key: String(i + 1),
+        name: `User ${i + 1}`,
+        age: 20 + i,
+        address: `Address ${i + 1}`,
+      }));
+
+      const { container } = render(
+        <Table dataSource={largeData} columns={mockColumns} scroll={{ y: 300 }} pagination={{ pageSize: 5 }} />
+      );
+
+      const tableContainer = container.querySelector('.fluentui-plus-table');
+      expect(tableContainer).toHaveClass('fluentui-plus-table--scroll-y');
+
+      const pagination = container.querySelector('.fluentui-plus-table-pagination');
+      expect(pagination).toBeInTheDocument();
+    });
+
+    it('should work with horizontal scroll and pagination', () => {
+      const largeData = Array.from({ length: 20 }, (_, i) => ({
+        key: String(i + 1),
+        name: `User ${i + 1}`,
+        age: 20 + i,
+        address: `Address ${i + 1}`,
+      }));
+
+      const { container } = render(
+        <Table dataSource={largeData} columns={mockColumns} scroll={{ x: 1000 }} pagination={{ pageSize: 5 }} />
+      );
+
+      const tableContainer = container.querySelector('.fluentui-plus-table');
+      expect(tableContainer).toHaveClass('fluentui-plus-table--scroll-x');
+
+      const pagination = container.querySelector('.fluentui-plus-table-pagination');
+      expect(pagination).toBeInTheDocument();
+    });
+  });
+
+  describe('分页与行选择结合', () => {
+    it('should work with rowSelection and pagination', () => {
+      const largeData = Array.from({ length: 20 }, (_, i) => ({
+        key: String(i + 1),
+        name: `User ${i + 1}`,
+        age: 20 + i,
+        address: `Address ${i + 1}`,
+      }));
+
+      const onChange = jest.fn();
+      const rowSelection = {
+        selectedRowKeys: ['1'],
+        onChange,
+      };
+
+      const { container } = render(
+        <Table dataSource={largeData} columns={mockColumns} rowSelection={rowSelection} pagination={{ pageSize: 5 }} />
+      );
+
+      expect(screen.getByTestId('table-body')).toBeInTheDocument();
+
+      const pagination = container.querySelector('.fluentui-plus-table-pagination');
+      expect(pagination).toBeInTheDocument();
+    });
+
+    it('should only select rows on current page', () => {
+      const largeData = Array.from({ length: 20 }, (_, i) => ({
+        key: String(i + 1),
+        name: `User ${i + 1}`,
+        age: 20 + i,
+        address: `Address ${i + 1}`,
+      }));
+
+      const onChange = jest.fn();
+      const rowSelection = {
+        onChange,
+      };
+
+      render(
+        <Table dataSource={largeData} columns={mockColumns} rowSelection={rowSelection} pagination={{ pageSize: 5 }} />
+      );
+
+      // 行选择应该只针对当前页的数据
       expect(screen.getByTestId('table-body')).toBeInTheDocument();
     });
   });

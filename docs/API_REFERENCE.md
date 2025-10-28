@@ -851,6 +851,8 @@ setTimeout(() => {
 | `showHeader` | `boolean` | `true` | 是否显示表头 |
 | `bordered` | `boolean` | `false` | 是否显示边框 |
 | `emptyText` | `React.ReactNode` | `'暂无数据'` | 空数据时显示的内容 |
+| `rowSelection` | `RowSelection<RecordType>` | - | 行选择配置，用于实现多选功能 |
+| `pagination` | `false \| PaginationProps` | - | 分页配置，设置为 false 时不显示分页器 |
 | `className` | `string` | - | 自定义样式类名 |
 | `style` | `React.CSSProperties` | - | 自定义内联样式 |
 
@@ -875,6 +877,44 @@ interface ColumnType<RecordType = Record<string, unknown>> {
 interface ScrollConfig {
   x?: number | string | true;  // 横向滚动宽度，true 表示自动计算
   y?: number | string;         // 纵向滚动高度，设置后表格体可纵向滚动
+}
+```
+
+#### RowSelection 行选择配置类型
+
+```typescript
+interface RowSelection<RecordType = Record<string, unknown>> {
+  selectedRowKeys?: React.Key[];  // 选中的行 key 数组
+  onChange?: (selectedRowKeys: React.Key[], selectedRows: RecordType[]) => void;  // 选中项发生变化时的回调
+  getCheckboxProps?: (record: RecordType) => CheckboxProps<RecordType>;  // 获取选择框的属性，用于设置禁用等
+  fixed?: boolean;  // 是否固定选择列在左侧（配合 scroll.x 使用）
+  columnWidth?: number | string;  // 选择列的宽度
+  columnTitle?: React.ReactNode;  // 选择列的标题
+}
+
+interface CheckboxProps<RecordType = Record<string, unknown>> {
+  disabled?: boolean;  // 是否禁用该行的选择框
+  render?: (record: RecordType, index: number) => React.ReactNode;  // 自定义渲染选择框
+}
+```
+
+#### PaginationProps 分页配置类型
+
+完整的分页配置请参考 [Pagination 组件文档](#pagination-分页器)。常用配置如下：
+
+```typescript
+interface PaginationProps {
+  current?: number;           // 当前页码
+  defaultCurrent?: number;    // 默认当前页码
+  total?: number;             // 数据总数
+  pageSize?: number;          // 每页显示数量
+  onChange?: (page: number, pageSize: number) => void;  // 页码或每页数量变化时的回调
+  showQuickJumper?: boolean;  // 是否显示快速跳转器
+  showTotal?: boolean | ((total: number, range: [number, number]) => React.ReactNode);  // 是否显示总数
+  showSizeChanger?: boolean;  // 是否显示每页数量切换器
+  pageSizeOptions?: number[]; // 每页数量选项
+  simple?: boolean;           // 是否使用简单模式
+  hideOnSinglePage?: boolean; // 只有一页时是否隐藏分页器
 }
 ```
 
@@ -1074,6 +1114,124 @@ const fixedColumns: ColumnType<DataType>[] = [
   columns={columns} 
   rowKey={record => record.id}  // 使用函数返回唯一标识
 />
+
+// 行选择功能
+const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+
+<Table 
+  dataSource={dataSource} 
+  columns={columns} 
+  bordered
+  rowSelection={{
+    selectedRowKeys,
+    onChange: (keys, rows) => {
+      console.log('Selected Keys:', keys);
+      console.log('Selected Rows:', rows);
+      setSelectedRowKeys(keys);
+    },
+  }}
+/>
+
+// 默认选中某些行
+<Table 
+  dataSource={dataSource} 
+  columns={columns} 
+  rowSelection={{
+    selectedRowKeys: ['2', '4'],  // 默认选中 key 为 2 和 4 的行
+    onChange: keys => setSelectedRowKeys(keys),
+  }}
+/>
+
+// 禁用某些行的选择
+<Table 
+  dataSource={dataSource} 
+  columns={columns} 
+  rowSelection={{
+    selectedRowKeys,
+    onChange: keys => setSelectedRowKeys(keys),
+    getCheckboxProps: record => ({
+      disabled: record.status === 'disabled',  // 根据条件禁用选择框
+    }),
+  }}
+/>
+
+// 固定选择列（横向滚动时）
+<Table 
+  dataSource={dataSource} 
+  columns={columns} 
+  scroll={{ x: 900 }}
+  rowSelection={{
+    selectedRowKeys,
+    onChange: keys => setSelectedRowKeys(keys),
+    fixed: true,  // 固定选择列在左侧
+  }}
+/>
+
+// 分页功能
+<Table 
+  dataSource={dataSource} 
+  columns={columns} 
+  bordered
+  pagination={{
+    total: dataSource.length,
+    pageSize: 10,
+    showTotal: true,  // 显示总数
+    showQuickJumper: true,  // 显示快速跳转
+    showSizeChanger: true,  // 显示每页数量切换器
+  }}
+/>
+
+// 简单分页（适用于移动端或空间受限场景）
+<Table 
+  dataSource={dataSource} 
+  columns={columns} 
+  pagination={{
+    total: dataSource.length,
+    pageSize: 10,
+    simple: true,  // 简洁模式
+  }}
+/>
+
+// 自定义分页总数显示
+<Table 
+  dataSource={dataSource} 
+  columns={columns} 
+  pagination={{
+    total: dataSource.length,
+    pageSize: 10,
+    showTotal: (total, range) => `显示 ${range[0]}-${range[1]} 条，共 ${total} 条`,
+  }}
+/>
+
+// 行选择与分页结合使用
+const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+
+<Table 
+  dataSource={dataSource} 
+  columns={columns} 
+  rowSelection={{
+    selectedRowKeys,
+    onChange: (keys, rows) => {
+      setSelectedRowKeys(keys);
+      console.log('已选择:', keys);
+    },
+  }}
+  pagination={{
+    total: dataSource.length,
+    pageSize: 10,
+    showTotal: (total, range) => `显示 ${range[0]}-${range[1]} 条，共 ${total} 条`,
+    onChange: (page, pageSize) => {
+      console.log('切换到第', page, '页，每页', pageSize, '条');
+    },
+  }}
+/>
+
+// 隐藏分页器
+<Table 
+  dataSource={dataSource} 
+  columns={columns} 
+  pagination={false}  // 不显示分页器
+/>
 ```
 
 #### 最佳实践
@@ -1100,6 +1258,305 @@ const fixedColumns: ColumnType<DataType>[] = [
    - 使用 `render` 函数可以实现复杂的单元格内容
    - 可以渲染任何 React 节点，包括按钮、标签、进度条等
    - `render` 函数接收三个参数：当前单元格的值、当前行数据、行索引
+
+6. **行选择功能**:
+   - 使用受控模式管理选中状态，确保数据同步
+   - 通过 `getCheckboxProps` 可以灵活控制每行的选择状态
+   - 选择列可以配合 `fixed` 属性固定在左侧
+   - 跨页选择时，需要在组件外部维护全局的选中状态
+
+7. **分页功能**:
+   - 推荐使用受控模式管理分页状态
+   - 合理设置 `pageSize` 和 `pageSizeOptions`
+   - 使用 `showTotal` 展示数据范围，提升用户体验
+   - 移动端或空间受限场景使用 `simple` 模式
+   - 只有一页数据时，可设置 `hideOnSinglePage` 隐藏分页器
+
+8. **结合使用**:
+   - 行选择和分页可以完美结合使用
+   - 注意跨页选择时需要维护全局的选中状态
+   - 在分页场景下，建议在顶部显示已选择项的统计信息
+
+### Pagination 分页器
+
+用于在大量数据展示时进行分页控制，支持多种分页模式和自定义配置。提供直观的页码导航和快速跳转功能。
+
+#### 属性
+
+| 属性 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `current` | `number` | - | 当前页码（受控模式） |
+| `defaultCurrent` | `number` | `1` | 默认当前页码（非受控模式） |
+| `total` | `number` | `0` | 数据总数 |
+| `pageSize` | `number` | `10` | 每页显示条数 |
+| `onChange` | `(page: number, pageSize: number) => void` | - | 页码或每页条数改变时的回调 |
+| `showQuickJumper` | `boolean` | `false` | 是否显示快速跳转器 |
+| `showTotal` | `boolean \| ((total: number, range: [number, number]) => React.ReactNode)` | `false` | 是否显示数据总数，支持自定义渲染函数 |
+| `showSizeChanger` | `boolean` | `false` | 是否显示每页条数切换器 |
+| `pageSizeOptions` | `number[]` | `[10, 20, 50, 100]` | 每页条数选项 |
+| `simple` | `boolean` | `false` | 是否使用简单模式（适用于移动端） |
+| `hideOnSinglePage` | `boolean` | `false` | 只有一页时是否隐藏分页器 |
+| `disabled` | `boolean` | `false` | 是否禁用分页器 |
+| `className` | `string` | - | 自定义样式类名 |
+| `itemRender` | `(page, type, element) => React.ReactNode` | - | 自定义页码项渲染 |
+
+#### 使用模式
+
+##### 1. 基础分页
+
+最简单的分页模式，只显示页码导航。
+
+```jsx
+import { Pagination } from '@luoluoyu/fluentui-plus';
+
+// 基础用法
+<Pagination 
+  total={100}
+  pageSize={10}
+  onChange={(page, pageSize) => {
+    console.log('当前页:', page);
+    console.log('每页条数:', pageSize);
+  }}
+/>
+
+// 受控模式
+const [current, setCurrent] = useState(1);
+<Pagination 
+  current={current}
+  total={100}
+  pageSize={10}
+  onChange={(page) => setCurrent(page)}
+/>
+```
+
+##### 2. 显示总数
+
+显示数据总数和当前显示的范围。
+
+```jsx
+// 显示总数（简单模式）
+<Pagination 
+  total={100}
+  pageSize={10}
+  showTotal
+/>
+
+// 自定义总数显示
+<Pagination 
+  total={100}
+  pageSize={10}
+  showTotal={(total, range) => `显示 ${range[0]}-${range[1]} 条，共 ${total} 条`}
+/>
+```
+
+##### 3. 快速跳转
+
+支持输入页码快速跳转到指定页面。
+
+```jsx
+<Pagination 
+  total={100}
+  pageSize={10}
+  showQuickJumper
+  onChange={(page) => console.log('跳转到第', page, '页')}
+/>
+```
+
+##### 4. 改变每页显示条数
+
+允许用户自定义每页显示的数据条数。
+
+```jsx
+<Pagination 
+  total={100}
+  pageSize={10}
+  showSizeChanger
+  pageSizeOptions={[10, 20, 50, 100]}
+  onChange={(page, pageSize) => {
+    console.log('页码:', page, '每页条数:', pageSize);
+  }}
+/>
+```
+
+##### 5. 完整功能
+
+结合所有功能的完整示例。
+
+```jsx
+const [current, setCurrent] = useState(1);
+const [pageSize, setPageSize] = useState(10);
+
+<Pagination 
+  current={current}
+  total={500}
+  pageSize={pageSize}
+  showTotal={(total, range) => `显示 ${range[0]}-${range[1]} 条，共 ${total} 条`}
+  showQuickJumper
+  showSizeChanger
+  pageSizeOptions={[10, 20, 50, 100]}
+  onChange={(page, newPageSize) => {
+    setCurrent(page);
+    setPageSize(newPageSize);
+    console.log('页码:', page, '每页条数:', newPageSize);
+  }}
+/>
+```
+
+##### 6. 简单模式
+
+适用于移动端或空间受限的场景，只显示简洁的上下页切换。
+
+```jsx
+<Pagination 
+  total={100}
+  pageSize={10}
+  simple
+  onChange={(page) => console.log('当前页:', page)}
+/>
+```
+
+##### 7. 只有一页时隐藏
+
+当数据总数不足一页时，自动隐藏分页器。
+
+```jsx
+<Pagination 
+  total={8}
+  pageSize={10}
+  hideOnSinglePage  // 只有 8 条数据，不足一页，分页器会隐藏
+/>
+```
+
+#### 实际应用场景
+
+##### 1. 结合 Table 使用
+
+```jsx
+import { Table, Pagination } from '@luoluoyu/fluentui-plus';
+import { useState } from 'react';
+
+const DataTable = () => {
+  const [current, setCurrent] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const allData = [...]; // 所有数据
+
+  // 计算当前页显示的数据
+  const currentData = allData.slice(
+    (current - 1) * pageSize,
+    current * pageSize
+  );
+
+  return (
+    <div>
+      <Table 
+        dataSource={currentData}
+        columns={columns}
+        pagination={false}  // 使用独立的分页器
+      />
+      <Pagination 
+        current={current}
+        total={allData.length}
+        pageSize={pageSize}
+        showTotal={(total, range) => `显示 ${range[0]}-${range[1]} 条，共 ${total} 条`}
+        showQuickJumper
+        showSizeChanger
+        onChange={(page, newPageSize) => {
+          setCurrent(page);
+          setPageSize(newPageSize);
+        }}
+      />
+    </div>
+  );
+};
+```
+
+##### 2. 服务端分页
+
+```jsx
+import { Pagination } from '@luoluoyu/fluentui-plus';
+import { useState, useEffect } from 'react';
+
+const ServerSidePagination = () => {
+  const [current, setCurrent] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [total, setTotal] = useState(0);
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const fetchData = async (page: number, size: number) => {
+    setLoading(true);
+    try {
+      const response = await fetch(
+        `/api/data?page=${page}&pageSize=${size}`
+      );
+      const result = await response.json();
+      setData(result.data);
+      setTotal(result.total);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData(current, pageSize);
+  }, [current, pageSize]);
+
+  return (
+    <div>
+      <Table 
+        dataSource={data}
+        columns={columns}
+        loading={loading}
+        pagination={false}
+      />
+      <Pagination 
+        current={current}
+        total={total}
+        pageSize={pageSize}
+        showTotal={(total, range) => `显示 ${range[0]}-${range[1]} 条，共 ${total} 条`}
+        showQuickJumper
+        showSizeChanger
+        onChange={(page, size) => {
+          setCurrent(page);
+          setPageSize(size);
+        }}
+      />
+    </div>
+  );
+};
+```
+
+#### 最佳实践
+
+1. **选择合适的模式**:
+   - 桌面端：使用完整模式，提供 `showTotal`、`showQuickJumper`、`showSizeChanger`
+   - 移动端：使用 `simple` 模式，节省空间
+   - 数据量小：设置 `hideOnSinglePage` 为 true
+
+2. **合理设置每页条数**:
+   - 默认推荐：10 条/页
+   - 表格数据：10-50 条/页
+   - 卡片列表：20-100 条/页
+   - 提供多个选项：`[10, 20, 50, 100]`
+
+3. **总数显示**:
+   - 始终显示数据总数和范围，帮助用户了解数据规模
+   - 使用自定义渲染函数提供更友好的展示
+
+4. **性能优化**:
+   - 大数据量场景使用服务端分页
+   - 避免在 `onChange` 回调中执行耗时操作
+   - 合理使用 `React.memo` 优化组件渲染
+
+5. **用户体验**:
+   - 页码切换时，滚动到页面顶部或内容区域
+   - 提供加载状态反馈
+   - 记住用户的分页配置（使用 localStorage）
+
+6. **无障碍支持**:
+   - 分页器自动提供完整的键盘导航支持
+   - 使用语义化的 ARIA 标签
+   - 确保在屏幕阅读器中可访问
 
 ### Message 消息提示
 

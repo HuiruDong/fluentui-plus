@@ -1,4 +1,5 @@
 import React from 'react';
+import type { PaginationProps } from '../Pagination';
 
 /**
  * 列定义类型
@@ -140,6 +141,10 @@ export interface TableProps<RecordType = Record<string, unknown>> {
    * 行选择配置
    */
   rowSelection?: RowSelection<RecordType>;
+  /**
+   * 分页配置，设置为 false 时不显示分页器
+   */
+  pagination?: false | PaginationProps;
 }
 
 /**
