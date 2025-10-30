@@ -4,6 +4,12 @@
 
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，项目遵循 [语义化版本](https://semver.org/lang/zh-CN/) 规范。
 
+### [2.4.1](https://github.com/HuiruDong/fluentui-plus/compare/v2.4.0...v2.4.1) (2025-10-30)
+
+### Fixed
+
+- **Table:** improve horizontal scroll behavior to fill container width ([aea5f4b](https://github.com/HuiruDong/fluentui-plus/commit/aea5f4b95ae3f38d47c19f59c8a5b923562fb83c))
+
 ## [2.4.0](https://github.com/HuiruDong/fluentui-plus/compare/v2.3.0...v2.4.0) (2025-10-28)
 
 ### Changed
