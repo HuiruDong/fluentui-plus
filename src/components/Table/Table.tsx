@@ -92,7 +92,9 @@ const Table = <RecordType = Record<string, unknown>,>({
   const hasScrollX = scroll?.x !== undefined;
   const tableStyle: React.CSSProperties = {};
   if (hasScrollX && scroll.x !== true) {
-    tableStyle.width = typeof scroll.x === 'number' ? `${scroll.x}px` : scroll.x;
+    // 设置 minWidth 而不是 width，让表格在容器宽度足够时可以撑满
+    tableStyle.minWidth = typeof scroll.x === 'number' ? `${scroll.x}px` : scroll.x;
+    tableStyle.width = '100%';
   }
 
   const classes = clsx(

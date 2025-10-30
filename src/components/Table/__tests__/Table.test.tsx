@@ -162,13 +162,15 @@ describe('Table Component', () => {
         const { container } = render(<Table dataSource={mockData} columns={mockColumns} scroll={{ x: 1200 }} />);
 
         const innerTable = container.querySelector('.fluentui-plus-table-body-wrapper > div');
-        expect(innerTable).toHaveStyle('width: 1200px');
+        expect(innerTable).toHaveStyle('min-width: 1200px');
+        expect(innerTable).toHaveStyle('width: 100%');
       });
 
       it('should set width style when scroll.x is string', () => {
         const { container } = render(<Table dataSource={mockData} columns={mockColumns} scroll={{ x: '100%' }} />);
 
         const innerTable = container.querySelector('.fluentui-plus-table-body-wrapper > div');
+        expect(innerTable).toHaveStyle('min-width: 100%');
         expect(innerTable).toHaveStyle('width: 100%');
       });
 
@@ -247,7 +249,8 @@ describe('Table Component', () => {
         expect(bodyWrapper).toHaveStyle('overflow-y: auto');
 
         const innerTable = container.querySelector('.fluentui-plus-table-body-wrapper > div');
-        expect(innerTable).toHaveStyle('width: 1200px');
+        expect(innerTable).toHaveStyle('min-width: 1200px');
+        expect(innerTable).toHaveStyle('width: 100%');
       });
     });
   });

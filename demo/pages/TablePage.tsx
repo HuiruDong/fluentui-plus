@@ -26,6 +26,11 @@ const useCustomStyles = makeStyles({
     border: '1px solid #e0e0e0',
     borderRadius: '8px',
   },
+  tableWrapperWide: {
+    width: '100%',
+    border: '1px solid #e0e0e0',
+    borderRadius: '8px',
+  },
 });
 
 const TablePage: React.FC = () => {
@@ -301,6 +306,14 @@ const TablePage: React.FC = () => {
           <div className={styles.demo}>
             <div className={styles.tableWrapper}>
               <Table dataSource={largeDataSource} columns={columns} scroll={{ x: 1000, y: 300 }} bordered />
+            </div>
+          </div>
+        </div>
+        <div className={styles.demoContainer}>
+          <div className={styles.demoTitle}>容器宽度大于表格最小宽度时，表格自动撑满</div>
+          <div className={styles.demo}>
+            <div className={styles.tableWrapperWide}>
+              <Table dataSource={dataSource} columns={columns} scroll={{ x: 1000 }} bordered />
             </div>
           </div>
         </div>
