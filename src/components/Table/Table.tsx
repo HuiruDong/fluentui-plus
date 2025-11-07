@@ -43,6 +43,16 @@ const Table = <RecordType = Record<string, unknown>,>({
     rowSelection,
   });
 
+  // 如果存在左固定列且有行选择功能，自动固定选择列
+  const hasLeftFixedColumn = columns.some(col => col.fixed === 'left');
+  const finalRowSelection = rowSelection
+    ? {
+        ...rowSelection,
+        // 当存在左固定列时，自动固定选择列（除非显式设置为 false）
+        fixed: hasLeftFixedColumn ? (rowSelection.fixed !== false ? true : false) : rowSelection.fixed,
+      }
+    : undefined;
+
   // 同步表头和表体的横向滚动
   useEffect(() => {
     if (!scroll?.x || !headerRef.current || !bodyRef.current) {
@@ -103,7 +113,7 @@ const Table = <RecordType = Record<string, unknown>,>({
       [`${prefixCls}--bordered`]: bordered,
       [`${prefixCls}--scroll-x`]: hasScrollX,
       [`${prefixCls}--scroll-y`]: hasScrollY,
-      [`${prefixCls}--has-selection`]: rowSelection,
+      [`${prefixCls}--has-selection`]: finalRowSelection,
     },
     className
   );
@@ -130,7 +140,7 @@ const Table = <RecordType = Record<string, unknown>,>({
               <Header
                 columns={columns}
                 prefixCls={prefixCls}
-                rowSelection={rowSelection}
+                rowSelection={finalRowSelection}
                 onSelectAll={handleSelectAll}
                 selectedRowKeys={selectedRowKeys}
                 dataSource={paginatedData}
@@ -156,7 +166,7 @@ const Table = <RecordType = Record<string, unknown>,>({
               rowKey={rowKey}
               emptyText={emptyText}
               prefixCls={prefixCls}
-              rowSelection={rowSelection}
+              rowSelection={finalRowSelection}
               selectedRowKeys={selectedRowKeys}
               onSelect={handleSelect}
             />

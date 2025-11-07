@@ -19,7 +19,14 @@ const Header = <RecordType = Record<string, unknown>,>({
   dataSource,
   rowKey,
 }: HeaderProps<RecordType>) => {
-  const fixedInfo = useMemo(() => calculateFixedInfo(columns), [columns]);
+  // 计算选择列的宽度（如果固定的话）
+  const selectionColumnWidth = rowSelection?.fixed
+    ? typeof rowSelection.columnWidth === 'number'
+      ? rowSelection.columnWidth
+      : 60
+    : 0;
+
+  const fixedInfo = useMemo(() => calculateFixedInfo(columns, selectionColumnWidth), [columns, selectionColumnWidth]);
 
   // 计算选择状态
   const { isAllSelected, isIndeterminate } = useMemo(() => {

@@ -28,14 +28,17 @@ const getColumnWidth = <RecordType = Record<string, unknown>>(column: ColumnType
 /**
  * 计算固定列的偏移量信息
  * @param columns 列配置
+ * @param selectionColumnWidth 选择列的宽度（如果存在固定的选择列）
  * @returns 每列的固定信息数组
  */
 export const calculateFixedInfo = <RecordType = Record<string, unknown>>(
-  columns: ColumnType<RecordType>[]
+  columns: ColumnType<RecordType>[],
+  selectionColumnWidth = 0
 ): FixedInfo[] => {
   const fixedInfo: FixedInfo[] = [];
 
-  let leftOffset = 0;
+  // 如果存在固定的选择列，初始偏移量应该从选择列宽度开始
+  let leftOffset = selectionColumnWidth;
   let rightOffset = 0;
 
   // 找到最后一个左固定列和第一个右固定列的索引

@@ -440,7 +440,8 @@ describe('Header Component', () => {
 
       render(<Header prefixCls='fluentui-plus-table' columns={basicColumns} />);
 
-      expect(utils.calculateFixedInfo).toHaveBeenCalledWith(basicColumns);
+      // calculateFixedInfo 现在有两个参数：columns 和 selectionColumnWidth
+      expect(utils.calculateFixedInfo).toHaveBeenCalledWith(basicColumns, 0);
     });
 
     it('should not recalculate fixedInfo on same columns', () => {

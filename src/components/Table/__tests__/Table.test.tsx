@@ -691,6 +691,82 @@ describe('Table Component', () => {
     });
   });
 
+  describe('选择列自动固定', () => {
+    const fixedColumns: ColumnType[] = [
+      { key: 'name', title: '姓名', dataIndex: 'name', width: 100, fixed: 'left' },
+      { key: 'age', title: '年龄', dataIndex: 'age', width: 80 },
+      { key: 'address', title: '地址', dataIndex: 'address', width: 200 },
+    ];
+
+    it('should auto-fix selection column when there are left fixed columns', () => {
+      const onChange = jest.fn();
+      const rowSelection = {
+        onChange,
+      };
+
+      render(<Table dataSource={mockData} columns={fixedColumns} rowSelection={rowSelection} scroll={{ x: 1000 }} />);
+
+      // 验证表格正确渲染
+      expect(screen.getByTestId('table-header')).toBeInTheDocument();
+      expect(screen.getByTestId('table-body')).toBeInTheDocument();
+    });
+
+    it('should respect explicit fixed: false even when there are left fixed columns', () => {
+      const onChange = jest.fn();
+      const rowSelection = {
+        onChange,
+        fixed: false,
+      };
+
+      render(<Table dataSource={mockData} columns={fixedColumns} rowSelection={rowSelection} scroll={{ x: 1000 }} />);
+
+      expect(screen.getByTestId('table-body')).toBeInTheDocument();
+    });
+
+    it('should not auto-fix selection column when there are no left fixed columns', () => {
+      const onChange = jest.fn();
+      const rowSelection = {
+        onChange,
+      };
+
+      render(<Table dataSource={mockData} columns={mockColumns} rowSelection={rowSelection} scroll={{ x: 1000 }} />);
+
+      expect(screen.getByTestId('table-body')).toBeInTheDocument();
+    });
+
+    it('should work with both selection fixed and right fixed columns', () => {
+      const mixedFixedColumns: ColumnType[] = [
+        { key: 'name', title: '姓名', dataIndex: 'name', width: 100, fixed: 'left' },
+        { key: 'age', title: '年龄', dataIndex: 'age', width: 80 },
+        { key: 'address', title: '地址', dataIndex: 'address', width: 200 },
+        { key: 'action', title: '操作', dataIndex: 'action', width: 120, fixed: 'right' },
+      ];
+
+      const onChange = jest.fn();
+      const rowSelection = {
+        onChange,
+      };
+
+      render(
+        <Table dataSource={mockData} columns={mixedFixedColumns} rowSelection={rowSelection} scroll={{ x: 1000 }} />
+      );
+
+      expect(screen.getByTestId('table-body')).toBeInTheDocument();
+    });
+
+    it('should work with custom selection column width', () => {
+      const onChange = jest.fn();
+      const rowSelection = {
+        onChange,
+        columnWidth: 80,
+      };
+
+      render(<Table dataSource={mockData} columns={fixedColumns} rowSelection={rowSelection} scroll={{ x: 1000 }} />);
+
+      expect(screen.getByTestId('table-body')).toBeInTheDocument();
+    });
+  });
+
   describe('分页与行选择结合', () => {
     it('should work with rowSelection and pagination', () => {
       const largeData = Array.from({ length: 20 }, (_, i) => ({

@@ -1389,6 +1389,162 @@ export const SimplePagination: Story = {
 };
 
 /**
+ * 多选与固定列结合
+ * 当表格同时具有行选择和左固定列时，选择列会自动固定在最左侧，确保横向滚动时选择列始终可见
+ */
+export const RowSelectionWithFixedColumns: Story = {
+  render: () => {
+    const [selectedRowKeys, setSelectedRowKeys] = React.useState<React.Key[]>([]);
+
+    interface DataType {
+      key: string;
+      name: string;
+      age: number;
+      address: string;
+      email: string;
+      phone: string;
+      department: string;
+      position: string;
+    }
+
+    const dataSource: DataType[] = Array.from({ length: 10 }, (_, index) => ({
+      key: `${index + 1}`,
+      name: `员工${index + 1}`,
+      age: 20 + Math.floor(Math.random() * 30),
+      address: ['北京市朝阳区建国路123号', '上海市浦东新区世纪大道456号', '广州市天河区天河路789号'][
+        Math.floor(Math.random() * 3)
+      ],
+      email: `user${index + 1}@example.com`,
+      phone: `138-0000-${String(index + 1).padStart(4, '0')}`,
+      department: ['技术部', '产品部', '设计部', '运营部', '市场部'][Math.floor(Math.random() * 5)],
+      position: ['工程师', '经理', '总监', '专员'][Math.floor(Math.random() * 4)],
+    }));
+
+    const columns: ColumnType<DataType>[] = [
+      {
+        key: 'name',
+        title: '姓名',
+        dataIndex: 'name',
+        width: 100,
+        fixed: 'left', // 固定在左侧
+      },
+      {
+        key: 'age',
+        title: '年龄',
+        dataIndex: 'age',
+        width: 80,
+        align: 'center',
+      },
+      {
+        key: 'address',
+        title: '地址',
+        dataIndex: 'address',
+        width: 250,
+      },
+      {
+        key: 'email',
+        title: '邮箱',
+        dataIndex: 'email',
+        width: 200,
+      },
+      {
+        key: 'phone',
+        title: '电话',
+        dataIndex: 'phone',
+        width: 150,
+      },
+      {
+        key: 'department',
+        title: '部门',
+        dataIndex: 'department',
+        width: 120,
+      },
+      {
+        key: 'position',
+        title: '职位',
+        dataIndex: 'position',
+        width: 100,
+        fixed: 'right', // 固定在右侧
+      },
+    ];
+
+    return (
+      <div>
+        <div style={{ marginBottom: '16px', padding: '12px', background: '#e7f5ff', borderRadius: '6px' }}>
+          <div style={{ fontSize: '14px', color: '#1971c2', marginBottom: '8px' }}>
+            💡 <strong>自动固定选择列：</strong>当表格同时具有行选择和左固定列时，选择列会自动固定在最左侧
+          </div>
+          <div style={{ fontSize: '13px', color: '#495057' }}>
+            横向滚动时，选择列和"姓名"列会始终可见，"职位"列固定在右侧
+          </div>
+        </div>
+        <div style={{ marginBottom: '16px', padding: '12px', background: '#f8f9fa', borderRadius: '6px' }}>
+          <div style={{ fontSize: '14px', color: '#495057' }}>
+            已选择 <strong style={{ color: '#228be6' }}>{selectedRowKeys.length}</strong> 项
+          </div>
+        </div>
+        <div style={{ width: '700px', border: '1px solid #dee2e6', borderRadius: '8px' }}>
+          <Table
+            dataSource={dataSource}
+            columns={columns}
+            scroll={{ x: 1200 }}
+            bordered
+            rowSelection={{
+              selectedRowKeys,
+              onChange: (keys, rows) => {
+                console.log('Selected Keys:', keys);
+                console.log('Selected Rows:', rows);
+                setSelectedRowKeys(keys);
+              },
+              // fixed 会根据是否有左固定列自动设置，也可以手动设置为 false 禁用自动固定
+            }}
+          />
+        </div>
+      </div>
+    );
+  },
+  parameters: {
+    docs: {
+      source: {
+        code: `const [selectedRowKeys, setSelectedRowKeys] = React.useState<React.Key[]>([]);
+
+const columns = [
+  {
+    key: 'name',
+    title: '姓名',
+    dataIndex: 'name',
+    width: 100,
+    fixed: 'left', // 固定在左侧
+  },
+  // ... 其他列
+  {
+    key: 'position',
+    title: '职位',
+    dataIndex: 'position',
+    width: 100,
+    fixed: 'right', // 固定在右侧
+  },
+];
+
+// 当存在左固定列时，选择列会自动固定
+<Table
+  dataSource={dataSource}
+  columns={columns}
+  scroll={{ x: 1200 }}
+  bordered
+  rowSelection={{
+    selectedRowKeys,
+    onChange: (keys, rows) => {
+      setSelectedRowKeys(keys);
+    },
+  }}
+/>`,
+      },
+    },
+  },
+};
+
+/**
  * 行选择与分页结合
  * 在分页场景下使用行选择功能
  */

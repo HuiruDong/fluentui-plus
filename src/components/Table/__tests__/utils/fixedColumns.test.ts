@@ -276,6 +276,136 @@ describe('fixedColumns utils', () => {
         });
       });
     });
+
+    describe('选择列宽度偏移', () => {
+      it('should add selectionColumnWidth to left offset when provided', () => {
+        const columns: ColumnType[] = [
+          { key: 'name', title: '姓名', width: 100, fixed: 'left' },
+          { key: 'age', title: '年龄', width: 80 },
+        ];
+
+        const result = calculateFixedInfo(columns, 60);
+
+        expect(result[0]).toMatchObject({
+          fixed: 'left',
+          left: 60, // 从 60 开始，而不是 0
+          isLastLeft: true,
+        });
+      });
+
+      it('should calculate cumulative offsets with selectionColumnWidth', () => {
+        const columns: ColumnType[] = [
+          { key: 'col1', title: '列1', width: 100, fixed: 'left' },
+          { key: 'col2', title: '列2', width: 80, fixed: 'left' },
+          { key: 'col3', title: '列3', width: 150 },
+        ];
+
+        const result = calculateFixedInfo(columns, 60);
+
+        expect(result[0]).toMatchObject({
+          fixed: 'left',
+          left: 60, // 60 (选择列宽度)
+        });
+
+        expect(result[1]).toMatchObject({
+          fixed: 'left',
+          left: 160, // 60 + 100
+          isLastLeft: true,
+        });
+
+        expect(result[2].fixed).toBeUndefined();
+      });
+
+      it('should not affect right fixed columns', () => {
+        const columns: ColumnType[] = [
+          { key: 'name', title: '姓名', width: 100, fixed: 'left' },
+          { key: 'age', title: '年龄', width: 80 },
+          { key: 'action', title: '操作', width: 120, fixed: 'right' },
+        ];
+
+        const result = calculateFixedInfo(columns, 60);
+
+        // 左固定列受影响
+        expect(result[0].left).toBe(60);
+
+        // 右固定列不受影响
+        expect(result[2]).toMatchObject({
+          fixed: 'right',
+          right: 0,
+        });
+      });
+
+      it('should handle selectionColumnWidth of 0', () => {
+        const columns: ColumnType[] = [
+          { key: 'name', title: '姓名', width: 100, fixed: 'left' },
+          { key: 'age', title: '年龄', width: 80 },
+        ];
+
+        const result = calculateFixedInfo(columns, 0);
+
+        expect(result[0]).toMatchObject({
+          fixed: 'left',
+          left: 0, // 0 + 0 = 0
+        });
+      });
+
+      it('should work with multiple left fixed columns and selectionColumnWidth', () => {
+        const columns: ColumnType[] = [
+          { key: 'id', title: 'ID', width: 50, fixed: 'left' },
+          { key: 'name', title: '姓名', width: 100, fixed: 'left' },
+          { key: 'age', title: '年龄', width: 80, fixed: 'left' },
+          { key: 'address', title: '地址', width: 200 },
+        ];
+
+        const selectionWidth = 60;
+        const result = calculateFixedInfo(columns, selectionWidth);
+
+        expect(result[0]).toMatchObject({
+          fixed: 'left',
+          left: 60, // 选择列宽度
+        });
+
+        expect(result[1]).toMatchObject({
+          fixed: 'left',
+          left: 110, // 60 + 50
+        });
+
+        expect(result[2]).toMatchObject({
+          fixed: 'left',
+          left: 210, // 60 + 50 + 100
+          isLastLeft: true,
+        });
+      });
+
+      it('should work in real table scenario with selection and fixed columns', () => {
+        // 模拟真实场景：选择列 + ID列固定 + 普通列 + 操作列固定
+        const columns: ColumnType[] = [
+          // 注意：选择列不在 columns 中，通过 selectionColumnWidth 参数传入
+          { key: 'id', title: 'ID', width: 80, fixed: 'left' },
+          { key: 'name', title: '姓名', width: 120 },
+          { key: 'age', title: '年龄', width: 80 },
+          { key: 'address', title: '地址', width: 200 },
+          { key: 'action', title: '操作', width: 150, fixed: 'right' },
+        ];
+
+        const selectionWidth = 60;
+        const result = calculateFixedInfo(columns, selectionWidth);
+
+        // ID 列应该在选择列之后
+        expect(result[0]).toMatchObject({
+          fixed: 'left',
+          left: 60, // 选择列宽度
+          isLastLeft: true,
+        });
+
+        // 操作列不受影响
+        expect(result[4]).toMatchObject({
+          fixed: 'right',
+          right: 0,
+          isFirstRight: true,
+        });
+      });
+    });
   });
 
   describe('getFixedCellStyle', () => {
