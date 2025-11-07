@@ -4,6 +4,12 @@
 
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，项目遵循 [语义化版本](https://semver.org/lang/zh-CN/) 规范。
 
+### [2.4.2](https://github.com/HuiruDong/fluentui-plus/compare/v2.4.1...v2.4.2) (2025-11-07)
+
+### Added
+
+- **Table:** auto-fix selection column when left fixed columns exist ([cd28485](https://github.com/HuiruDong/fluentui-plus/commit/cd28485c73a8c95f14094304fd82aa2afd4d83a7))
+
 ### [2.4.1](https://github.com/HuiruDong/fluentui-plus/compare/v2.4.0...v2.4.1) (2025-10-30)
 
 ### Fixed
