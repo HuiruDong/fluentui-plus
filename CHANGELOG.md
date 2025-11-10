@@ -4,6 +4,12 @@
 
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，项目遵循 [语义化版本](https://semver.org/lang/zh-CN/) 规范。
 
+### [2.4.3](https://github.com/HuiruDong/fluentui-plus/compare/v2.4.2...v2.4.3) (2025-11-10)
+
+### Fixed
+
+- **Pagination:** override Dropdown border styles for size changer ([caea4dd](https://github.com/HuiruDong/fluentui-plus/commit/caea4ddecda2c0a3fbbc2adeeb94d6ab4f3dc9f6))
+
 ### [2.4.2](https://github.com/HuiruDong/fluentui-plus/compare/v2.4.1...v2.4.2) (2025-11-07)
 
 ### Added
