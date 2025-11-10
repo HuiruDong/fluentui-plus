@@ -114,5 +114,10 @@
   &__size-changer {
     display: inline-flex;
     align-items: center;
+
+    // 覆盖 fluent ui 原本交互样式，确保 Dropdown 的所有边框在 hover 时都有颜色（包括底部边框）
+    --colorNeutralStrokeAccessible: rgb(209, 209, 209);
+    --colorNeutralStrokeAccessibleHover: @color-brand-background;
+    --colorNeutralStrokeAccessiblePressed: @color-brand-background;
   }
 }
