@@ -4,6 +4,12 @@
 
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，项目遵循 [语义化版本](https://semver.org/lang/zh-CN/) 规范。
 
+### [2.4.4](https://github.com/HuiruDong/fluentui-plus/compare/v2.4.3...v2.4.4) (2025-11-10)
+
+### Changed
+
+- **Table:** remove shadow effect for fixed columns ([04dae48](https://github.com/HuiruDong/fluentui-plus/commit/04dae48ceba9a7b3fd35893313da7213370948ed))
+
 ### [2.4.3](https://github.com/HuiruDong/fluentui-plus/compare/v2.4.2...v2.4.3) (2025-11-10)
 
 ### Fixed
