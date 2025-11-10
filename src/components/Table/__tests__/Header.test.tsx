@@ -24,8 +24,6 @@ jest.mock('../utils', () => ({
       fixed: col.fixed,
       left: col.fixed === 'left' ? 0 : undefined,
       right: col.fixed === 'right' ? 0 : undefined,
-      isLastLeft: false,
-      isFirstRight: false,
     }));
   }),
   getFixedCellStyle: jest.fn((info: any, zIndex: number) => {
@@ -245,42 +243,6 @@ describe('Header Component', () => {
       expect(rightFixed.style.position).toBe('sticky');
       expect(rightFixed.style.zIndex).toBe('3');
     });
-
-    it('should apply isLastLeft class for last left fixed column', () => {
-      const utils = jest.requireMock('../utils');
-      utils.calculateFixedInfo.mockReturnValueOnce([
-        { fixed: 'left', left: 0, isLastLeft: true },
-        { fixed: undefined },
-      ]);
-
-      const columnsWithFixedLeft: ColumnType[] = [
-        { key: 'name', title: '姓名', dataIndex: 'name', fixed: 'left' },
-        { key: 'age', title: '年龄', dataIndex: 'age' },
-      ];
-
-      const { container } = render(<Header prefixCls='fluentui-plus-table' columns={columnsWithFixedLeft} />);
-
-      const headers = container.querySelectorAll('th');
-      expect(headers[0]).toHaveClass('fluentui-plus-table-cell-fixed-left-last');
-    });
-
-    it('should apply isFirstRight class for first right fixed column', () => {
-      const utils = jest.requireMock('../utils');
-      utils.calculateFixedInfo.mockReturnValueOnce([
-        { fixed: undefined },
-        { fixed: 'right', right: 0, isFirstRight: true },
-      ]);
-
-      const columnsWithFixedRight: ColumnType[] = [
-        { key: 'name', title: '姓名', dataIndex: 'name' },
-        { key: 'action', title: '操作', dataIndex: 'action', fixed: 'right' },
-      ];
-
-      const { container } = render(<Header prefixCls='fluentui-plus-table' columns={columnsWithFixedRight} />);
-
-      const headers = container.querySelectorAll('th');
-      expect(headers[1]).toHaveClass('fluentui-plus-table-cell-fixed-right-first');
-    });
   });
 
   describe('自定义类名', () => {
@@ -420,7 +382,7 @@ describe('Header Component', () => {
       ];
 
       const utils = jest.requireMock('../utils');
-      utils.calculateFixedInfo.mockReturnValueOnce([{ fixed: 'left', left: 0, isLastLeft: true }]);
+      utils.calculateFixedInfo.mockReturnValueOnce([{ fixed: 'left', left: 0 }]);
 
       const { container } = render(<Header prefixCls='fluentui-plus-table' columns={complexColumns} />);
 
@@ -430,7 +392,6 @@ describe('Header Component', () => {
       expect(header).toHaveClass('my-custom-class');
       expect(header).toHaveClass('fluentui-plus-table-cell-align-center');
       expect(header).toHaveClass('fluentui-plus-table-cell-fixed-left');
-      expect(header).toHaveClass('fluentui-plus-table-cell-fixed-left-last');
     });
   });
 

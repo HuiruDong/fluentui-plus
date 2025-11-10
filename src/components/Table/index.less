@@ -121,42 +121,6 @@
       background-color: @color-neutral-background-2;
       z-index: 3;
     }
-
-    // 固定列阴影
-    &-fixed-left-last::after {
-      content: "";
-      position: absolute;
-      top: 0;
-      right: 0;
-      bottom: -1px;
-      width: 30px;
-      transform: translateX(100%);
-      transition: box-shadow 0.3s;
-      pointer-events: none;
-    }
-
-    &-fixed-right-first::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      bottom: -1px;
-      width: 30px;
-      transform: translateX(-100%);
-      transition: box-shadow 0.3s;
-      pointer-events: none;
-    }
-  }
-
-  // 当表格横向滚动时显示固定列阴影
-  &--scroll-x {
-    .@{table-prefix-cls}-cell-fixed-left-last::after {
-      box-shadow: inset 10px 0 8px -8px rgba(0, 0, 0, 0.15);
-    }
-
-    .@{table-prefix-cls}-cell-fixed-right-first::before {
-      box-shadow: inset -10px 0 8px -8px rgba(0, 0, 0, 0.15);
-    }
   }
 
   // 带边框

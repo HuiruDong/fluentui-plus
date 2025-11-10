@@ -100,8 +100,6 @@ const Header = <RecordType = Record<string, unknown>,>({
                   [`${prefixCls}-cell-align-${column.align}`]: column.align,
                   [`${prefixCls}-cell-fixed-left`]: info.fixed === 'left',
                   [`${prefixCls}-cell-fixed-right`]: info.fixed === 'right',
-                  [`${prefixCls}-cell-fixed-left-last`]: info.isLastLeft,
-                  [`${prefixCls}-cell-fixed-right-first`]: info.isFirstRight,
                 })}
                 style={style}
                 title={typeof column.title === 'string' ? column.title : undefined}

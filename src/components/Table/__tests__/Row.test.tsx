@@ -21,8 +21,6 @@ jest.mock('../utils', () => ({
       fixed: col.fixed,
       left: col.fixed === 'left' ? 0 : undefined,
       right: col.fixed === 'right' ? 0 : undefined,
-      isLastLeft: false,
-      isFirstRight: false,
     }));
   }),
   getFixedCellStyle: jest.fn((info: any) => {
