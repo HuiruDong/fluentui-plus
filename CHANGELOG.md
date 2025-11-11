@@ -4,6 +4,12 @@
 
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，项目遵循 [语义化版本](https://semver.org/lang/zh-CN/) 规范。
 
+### [2.4.6](https://github.com/HuiruDong/fluentui-plus/compare/v2.4.5...v2.4.6) (2025-11-11)
+
+### Fixed
+
+- **Table:** correct pagination total count handling for server-side mode ([fa44a3b](https://github.com/HuiruDong/fluentui-plus/commit/fa44a3b76e426696e726e5f37d3ef054e2a3d876))
+
 ### [2.4.5](https://github.com/HuiruDong/fluentui-plus/compare/v2.4.4...v2.4.5) (2025-11-11)
 
 ### Fixed
