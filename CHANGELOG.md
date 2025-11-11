@@ -4,6 +4,12 @@
 
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，项目遵循 [语义化版本](https://semver.org/lang/zh-CN/) 规范。
 
+### [2.4.5](https://github.com/HuiruDong/fluentui-plus/compare/v2.4.4...v2.4.5) (2025-11-11)
+
+### Fixed
+
+- **Table:** only show header scrollbar placeholder when body has actual scrollbar ([7c8871a](https://github.com/HuiruDong/fluentui-plus/commit/7c8871ade47f2d7f25c66be11927e26eed9797cf))
+
 ### [2.4.4](https://github.com/HuiruDong/fluentui-plus/compare/v2.4.3...v2.4.4) (2025-11-10)
 
 ### Changed

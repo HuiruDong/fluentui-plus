@@ -1,6 +1,6 @@
 {
   "name": "@luoluoyu/fluentui-plus",
-  "version": "2.4.4",
+  "version": "2.4.5",
   "type": "module",
   "description": "A component library based on Fluent UI, targeting Chinese enterprise applications",
   "main": "dist/index.js",
