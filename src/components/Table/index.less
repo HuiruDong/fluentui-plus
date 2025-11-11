@@ -161,9 +161,19 @@
   // 纵向滚动
   &--scroll-y {
     .@{table-prefix-cls}-header-wrapper {
-      overflow-y: scroll;
-      scrollbar-gutter: stable; // 预留滚动条空间，保持与表体对齐
       background-color: @color-neutral-background-2;
+    }
+
+    .@{table-prefix-cls}-body-wrapper {
+      overflow-y: auto;
+      // 表体使用系统或项目全局滚动条样式
+    }
+  }
+
+  // 当表体真正有滚动条时，表头预留滚动条空间
+  &--has-scrollbar {
+    .@{table-prefix-cls}-header-wrapper {
+      scrollbar-gutter: stable; // 预留滚动条空间，保持与表体对齐
 
       // 隐藏表头的滚动条（使用透明样式而非设置宽度为0，以保持空间预留）
       &::-webkit-scrollbar {
@@ -181,11 +191,6 @@
       &::-webkit-scrollbar-button {
         display: none;
       }
-    }
-
-    .@{table-prefix-cls}-body-wrapper {
-      overflow-y: auto;
-      // 表体使用系统或项目全局滚动条样式
     }
   }
 

@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import clsx from 'clsx';
 import Header from './Header';
 import Body from './Body';
@@ -29,6 +29,7 @@ const Table = <RecordType = Record<string, unknown>,>({
 }: TableProps<RecordType>) => {
   const headerRef = useRef<HTMLDivElement>(null);
   const bodyRef = useRef<HTMLDivElement>(null);
+  const [hasVerticalScrollbar, setHasVerticalScrollbar] = useState(false);
 
   // 使用分页 hook
   const { paginatedData, paginationConfig, currentPage, pageSize, handlePaginationChange } = usePagination({
@@ -52,6 +53,33 @@ const Table = <RecordType = Record<string, unknown>,>({
         fixed: hasLeftFixedColumn ? (rowSelection.fixed !== false ? true : false) : rowSelection.fixed,
       }
     : undefined;
+
+  // 检测表体是否有纵向滚动条
+  useEffect(() => {
+    if (!scroll?.y || !bodyRef.current) {
+      setHasVerticalScrollbar(false);
+      return;
+    }
+
+    const bodyElement = bodyRef.current;
+
+    const checkScrollbar = () => {
+      // 检查是否有纵向滚动条：scrollHeight > clientHeight
+      const hasScrollbar = bodyElement.scrollHeight > bodyElement.clientHeight;
+      setHasVerticalScrollbar(hasScrollbar);
+    };
+
+    // 初始检查
+    checkScrollbar();
+
+    // 使用 ResizeObserver 监听尺寸变化
+    const resizeObserver = new ResizeObserver(checkScrollbar);
+    resizeObserver.observe(bodyElement);
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, [scroll?.y, paginatedData]);
 
   // 同步表头和表体的横向滚动
   useEffect(() => {
@@ -113,6 +141,7 @@ const Table = <RecordType = Record<string, unknown>,>({
       [`${prefixCls}--bordered`]: bordered,
       [`${prefixCls}--scroll-x`]: hasScrollX,
       [`${prefixCls}--scroll-y`]: hasScrollY,
+      [`${prefixCls}--has-scrollbar`]: hasVerticalScrollbar,
       [`${prefixCls}--has-selection`]: finalRowSelection,
     },
     className
@@ -133,7 +162,7 @@ const Table = <RecordType = Record<string, unknown>,>({
             className={`${prefixCls}-header-wrapper`}
             style={{
               overflowX: hasScrollX ? 'hidden' : undefined,
-              overflowY: hasScrollY ? 'scroll' : undefined,
+              overflowY: hasScrollY && hasVerticalScrollbar ? 'scroll' : undefined,
             }}
           >
             <div style={tableStyle}>

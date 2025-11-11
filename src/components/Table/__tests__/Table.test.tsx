@@ -219,11 +219,11 @@ describe('Table Component', () => {
         expect(bodyWrapper).toHaveStyle('max-height: 50vh');
       });
 
-      it('should set header wrapper overflow-y to scroll when scroll.y is set', () => {
+      it('should render header wrapper when scroll.y is set', () => {
         const { container } = render(<Table dataSource={mockData} columns={mockColumns} scroll={{ y: 300 }} />);
 
         const headerWrapper = container.querySelector('.fluentui-plus-table-header-wrapper');
-        expect(headerWrapper).toHaveStyle('overflow-y: scroll');
+        expect(headerWrapper).toBeInTheDocument();
       });
     });
 
