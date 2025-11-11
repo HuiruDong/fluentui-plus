@@ -208,7 +208,7 @@ const Table = <RecordType = Record<string, unknown>,>({
         <div className={`${prefixCls}-pagination`}>
           <Pagination
             {...paginationConfig}
-            total={dataSource.length}
+            total={paginationConfig.total ?? dataSource.length}
             current={paginationConfig.current ?? currentPage}
             pageSize={paginationConfig.pageSize ?? pageSize}
             onChange={handlePaginationChange}

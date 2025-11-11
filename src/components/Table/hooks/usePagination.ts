@@ -8,7 +8,7 @@ interface UsePaginationOptions<RecordType> {
 
 interface UsePaginationResult<RecordType> {
   /**
-   * 分页后的数据
+   * 当前页数据（服务端分页模式下直接返回 dataSource）
    */
   paginatedData: RecordType[];
   /**
@@ -31,7 +31,8 @@ interface UsePaginationResult<RecordType> {
 
 /**
  * 表格分页 Hook
- * 封装分页状态管理和数据切片逻辑
+ * 仅支持服务端分页模式，dataSource 应该是当前页的数据
+ * 封装分页状态管理逻辑
  */
 export const usePagination = <RecordType = Record<string, unknown>>({
   dataSource,
@@ -60,28 +61,11 @@ export const usePagination = <RecordType = Record<string, unknown>>({
     return config;
   }, [pagination]);
 
-  // 判断是否为受控模式
-  const isControlledCurrent = pagination !== false && pagination !== undefined && 'current' in pagination;
-  const isControlledPageSize = pagination !== false && pagination !== undefined && 'pageSize' in pagination;
-
-  // 计算实际使用的页码和页大小
-  const actualCurrent =
-    isControlledCurrent && paginationConfig !== false ? (paginationConfig.current ?? currentPage) : currentPage;
-
-  const actualPageSize =
-    isControlledPageSize && paginationConfig !== false ? (paginationConfig.pageSize ?? pageSize) : pageSize;
-
-  // 计算分页数据
+  // 服务端分页模式：直接返回 dataSource，不做切片
+  // dataSource 应该已经是当前页的数据
   const paginatedData = useMemo(() => {
-    if (paginationConfig === false) {
-      return dataSource;
-    }
-
-    const start = (actualCurrent - 1) * actualPageSize;
-    const end = start + actualPageSize;
-
-    return dataSource.slice(start, end);
-  }, [dataSource, paginationConfig, actualCurrent, actualPageSize]);
+    return dataSource;
+  }, [dataSource]);
 
   // 处理分页变化
   const handlePaginationChange = useCallback(

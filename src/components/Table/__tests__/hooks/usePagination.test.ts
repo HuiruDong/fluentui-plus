@@ -9,9 +9,10 @@ describe('usePagination', () => {
     age: number;
   }
 
-  const mockDataSource: TestRecord[] = Array.from({ length: 50 }, (_, i) => ({
+  // 模拟服务端分页：每次只传入当前页的数据
+  const mockCurrentPageData: TestRecord[] = Array.from({ length: 10 }, (_, i) => ({
     key: String(i + 1),
-    name: `User ${i + 1}`,
+    name: `User -Force{i + 1}`,
     age: 20 + (i % 40),
   }));
 
@@ -19,21 +20,22 @@ describe('usePagination', () => {
     it('应该返回初始状态（无分页配置）', () => {
       const { result } = renderHook(() =>
         usePagination({
-          dataSource: mockDataSource,
+          dataSource: mockCurrentPageData,
           pagination: undefined,
         })
       );
 
       expect(result.current.currentPage).toBe(1);
       expect(result.current.pageSize).toBe(10);
-      expect(result.current.paginatedData).toHaveLength(50); // 无分页时返回所有数据
+      expect(result.current.paginatedData).toHaveLength(10);
+      expect(result.current.paginatedData).toEqual(mockCurrentPageData);
       expect(result.current.paginationConfig).toBe(false);
     });
 
     it('应该返回初始状态（有分页配置）', () => {
       const { result } = renderHook(() =>
         usePagination({
-          dataSource: mockDataSource,
+          dataSource: mockCurrentPageData,
           pagination: {},
         })
       );
@@ -41,6 +43,7 @@ describe('usePagination', () => {
       expect(result.current.currentPage).toBe(1);
       expect(result.current.pageSize).toBe(10);
       expect(result.current.paginatedData).toHaveLength(10);
+      expect(result.current.paginatedData).toEqual(mockCurrentPageData);
       expect(result.current.paginationConfig).toEqual({
         pageSize: 10,
         showQuickJumper: true,
@@ -49,17 +52,17 @@ describe('usePagination', () => {
       });
     });
 
-    it('应该在 pagination 为 false 时返回所有数据', () => {
+    it('应该在 pagination 为 false 时直接返回 dataSource', () => {
       const { result } = renderHook(() =>
         usePagination({
-          dataSource: mockDataSource,
+          dataSource: mockCurrentPageData,
           pagination: false,
         })
       );
 
       expect(result.current.paginationConfig).toBe(false);
-      expect(result.current.paginatedData).toHaveLength(50);
-      expect(result.current.paginatedData).toEqual(mockDataSource);
+      expect(result.current.paginatedData).toHaveLength(10);
+      expect(result.current.paginatedData).toEqual(mockCurrentPageData);
     });
 
     it('应该支持自定义 pageSize', () => {
@@ -69,12 +72,14 @@ describe('usePagination', () => {
 
       const { result } = renderHook(() =>
         usePagination({
-          dataSource: mockDataSource,
+          dataSource: mockCurrentPageData,
           pagination,
         })
       );
 
-      expect(result.current.paginatedData).toHaveLength(20);
+      // 服务端分页：直接返回 dataSource，不管 pageSize 是多少
+      expect(result.current.paginatedData).toHaveLength(10);
+      expect(result.current.paginatedData).toEqual(mockCurrentPageData);
       expect(result.current.paginationConfig).toMatchObject({
         pageSize: 20,
       });
@@ -89,7 +94,7 @@ describe('usePagination', () => {
 
       const { result } = renderHook(() =>
         usePagination({
-          dataSource: mockDataSource,
+          dataSource: mockCurrentPageData,
           pagination,
         })
       );
@@ -104,63 +109,17 @@ describe('usePagination', () => {
     });
   });
 
-  describe('数据切片', () => {
-    it('应该返回第一页的数据', () => {
+  describe('服务端分页模式', () => {
+    it('应该直接返回 dataSource，不做切片', () => {
       const { result } = renderHook(() =>
         usePagination({
-          dataSource: mockDataSource,
+          dataSource: mockCurrentPageData,
           pagination: { pageSize: 10 },
         })
       );
 
-      const firstPageData = result.current.paginatedData;
-      expect(firstPageData).toHaveLength(10);
-      expect(firstPageData[0]).toEqual(mockDataSource[0]);
-      expect(firstPageData[9]).toEqual(mockDataSource[9]);
-    });
-
-    it('应该正确切片第二页的数据', () => {
-      const { result } = renderHook(() =>
-        usePagination({
-          dataSource: mockDataSource,
-          pagination: { pageSize: 10, current: 2 },
-        })
-      );
-
-      const secondPageData = result.current.paginatedData;
-      expect(secondPageData).toHaveLength(10);
-      expect(secondPageData[0]).toEqual(mockDataSource[10]);
-      expect(secondPageData[9]).toEqual(mockDataSource[19]);
-    });
-
-    it('应该正确切片最后一页的数据', () => {
-      const { result } = renderHook(() =>
-        usePagination({
-          dataSource: mockDataSource,
-          pagination: { pageSize: 10, current: 5 },
-        })
-      );
-
-      const lastPageData = result.current.paginatedData;
-      expect(lastPageData).toHaveLength(10);
-      expect(lastPageData[0]).toEqual(mockDataSource[40]);
-      expect(lastPageData[9]).toEqual(mockDataSource[49]);
-    });
-
-    it('应该处理不完整的最后一页', () => {
-      const smallDataSource = mockDataSource.slice(0, 25);
-
-      const { result } = renderHook(() =>
-        usePagination({
-          dataSource: smallDataSource,
-          pagination: { pageSize: 10, current: 3 },
-        })
-      );
-
-      const lastPageData = result.current.paginatedData;
-      expect(lastPageData).toHaveLength(5);
-      expect(lastPageData[0]).toEqual(smallDataSource[20]);
-      expect(lastPageData[4]).toEqual(smallDataSource[24]);
+      expect(result.current.paginatedData).toEqual(mockCurrentPageData);
+      expect(result.current.paginatedData).toHaveLength(10);
     });
 
     it('应该处理空数据源', () => {
@@ -174,13 +133,62 @@ describe('usePagination', () => {
       expect(result.current.paginatedData).toEqual([]);
       expect(result.current.paginatedData).toHaveLength(0);
     });
+
+    it('应该在 dataSource 变化时更新数据', () => {
+      const firstPageData: TestRecord[] = Array.from({ length: 10 }, (_, i) => ({
+        key: String(i + 1),
+        name: `User -Force{i + 1}`,
+        age: 20 + i,
+      }));
+
+      const secondPageData: TestRecord[] = Array.from({ length: 10 }, (_, i) => ({
+        key: String(i + 11),
+        name: `User -Force{i + 11}`,
+        age: 30 + i,
+      }));
+
+      const { result, rerender } = renderHook(
+        ({ dataSource }) =>
+          usePagination({
+            dataSource,
+            pagination: { pageSize: 10 },
+          }),
+        { initialProps: { dataSource: firstPageData } }
+      );
+
+      expect(result.current.paginatedData).toEqual(firstPageData);
+
+      // 模拟翻页：服务端返回新数据
+      rerender({ dataSource: secondPageData });
+
+      expect(result.current.paginatedData).toEqual(secondPageData);
+    });
+
+    it('应该处理不同长度的数据源', () => {
+      const shortPageData: TestRecord[] = Array.from({ length: 3 }, (_, i) => ({
+        key: String(i + 1),
+        name: `User -Force{i + 1}`,
+        age: 25 + i,
+      }));
+
+      const { result } = renderHook(() =>
+        usePagination({
+          dataSource: shortPageData,
+          pagination: { pageSize: 10 },
+        })
+      );
+
+      // 最后一页可能不满 pageSize
+      expect(result.current.paginatedData).toEqual(shortPageData);
+      expect(result.current.paginatedData).toHaveLength(3);
+    });
   });
 
   describe('分页变化处理', () => {
-    it('应该能够切换到不同的页码', () => {
+    it('应该能够更新页码状态', () => {
       const { result } = renderHook(() =>
         usePagination({
-          dataSource: mockDataSource,
+          dataSource: mockCurrentPageData,
           pagination: { pageSize: 10 },
         })
       );
@@ -192,35 +200,30 @@ describe('usePagination', () => {
       });
 
       expect(result.current.currentPage).toBe(3);
-      expect(result.current.paginatedData).toHaveLength(10);
-      expect(result.current.paginatedData[0]).toEqual(mockDataSource[20]);
     });
 
     it('应该能够改变每页大小', () => {
       const { result } = renderHook(() =>
         usePagination({
-          dataSource: mockDataSource,
-          pagination: {}, // 空对象，非受控模式
+          dataSource: mockCurrentPageData,
+          pagination: {},
         })
       );
 
       expect(result.current.pageSize).toBe(10);
-      expect(result.current.paginatedData).toHaveLength(10);
 
       act(() => {
         result.current.handlePaginationChange(1, 20);
       });
 
       expect(result.current.pageSize).toBe(20);
-      // 内部状态更新后，需要等待下一次渲染
-      expect(result.current.paginatedData).toHaveLength(20);
     });
 
     it('应该同时改变页码和页大小', () => {
       const { result } = renderHook(() =>
         usePagination({
-          dataSource: mockDataSource,
-          pagination: {}, // 空对象，非受控模式
+          dataSource: mockCurrentPageData,
+          pagination: {},
         })
       );
 
@@ -230,8 +233,6 @@ describe('usePagination', () => {
 
       expect(result.current.currentPage).toBe(2);
       expect(result.current.pageSize).toBe(15);
-      expect(result.current.paginatedData).toHaveLength(15);
-      expect(result.current.paginatedData[0]).toEqual(mockDataSource[15]);
     });
 
     it('应该调用外部的 onChange 回调', () => {
@@ -243,7 +244,7 @@ describe('usePagination', () => {
 
       const { result } = renderHook(() =>
         usePagination({
-          dataSource: mockDataSource,
+          dataSource: mockCurrentPageData,
           pagination,
         })
       );
@@ -256,10 +257,32 @@ describe('usePagination', () => {
       expect(onChange).toHaveBeenCalledTimes(1);
     });
 
+    it('应该在修改 pageSize 时触发 onChange', () => {
+      const onChange = jest.fn();
+      const pagination: PaginationProps = {
+        pageSize: 10,
+        onChange,
+      };
+
+      const { result } = renderHook(() =>
+        usePagination({
+          dataSource: mockCurrentPageData,
+          pagination,
+        })
+      );
+
+      act(() => {
+        result.current.handlePaginationChange(1, 20);
+      });
+
+      expect(onChange).toHaveBeenCalledWith(1, 20);
+      expect(onChange).toHaveBeenCalledTimes(1);
+    });
+
     it('应该在 pagination 为 false 时不调用 onChange', () => {
       const { result } = renderHook(() =>
         usePagination({
-          dataSource: mockDataSource,
+          dataSource: mockCurrentPageData,
           pagination: false,
         })
       );
@@ -273,273 +296,82 @@ describe('usePagination', () => {
     });
   });
 
-  describe('受控模式', () => {
-    it('应该使用外部传入的 current', () => {
-      const pagination: PaginationProps = {
-        pageSize: 10,
-        current: 3,
-      };
-
-      const { result } = renderHook(() =>
-        usePagination({
-          dataSource: mockDataSource,
-          pagination,
-        })
-      );
-
-      expect(result.current.paginatedData).toHaveLength(10);
-      expect(result.current.paginatedData[0]).toEqual(mockDataSource[20]);
-    });
-
-    it('应该使用外部传入的 pageSize', () => {
-      const pagination: PaginationProps = {
-        pageSize: 25,
-        current: 1,
-      };
-
-      const { result } = renderHook(() =>
-        usePagination({
-          dataSource: mockDataSource,
-          pagination,
-        })
-      );
-
-      expect(result.current.paginatedData).toHaveLength(25);
-      expect(result.current.paginatedData[0]).toEqual(mockDataSource[0]);
-      expect(result.current.paginatedData[24]).toEqual(mockDataSource[24]);
-    });
-
-    it('应该响应外部 current 的变化', () => {
-      const { result, rerender } = renderHook(
-        ({ current }) =>
-          usePagination({
-            dataSource: mockDataSource,
-            pagination: { pageSize: 10, current },
-          }),
-        { initialProps: { current: 1 } }
-      );
-
-      expect(result.current.paginatedData[0]).toEqual(mockDataSource[0]);
-
-      rerender({ current: 2 });
-
-      expect(result.current.paginatedData[0]).toEqual(mockDataSource[10]);
-    });
-
-    it('应该响应外部 pageSize 的变化', () => {
-      const { result, rerender } = renderHook(
-        ({ pageSize }) =>
-          usePagination({
-            dataSource: mockDataSource,
-            pagination: { pageSize },
-          }),
-        { initialProps: { pageSize: 10 } }
-      );
-
-      expect(result.current.paginatedData).toHaveLength(10);
-
-      rerender({ pageSize: 20 });
-
-      expect(result.current.paginatedData).toHaveLength(20);
-    });
-  });
-
-  describe('非受控模式', () => {
-    it('应该使用内部状态管理页码', () => {
-      const { result } = renderHook(() =>
-        usePagination({
-          dataSource: mockDataSource,
-          pagination: { pageSize: 10 },
-        })
-      );
-
-      expect(result.current.currentPage).toBe(1);
-
-      act(() => {
-        result.current.handlePaginationChange(4, 10);
-      });
-
-      expect(result.current.currentPage).toBe(4);
-      expect(result.current.paginatedData[0]).toEqual(mockDataSource[30]);
-    });
-
-    it('应该使用内部状态管理页大小', () => {
-      const { result } = renderHook(() =>
-        usePagination({
-          dataSource: mockDataSource,
-          pagination: {}, // 空对象，非受控模式
-        })
-      );
-
-      expect(result.current.pageSize).toBe(10);
-
-      act(() => {
-        result.current.handlePaginationChange(1, 30);
-      });
-
-      expect(result.current.pageSize).toBe(30);
-      expect(result.current.paginatedData).toHaveLength(30);
-    });
-  });
-
-  describe('边界情况', () => {
-    it('应该处理 dataSource 为空数组', () => {
-      const { result } = renderHook(() =>
-        usePagination({
-          dataSource: [],
-          pagination: { pageSize: 10 },
-        })
-      );
-
-      expect(result.current.paginatedData).toEqual([]);
-    });
-
-    it('应该处理 dataSource 长度小于 pageSize', () => {
-      const smallDataSource = mockDataSource.slice(0, 5);
-
-      const { result } = renderHook(() =>
-        usePagination({
-          dataSource: smallDataSource,
-          pagination: { pageSize: 10 },
-        })
-      );
-
-      expect(result.current.paginatedData).toHaveLength(5);
-      expect(result.current.paginatedData).toEqual(smallDataSource);
-    });
-
-    it('应该处理 current 超出范围', () => {
-      const { result } = renderHook(() =>
-        usePagination({
-          dataSource: mockDataSource,
-          pagination: { pageSize: 10, current: 100 },
-        })
-      );
-
-      // 返回空数组（超出范围）
-      expect(result.current.paginatedData).toEqual([]);
-    });
-
-    it('应该处理 current 为 0 或负数', () => {
-      const { result } = renderHook(() =>
-        usePagination({
-          dataSource: mockDataSource,
-          pagination: { pageSize: 10, current: 0 },
-        })
-      );
-
-      // 当 current 为 0 时，start 为 -10，end 为 0，slice 会返回空数组
-      expect(result.current.paginatedData).toEqual([]);
-    });
-
-    it('应该处理 pageSize 为 0', () => {
-      const { result } = renderHook(() =>
-        usePagination({
-          dataSource: mockDataSource,
-          pagination: { pageSize: 0 },
-        })
-      );
-
-      expect(result.current.paginatedData).toEqual([]);
-    });
-
-    it('应该处理 pageSize 为负数', () => {
-      const { result } = renderHook(() =>
-        usePagination({
-          dataSource: mockDataSource,
-          pagination: { pageSize: -10 },
-        })
-      );
-
-      // 由于 pageSize 为负数，实际上会使用内部状态的默认 pageSize (10)
-      // 或者返回所有数据，具体取决于 slice 的行为
-      expect(result.current.paginatedData.length).toBeGreaterThanOrEqual(0);
-    });
-
-    it('应该处理非常大的 pageSize', () => {
-      const { result } = renderHook(() =>
-        usePagination({
-          dataSource: mockDataSource,
-          pagination: { pageSize: 1000 },
-        })
-      );
-
-      expect(result.current.paginatedData).toHaveLength(50);
-      expect(result.current.paginatedData).toEqual(mockDataSource);
-    });
-  });
-
   describe('配置更新', () => {
     it('应该响应 pagination 配置的变化', () => {
       const { result, rerender } = renderHook(
         ({ pagination }) =>
           usePagination({
-            dataSource: mockDataSource,
+            dataSource: mockCurrentPageData,
             pagination,
           }),
         { initialProps: { pagination: { pageSize: 10 } as PaginationProps } }
       );
 
-      expect(result.current.paginatedData).toHaveLength(10);
+      expect(result.current.paginationConfig).toMatchObject({ pageSize: 10 });
 
       rerender({ pagination: { pageSize: 20 } });
 
-      expect(result.current.paginatedData).toHaveLength(20);
+      expect(result.current.paginationConfig).toMatchObject({ pageSize: 20 });
     });
 
     it('应该响应 dataSource 的变化', () => {
+      const newData: TestRecord[] = Array.from({ length: 5 }, (_, i) => ({
+        key: String(i + 1),
+        name: `User -Force{i + 1}`,
+        age: 25 + i,
+      }));
+
       const { result, rerender } = renderHook(
         ({ dataSource }) =>
           usePagination({
             dataSource,
             pagination: { pageSize: 10 },
           }),
-        { initialProps: { dataSource: mockDataSource.slice(0, 20) } }
+        { initialProps: { dataSource: mockCurrentPageData } }
       );
 
       expect(result.current.paginatedData).toHaveLength(10);
 
-      rerender({ dataSource: mockDataSource.slice(0, 5) });
+      rerender({ dataSource: newData });
 
       expect(result.current.paginatedData).toHaveLength(5);
+      expect(result.current.paginatedData).toEqual(newData);
     });
 
     it('应该从有分页切换到无分页', () => {
       const { result, rerender } = renderHook(
         ({ pagination }) =>
           usePagination({
-            dataSource: mockDataSource,
+            dataSource: mockCurrentPageData,
             pagination,
           }),
         { initialProps: { pagination: { pageSize: 10 } as PaginationProps | false } }
       );
 
-      expect(result.current.paginatedData).toHaveLength(10);
       expect(result.current.paginationConfig).not.toBe(false);
 
       rerender({ pagination: false });
 
-      expect(result.current.paginatedData).toHaveLength(50);
       expect(result.current.paginationConfig).toBe(false);
+      expect(result.current.paginatedData).toEqual(mockCurrentPageData);
     });
 
     it('应该从无分页切换到有分页', () => {
       const { result, rerender } = renderHook(
         ({ pagination }) =>
           usePagination({
-            dataSource: mockDataSource,
+            dataSource: mockCurrentPageData,
             pagination,
           }),
         { initialProps: { pagination: false as PaginationProps | false } }
       );
 
-      expect(result.current.paginatedData).toHaveLength(50);
       expect(result.current.paginationConfig).toBe(false);
 
       rerender({ pagination: { pageSize: 15 } });
 
-      expect(result.current.paginatedData).toHaveLength(15);
       expect(result.current.paginationConfig).not.toBe(false);
+      expect(result.current.paginatedData).toEqual(mockCurrentPageData);
     });
   });
 
@@ -547,7 +379,7 @@ describe('usePagination', () => {
     it('应该使用正确的默认配置', () => {
       const { result } = renderHook(() =>
         usePagination({
-          dataSource: mockDataSource,
+          dataSource: mockCurrentPageData,
           pagination: {},
         })
       );
@@ -563,7 +395,7 @@ describe('usePagination', () => {
     it('应该允许覆盖默认配置', () => {
       const { result } = renderHook(() =>
         usePagination({
-          dataSource: mockDataSource,
+          dataSource: mockCurrentPageData,
           pagination: {
             showQuickJumper: false,
             showSizeChanger: false,
@@ -583,7 +415,7 @@ describe('usePagination', () => {
     it('应该保留额外的自定义配置', () => {
       const { result } = renderHook(() =>
         usePagination({
-          dataSource: mockDataSource,
+          dataSource: mockCurrentPageData,
           pagination: {
             simple: true,
             pageSizeOptions: [5, 10, 20, 50],
@@ -597,6 +429,119 @@ describe('usePagination', () => {
         pageSizeOptions: [5, 10, 20, 50],
         hideOnSinglePage: true,
       });
+    });
+  });
+
+  describe('边界情况', () => {
+    it('应该处理 undefined pagination 配置', () => {
+      const { result } = renderHook(() =>
+        usePagination({
+          dataSource: mockCurrentPageData,
+          pagination: undefined,
+        })
+      );
+
+      expect(result.current.paginationConfig).toBe(false);
+      expect(result.current.paginatedData).toEqual(mockCurrentPageData);
+    });
+
+    it('应该处理空对象 pagination 配置', () => {
+      const { result } = renderHook(() =>
+        usePagination({
+          dataSource: mockCurrentPageData,
+          pagination: {},
+        })
+      );
+
+      expect(result.current.paginationConfig).not.toBe(false);
+      expect(result.current.paginationConfig).toHaveProperty('pageSize', 10);
+    });
+
+    it('应该处理没有 pageSize 的配置', () => {
+      const { result } = renderHook(() =>
+        usePagination({
+          dataSource: mockCurrentPageData,
+          pagination: {
+            showQuickJumper: true,
+          },
+        })
+      );
+
+      expect(result.current.paginationConfig).toMatchObject({
+        pageSize: 10, // 应该使用默认值
+        showQuickJumper: true,
+      });
+    });
+  });
+
+  describe('内部状态管理', () => {
+    it('应该正确管理内部的 currentPage 状态', () => {
+      const { result } = renderHook(() =>
+        usePagination({
+          dataSource: mockCurrentPageData,
+          pagination: {},
+        })
+      );
+
+      expect(result.current.currentPage).toBe(1);
+
+      act(() => {
+        result.current.handlePaginationChange(5, 10);
+      });
+
+      expect(result.current.currentPage).toBe(5);
+
+      act(() => {
+        result.current.handlePaginationChange(1, 10);
+      });
+
+      expect(result.current.currentPage).toBe(1);
+    });
+
+    it('应该正确管理内部的 pageSize 状态', () => {
+      const { result } = renderHook(() =>
+        usePagination({
+          dataSource: mockCurrentPageData,
+          pagination: {},
+        })
+      );
+
+      expect(result.current.pageSize).toBe(10);
+
+      act(() => {
+        result.current.handlePaginationChange(1, 20);
+      });
+
+      expect(result.current.pageSize).toBe(20);
+
+      act(() => {
+        result.current.handlePaginationChange(1, 50);
+      });
+
+      expect(result.current.pageSize).toBe(50);
+    });
+
+    it('应该独立管理页码和页大小', () => {
+      const { result } = renderHook(() =>
+        usePagination({
+          dataSource: mockCurrentPageData,
+          pagination: {},
+        })
+      );
+
+      act(() => {
+        result.current.handlePaginationChange(3, 10);
+      });
+
+      expect(result.current.currentPage).toBe(3);
+      expect(result.current.pageSize).toBe(10);
+
+      act(() => {
+        result.current.handlePaginationChange(3, 20);
+      });
+
+      expect(result.current.currentPage).toBe(3);
+      expect(result.current.pageSize).toBe(20);
     });
   });
 });

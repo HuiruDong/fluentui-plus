@@ -540,26 +540,26 @@ describe('Table Component', () => {
       expect(pagination).toBeInTheDocument();
     });
 
-    it('should paginate data correctly', () => {
-      const largeData = Array.from({ length: 10 }, (_, i) => ({
+    it('should render data with pagination (server-side mode)', () => {
+      // 服务端分页模式：dataSource 已经是当前页的数据
+      const currentPageData = Array.from({ length: 3 }, (_, i) => ({
         key: String(i + 1),
         name: `User ${i + 1}`,
         age: 20 + i,
         address: `Address ${i + 1}`,
       }));
 
-      render(<Table dataSource={largeData} columns={mockColumns} pagination={{ pageSize: 3 }} />);
+      render(<Table dataSource={currentPageData} columns={mockColumns} pagination={{ pageSize: 3, total: 10 }} />);
 
       // Mock 的 Body 组件会渲染所有传给它的数据行
-      // 由于分页，Body 应该只接收到 3 条数据
+      // 服务端分页：直接渲染 dataSource 的所有数据
       const bodyElement = screen.getByTestId('table-body');
       expect(bodyElement).toBeInTheDocument();
 
-      // 检查是否只有前 3 个用户的数据被渲染
+      // 应该渲染当前页的 3 条数据
       expect(screen.getByText('User 1')).toBeInTheDocument();
       expect(screen.getByText('User 2')).toBeInTheDocument();
       expect(screen.getByText('User 3')).toBeInTheDocument();
-      expect(screen.queryByText('User 4')).not.toBeInTheDocument();
     });
 
     it('should support custom pagination config', () => {
@@ -604,31 +604,45 @@ describe('Table Component', () => {
       expect(pagination).toBeInTheDocument();
     });
 
-    it('should support controlled pagination', () => {
-      const largeData = Array.from({ length: 20 }, (_, i) => ({
+    it('should support controlled pagination (server-side mode)', () => {
+      // 服务端分页：第一页数据
+      const firstPageData = Array.from({ length: 5 }, (_, i) => ({
         key: String(i + 1),
         name: `User ${i + 1}`,
         age: 20 + i,
         address: `Address ${i + 1}`,
       }));
 
+      // 服务端分页：第二页数据
+      const secondPageData = Array.from({ length: 5 }, (_, i) => ({
+        key: String(i + 6),
+        name: `User ${i + 6}`,
+        age: 25 + i,
+        address: `Address ${i + 6}`,
+      }));
+
       const { rerender } = render(
-        <Table dataSource={largeData} columns={mockColumns} pagination={{ pageSize: 5, current: 1 }} />
+        <Table dataSource={firstPageData} columns={mockColumns} pagination={{ pageSize: 5, current: 1, total: 20 }} />
       );
 
       // 第一页数据
       expect(screen.getByText('User 1')).toBeInTheDocument();
+      expect(screen.queryByText('User 6')).not.toBeInTheDocument();
 
-      // 切换到第二页
-      rerender(<Table dataSource={largeData} columns={mockColumns} pagination={{ pageSize: 5, current: 2 }} />);
+      // 切换到第二页：传入新的 dataSource
+      rerender(
+        <Table dataSource={secondPageData} columns={mockColumns} pagination={{ pageSize: 5, current: 2, total: 20 }} />
+      );
 
       // 第二页数据
       expect(screen.getByText('User 6')).toBeInTheDocument();
+      expect(screen.queryByText('User 1')).not.toBeInTheDocument();
     });
 
     it('should call onChange when pagination changes', () => {
       const onChange = jest.fn();
-      const largeData = Array.from({ length: 20 }, (_, i) => ({
+      // 服务端分页：传入当前页数据
+      const currentPageData = Array.from({ length: 5 }, (_, i) => ({
         key: String(i + 1),
         name: `User ${i + 1}`,
         age: 20 + i,
@@ -637,10 +651,11 @@ describe('Table Component', () => {
 
       render(
         <Table
-          dataSource={largeData}
+          dataSource={currentPageData}
           columns={mockColumns}
           pagination={{
             pageSize: 5,
+            total: 20,
             onChange,
           }}
         />
@@ -653,7 +668,8 @@ describe('Table Component', () => {
 
   describe('分页与滚动结合', () => {
     it('should work with scroll and pagination together', () => {
-      const largeData = Array.from({ length: 20 }, (_, i) => ({
+      // 服务端分页：传入当前页数据
+      const currentPageData = Array.from({ length: 5 }, (_, i) => ({
         key: String(i + 1),
         name: `User ${i + 1}`,
         age: 20 + i,
@@ -661,7 +677,12 @@ describe('Table Component', () => {
       }));
 
       const { container } = render(
-        <Table dataSource={largeData} columns={mockColumns} scroll={{ y: 300 }} pagination={{ pageSize: 5 }} />
+        <Table
+          dataSource={currentPageData}
+          columns={mockColumns}
+          scroll={{ y: 300 }}
+          pagination={{ pageSize: 5, total: 20 }}
+        />
       );
 
       const tableContainer = container.querySelector('.fluentui-plus-table');
@@ -672,7 +693,8 @@ describe('Table Component', () => {
     });
 
     it('should work with horizontal scroll and pagination', () => {
-      const largeData = Array.from({ length: 20 }, (_, i) => ({
+      // 服务端分页：传入当前页数据
+      const currentPageData = Array.from({ length: 5 }, (_, i) => ({
         key: String(i + 1),
         name: `User ${i + 1}`,
         age: 20 + i,
@@ -680,7 +702,12 @@ describe('Table Component', () => {
       }));
 
       const { container } = render(
-        <Table dataSource={largeData} columns={mockColumns} scroll={{ x: 1000 }} pagination={{ pageSize: 5 }} />
+        <Table
+          dataSource={currentPageData}
+          columns={mockColumns}
+          scroll={{ x: 1000 }}
+          pagination={{ pageSize: 5, total: 20 }}
+        />
       );
 
       const tableContainer = container.querySelector('.fluentui-plus-table');
@@ -769,7 +796,8 @@ describe('Table Component', () => {
 
   describe('分页与行选择结合', () => {
     it('should work with rowSelection and pagination', () => {
-      const largeData = Array.from({ length: 20 }, (_, i) => ({
+      // 服务端分页：传入当前页数据
+      const currentPageData = Array.from({ length: 5 }, (_, i) => ({
         key: String(i + 1),
         name: `User ${i + 1}`,
         age: 20 + i,
@@ -783,7 +811,12 @@ describe('Table Component', () => {
       };
 
       const { container } = render(
-        <Table dataSource={largeData} columns={mockColumns} rowSelection={rowSelection} pagination={{ pageSize: 5 }} />
+        <Table
+          dataSource={currentPageData}
+          columns={mockColumns}
+          rowSelection={rowSelection}
+          pagination={{ pageSize: 5, total: 20 }}
+        />
       );
 
       expect(screen.getByTestId('table-body')).toBeInTheDocument();
@@ -793,7 +826,8 @@ describe('Table Component', () => {
     });
 
     it('should only select rows on current page', () => {
-      const largeData = Array.from({ length: 20 }, (_, i) => ({
+      // 服务端分页：传入当前页数据
+      const currentPageData = Array.from({ length: 5 }, (_, i) => ({
         key: String(i + 1),
         name: `User ${i + 1}`,
         age: 20 + i,
@@ -806,7 +840,12 @@ describe('Table Component', () => {
       };
 
       render(
-        <Table dataSource={largeData} columns={mockColumns} rowSelection={rowSelection} pagination={{ pageSize: 5 }} />
+        <Table
+          dataSource={currentPageData}
+          columns={mockColumns}
+          rowSelection={rowSelection}
+          pagination={{ pageSize: 5, total: 20 }}
+        />
       );
 
       // 行选择应该只针对当前页的数据
