@@ -14,7 +14,7 @@ const Layout: React.FC<LayoutProps> = ({ children, className, style, hasSider })
 
     let has = false;
     React.Children.forEach(children, child => {
-      if (React.isValidElement(child) && (child.type as any).__LAYOUT_SIDER__) {
+      if (React.isValidElement(child) && (child.type as { __LAYOUT_SIDER__?: boolean }).__LAYOUT_SIDER__) {
         has = true;
       }
     });
