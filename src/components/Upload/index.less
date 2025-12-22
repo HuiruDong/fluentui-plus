@@ -1,0 +1,87 @@
+@upload-prefix-cls: ~"fluentui-plus-upload";
+
+.@{upload-prefix-cls} {
+  display: inline-block;
+
+  // 隐藏的 input
+  &-input {
+    display: none !important;
+  }
+
+  // 上传触发区域
+  &-trigger {
+    cursor: pointer;
+    display: inline-block;
+  }
+
+  // 禁用状态
+  &-disabled {
+    .@{upload-prefix-cls}-trigger {
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+  }
+
+  // 拖拽上传区域
+  &-dragger {
+    display: block;
+    width: 100%;
+    border: 2px dashed @color-neutral-stroke-accessible;
+    border-radius: @border-radius-medium;
+    padding: 32px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s @curve-ease;
+    background-color: @color-neutral-background-1;
+
+    &:hover:not(.@{upload-prefix-cls}-dragger-disabled) {
+      border-color: @color-brand-stroke-1;
+    }
+
+    // 拖拽激活状态
+    &-active {
+      border-color: @color-brand-stroke-1;
+    }
+
+    // 拖拽区域内容
+    &-content {
+      color: @color-neutral-foreground-1;
+      font-size: @font-size-300;
+
+      p {
+        margin: 0;
+        padding: 4px 0;
+
+        &:first-child {
+          font-size: @font-size-400;
+          font-weight: @font-weight-semibold;
+          margin-bottom: 8px;
+        }
+
+        &:not(:first-child) {
+          font-size: @font-size-200;
+          color: @color-neutral-foreground-2;
+        }
+      }
+    }
+
+    // 禁用状态
+    &-disabled {
+      cursor: not-allowed;
+      opacity: 0.6;
+      background-color: @color-neutral-background-disabled;
+
+      &:hover {
+        border-color: @color-neutral-stroke-accessible;
+      }
+
+      .@{upload-prefix-cls}-dragger-content {
+        color: @color-neutral-foreground-disabled;
+
+        p:not(:first-child) {
+          color: @color-neutral-foreground-disabled;
+        }
+      }
+    }
+  }
+}

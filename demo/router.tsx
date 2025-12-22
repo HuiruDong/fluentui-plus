@@ -14,6 +14,7 @@ import TablePage from './pages/TablePage';
 import SpinPage from './pages/SpinPage';
 import PaginationPage from './pages/PaginationPage';
 import LayoutPage from './pages/LayoutPage';
+import UploadPage from './pages/UploadPage';
 
 const router = createBrowserRouter([
   {
@@ -71,6 +72,10 @@ const router = createBrowserRouter([
       {
         path: '/layout',
         element: <LayoutPage />,
+      },
+      {
+        path: '/upload',
+        element: <UploadPage />,
       },
     ],
   },

@@ -48,3 +48,7 @@ export type { PaginationProps } from './Pagination';
 // Layout 组件
 export { default as Layout } from './Layout';
 export type { LayoutProps, HeaderProps, FooterProps, ContentProps, SiderProps } from './Layout';
+
+// Upload 组件
+export { default as Upload } from './Upload';
+export type { UploadProps, UploadDraggerProps } from './Upload';

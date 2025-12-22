@@ -112,6 +112,7 @@ const Layout: React.FC = () => {
         { path: '/inputtag', label: 'InputTag 标签输入' },
         { path: '/select', label: 'Select 选择器' },
         { path: '/cascader', label: 'Cascader 级联选择' },
+        { path: '/upload', label: 'Upload 上传' },
       ],
     },
     {
