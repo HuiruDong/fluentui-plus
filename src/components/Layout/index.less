@@ -1,0 +1,94 @@
+@layout-prefix-cls: ~"fluentui-plus-layout";
+
+.@{layout-prefix-cls} {
+  display: flex;
+  flex: auto;
+  flex-direction: column;
+  min-height: 0;
+  background: @color-neutral-background-1;
+
+  &,
+  * {
+    box-sizing: border-box;
+  }
+
+  &-has-sider {
+    flex-direction: row;
+
+    > .@{layout-prefix-cls},
+    > .@{layout-prefix-cls}-content {
+      width: 0;
+    }
+  }
+}
+
+// Header
+.@{layout-prefix-cls}-header {
+  height: 64px;
+  padding: 0 50px;
+  line-height: 64px;
+  background: @color-neutral-background-3;
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+}
+
+// Footer
+.@{layout-prefix-cls}-footer {
+  padding: 24px 50px;
+  color: @color-neutral-foreground-1;
+  font-size: 14px;
+  background: @color-neutral-background-2;
+  flex: 0 0 auto;
+}
+
+// Content
+.@{layout-prefix-cls}-content {
+  flex: auto;
+  min-height: 0;
+  padding: 24px;
+  background: @color-neutral-background-1;
+}
+
+// Sider
+.@{layout-prefix-cls}-sider {
+  position: relative;
+  min-width: 0;
+  background: @color-neutral-background-3;
+  transition: all 0.2s;
+
+  &-children {
+    height: 100%;
+    padding-top: 0.1px;
+    margin-top: -0.1px;
+  }
+
+  &-trigger {
+    position: absolute;
+    bottom: 0;
+    z-index: 1;
+    height: 48px;
+    line-height: 48px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 100%;
+    background: @color-neutral-background-4;
+    color: @color-neutral-foreground-2;
+
+    &:hover {
+      background: @color-neutral-background-4-hover;
+    }
+
+    &-icon {
+      font-size: 16px;
+      font-weight: bold;
+    }
+  }
+
+  &-collapsed {
+    .@{layout-prefix-cls}-sider-trigger-icon {
+      transform: rotate(180deg);
+    }
+  }
+}

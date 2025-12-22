@@ -13,6 +13,7 @@ import MessagePage from './pages/MessagePage';
 import TablePage from './pages/TablePage';
 import SpinPage from './pages/SpinPage';
 import PaginationPage from './pages/PaginationPage';
+import LayoutPage from './pages/LayoutPage';
 
 const router = createBrowserRouter([
   {
@@ -66,6 +67,10 @@ const router = createBrowserRouter([
       {
         path: '/pagination',
         element: <PaginationPage />,
+      },
+      {
+        path: '/layout',
+        element: <LayoutPage />,
       },
     ],
   },

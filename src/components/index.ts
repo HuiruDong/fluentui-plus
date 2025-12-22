@@ -44,3 +44,7 @@ export type { SpinProps } from './Spin';
 // Pagination 组件
 export { Pagination } from './Pagination';
 export type { PaginationProps } from './Pagination';
+
+// Layout 组件
+export { default as Layout } from './Layout';
+export type { LayoutProps, HeaderProps, FooterProps, ContentProps, SiderProps } from './Layout';

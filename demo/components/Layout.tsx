@@ -103,10 +103,8 @@ const Layout: React.FC = () => {
       title: '通用组件',
       items: [{ path: '/tag', label: 'Tag 标签' }],
     },
-    {
-      title: '导航组件',
-      items: [{ path: '/nav', label: 'Nav 导航菜单' }],
-    },
+    { title: '布局组件', items: [{ path: '/layout', label: 'Layout 布局' }] },
+    { title: '导航组件', items: [{ path: '/nav', label: 'Nav 导航菜单' }] },
     {
       title: '数据录入',
       items: [
