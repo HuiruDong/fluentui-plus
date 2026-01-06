@@ -181,122 +181,105 @@ const UploadPage: React.FC = () => {
       )}
 
       {/* API 文档 */}
-      <section className={styles.section}>
-        <h2 className={styles.sectionTitle}>API</h2>
+      <div className={styles.section}>
+        <div className={styles.sectionTitle}>API 参数</div>
+        <div className={styles.sectionDescription}>Upload 组件支持的所有参数配置。</div>
+        <div className={styles.demoContainer}>
+          <table style={apiTableStyles.tableStyle}>
+            <thead>
+              <tr style={{ backgroundColor: '#f9fafb' }}>
+                <th style={apiTableStyles.thStyle}>参数</th>
+                <th style={apiTableStyles.thStyle}>说明</th>
+                <th style={apiTableStyles.thStyle}>类型</th>
+                <th style={apiTableStyles.thStyle}>默认值</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style={apiTableStyles.tdStyle}>accept</td>
+                <td style={apiTableStyles.tdStyle}>接受上传的文件类型，如 'image/*', '.jpg,.png'</td>
+                <td style={apiTableStyles.tdStyle}>string</td>
+                <td style={apiTableStyles.tdStyle}>-</td>
+              </tr>
+              <tr>
+                <td style={apiTableStyles.tdStyle}>multiple</td>
+                <td style={apiTableStyles.tdStyle}>是否支持多选文件</td>
+                <td style={apiTableStyles.tdStyle}>boolean</td>
+                <td style={apiTableStyles.tdStyle}>false</td>
+              </tr>
+              <tr>
+                <td style={apiTableStyles.tdStyle}>disabled</td>
+                <td style={apiTableStyles.tdStyle}>是否禁用</td>
+                <td style={apiTableStyles.tdStyle}>boolean</td>
+                <td style={apiTableStyles.tdStyle}>false</td>
+              </tr>
+              <tr>
+                <td style={apiTableStyles.tdStyle}>beforeUpload</td>
+                <td style={apiTableStyles.tdStyle}>上传前的验证钩子，返回 false 则停止上传</td>
+                <td style={apiTableStyles.tdStyle}>
+                  (file: File, fileList: File[]) =&gt; boolean | Promise&lt;boolean&gt;
+                </td>
+                <td style={apiTableStyles.tdStyle}>-</td>
+              </tr>
+              <tr>
+                <td style={apiTableStyles.tdStyle}>onChange</td>
+                <td style={apiTableStyles.tdStyle}>文件选择后的回调，用于处理上传逻辑</td>
+                <td style={apiTableStyles.tdStyle}>(files: File[]) =&gt; void</td>
+                <td style={apiTableStyles.tdStyle}>-</td>
+              </tr>
+              <tr>
+                <td style={apiTableStyles.tdStyle}>onDrop</td>
+                <td style={apiTableStyles.tdStyle}>文件拖入时的回调</td>
+                <td style={apiTableStyles.tdStyle}>(e: DragEvent) =&gt; void</td>
+                <td style={apiTableStyles.tdStyle}>-</td>
+              </tr>
+              <tr>
+                <td style={apiTableStyles.tdStyle}>className</td>
+                <td style={apiTableStyles.tdStyle}>自定义类名</td>
+                <td style={apiTableStyles.tdStyle}>string</td>
+                <td style={apiTableStyles.tdStyle}>-</td>
+              </tr>
+              <tr>
+                <td style={apiTableStyles.tdStyle}>style</td>
+                <td style={apiTableStyles.tdStyle}>自定义样式</td>
+                <td style={apiTableStyles.tdStyle}>CSSProperties</td>
+                <td style={apiTableStyles.tdStyle}>-</td>
+              </tr>
+              <tr>
+                <td style={apiTableStyles.tdStyle}>children</td>
+                <td style={apiTableStyles.tdStyle}>上传按钮或拖拽区域内容</td>
+                <td style={apiTableStyles.tdStyle}>ReactNode</td>
+                <td style={apiTableStyles.tdStyle}>-</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
 
-        <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '12px', marginTop: '24px' }}>Upload Props</h3>
-        <table style={apiTableStyles.tableStyle}>
-          <thead>
-            <tr>
-              <th style={apiTableStyles.thStyle}>属性</th>
-              <th style={apiTableStyles.thStyle}>说明</th>
-              <th style={apiTableStyles.thStyle}>类型</th>
-              <th style={apiTableStyles.thStyle}>默认值</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td style={apiTableStyles.tdStyle}>
-                <code>accept</code>
-              </td>
-              <td style={apiTableStyles.tdStyle}>接受上传的文件类型，如 'image/*', '.jpg,.png'</td>
-              <td style={apiTableStyles.tdStyle}>string</td>
-              <td style={apiTableStyles.tdStyle}>-</td>
-            </tr>
-            <tr>
-              <td style={apiTableStyles.tdStyle}>
-                <code>multiple</code>
-              </td>
-              <td style={apiTableStyles.tdStyle}>是否支持多选文件</td>
-              <td style={apiTableStyles.tdStyle}>boolean</td>
-              <td style={apiTableStyles.tdStyle}>false</td>
-            </tr>
-            <tr>
-              <td style={apiTableStyles.tdStyle}>
-                <code>disabled</code>
-              </td>
-              <td style={apiTableStyles.tdStyle}>是否禁用</td>
-              <td style={apiTableStyles.tdStyle}>boolean</td>
-              <td style={apiTableStyles.tdStyle}>false</td>
-            </tr>
-            <tr>
-              <td style={apiTableStyles.tdStyle}>
-                <code>beforeUpload</code>
-              </td>
-              <td style={apiTableStyles.tdStyle}>上传前的验证钩子，返回 false 则停止上传</td>
-              <td style={apiTableStyles.tdStyle}>
-                (file: File, fileList: File[]) =&gt; boolean | Promise&lt;boolean&gt;
-              </td>
-              <td style={apiTableStyles.tdStyle}>-</td>
-            </tr>
-            <tr>
-              <td style={apiTableStyles.tdStyle}>
-                <code>onChange</code>
-              </td>
-              <td style={apiTableStyles.tdStyle}>文件选择后的回调，用于处理上传逻辑</td>
-              <td style={apiTableStyles.tdStyle}>(files: File[]) =&gt; void</td>
-              <td style={apiTableStyles.tdStyle}>-</td>
-            </tr>
-            <tr>
-              <td style={apiTableStyles.tdStyle}>
-                <code>onDrop</code>
-              </td>
-              <td style={apiTableStyles.tdStyle}>文件拖入时的回调</td>
-              <td style={apiTableStyles.tdStyle}>(e: DragEvent) =&gt; void</td>
-              <td style={apiTableStyles.tdStyle}>-</td>
-            </tr>
-            <tr>
-              <td style={apiTableStyles.tdStyle}>
-                <code>className</code>
-              </td>
-              <td style={apiTableStyles.tdStyle}>自定义类名</td>
-              <td style={apiTableStyles.tdStyle}>string</td>
-              <td style={apiTableStyles.tdStyle}>-</td>
-            </tr>
-            <tr>
-              <td style={apiTableStyles.tdStyle}>
-                <code>style</code>
-              </td>
-              <td style={apiTableStyles.tdStyle}>自定义样式</td>
-              <td style={apiTableStyles.tdStyle}>CSSProperties</td>
-              <td style={apiTableStyles.tdStyle}>-</td>
-            </tr>
-            <tr>
-              <td style={apiTableStyles.tdStyle}>
-                <code>children</code>
-              </td>
-              <td style={apiTableStyles.tdStyle}>上传按钮或拖拽区域内容</td>
-              <td style={apiTableStyles.tdStyle}>ReactNode</td>
-              <td style={apiTableStyles.tdStyle}>-</td>
-            </tr>
-          </tbody>
-        </table>
-
-        <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '12px', marginTop: '24px' }}>
-          Upload.Dragger Props
-        </h3>
-        <p style={{ margin: '8px 0', color: '#666' }}>继承所有 Upload Props，并额外支持：</p>
-        <table style={apiTableStyles.tableStyle}>
-          <thead>
-            <tr>
-              <th style={apiTableStyles.thStyle}>属性</th>
-              <th style={apiTableStyles.thStyle}>说明</th>
-              <th style={apiTableStyles.thStyle}>类型</th>
-              <th style={apiTableStyles.thStyle}>默认值</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td style={apiTableStyles.tdStyle}>
-                <code>height</code>
-              </td>
-              <td style={apiTableStyles.tdStyle}>拖拽区域的高度</td>
-              <td style={apiTableStyles.tdStyle}>number | string</td>
-              <td style={apiTableStyles.tdStyle}>-</td>
-            </tr>
-          </tbody>
-        </table>
-      </section>
+      <div className={styles.section}>
+        <div className={styles.sectionTitle}>Upload.Dragger 参数</div>
+        <div className={styles.sectionDescription}>继承所有 Upload Props，并额外支持以下参数。</div>
+        <div className={styles.demoContainer}>
+          <table style={apiTableStyles.tableStyle}>
+            <thead>
+              <tr style={{ backgroundColor: '#f9fafb' }}>
+                <th style={apiTableStyles.thStyle}>参数</th>
+                <th style={apiTableStyles.thStyle}>说明</th>
+                <th style={apiTableStyles.thStyle}>类型</th>
+                <th style={apiTableStyles.thStyle}>默认值</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style={apiTableStyles.tdStyle}>height</td>
+                <td style={apiTableStyles.tdStyle}>拖拽区域的高度</td>
+                <td style={apiTableStyles.tdStyle}>number | string</td>
+                <td style={apiTableStyles.tdStyle}>-</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   );
 };
