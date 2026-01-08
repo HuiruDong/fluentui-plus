@@ -4,6 +4,17 @@
 
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，项目遵循 [语义化版本](https://semver.org/lang/zh-CN/) 规范。
 
+## [2.5.0](https://github.com/HuiruDong/fluentui-plus/compare/v2.4.6...v2.5.0) (2026-01-08)
+
+### Added
+
+- **layout:** add Layout component with demo and stories ([9700700](https://github.com/HuiruDong/fluentui-plus/commit/97007003225ff2863fda1b8669b58bf79b30c155))
+- **upload:** add Upload component with drag-and-drop support ([c41fad9](https://github.com/HuiruDong/fluentui-plus/commit/c41fad967bdd6de2bf6cf9e57e80224039f5e59c))
+
+### Changed
+
+- **upload:** refine API table structure and fix dragger sizing ([d3a4a24](https://github.com/HuiruDong/fluentui-plus/commit/d3a4a241cad0b546e093a35f5345a05e2ff53682))
+
 ### [2.4.6](https://github.com/HuiruDong/fluentui-plus/compare/v2.4.5...v2.4.6) (2025-11-11)
 
 ### Fixed
