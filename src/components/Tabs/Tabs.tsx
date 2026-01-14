@@ -20,32 +20,30 @@ const Tabs: React.FC<TabsProps> = ({
   };
 
   return (
-    <div>
-      <Overflow {...overflowProps} overflowAxis={vertical ? 'vertical' : 'horizontal'}>
-        <TabList
-          selectedValue={selectedTabId}
-          onTabSelect={(_, d) => onTabSelectHandler(d.value as string)}
-          vertical={vertical}
-          {...props}
-        >
-          {items?.map(tab => {
-            return (
-              <OverflowItem key={tab.key} id={tab.key} priority={tab.key === selectedTabId ? 2 : 1}>
-                <Tab value={tab.key} icon={tab.icon}>
-                  {tab.label}
-                </Tab>
-              </OverflowItem>
-            );
-          })}
-          <OverflowMenu
-            onTabSelect={onTabSelectHandler}
-            items={items || []}
-            menuMaxHeight={menuMaxHeight}
-            buttonProps={menuTriggerButtonProps}
-          />
-        </TabList>
-      </Overflow>
-    </div>
+    <Overflow {...overflowProps} overflowAxis={vertical ? 'vertical' : 'horizontal'}>
+      <TabList
+        selectedValue={selectedTabId}
+        onTabSelect={(_, d) => onTabSelectHandler(d.value as string)}
+        vertical={vertical}
+        {...props}
+      >
+        {items?.map(tab => {
+          return (
+            <OverflowItem key={tab.key} id={tab.key} priority={tab.key === selectedTabId ? 2 : 1}>
+              <Tab value={tab.key} icon={tab.icon}>
+                {tab.label}
+              </Tab>
+            </OverflowItem>
+          );
+        })}
+        <OverflowMenu
+          onTabSelect={onTabSelectHandler}
+          items={items || []}
+          menuMaxHeight={menuMaxHeight}
+          buttonProps={menuTriggerButtonProps}
+        />
+      </TabList>
+    </Overflow>
   );
 };
 
