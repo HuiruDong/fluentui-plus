@@ -4,6 +4,12 @@
 
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，项目遵循 [语义化版本](https://semver.org/lang/zh-CN/) 规范。
 
+### [2.6.1](https://github.com/HuiruDong/fluentui-plus/compare/v2.6.0...v2.6.1) (2026-01-14)
+
+### Added
+
+- **tabs:** update Tabs component logic and adjust .gitignore ([10fee1d](https://github.com/HuiruDong/fluentui-plus/commit/10fee1d9ed69c923aecedf1e14490d690453fcae))
+
 ## [2.6.0](https://github.com/HuiruDong/fluentui-plus/compare/v2.5.0...v2.6.0) (2026-01-14)
 
 ### Added
