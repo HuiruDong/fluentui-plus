@@ -3,6 +3,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Layout from './components/Layout';
 import HomePage from './pages/HomePage';
 import TagPage from './pages/TagPage';
+import TabsPage from './pages/TabsPage';
 import NavPage from './pages/NavPage';
 import InputTagPage from './pages/InputTagPage';
 import SelectPage from './pages/SelectPage';
@@ -28,6 +29,10 @@ const router = createBrowserRouter([
       {
         path: '/tag',
         element: <TagPage />,
+      },
+      {
+        path: '/tabs',
+        element: <TabsPage />,
       },
       {
         path: '/nav',

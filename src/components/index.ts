@@ -52,3 +52,7 @@ export type { LayoutProps, HeaderProps, FooterProps, ContentProps, SiderProps } 
 // Upload 组件
 export { default as Upload } from './Upload';
 export type { UploadProps, UploadDraggerProps } from './Upload';
+
+// Tabs 组件
+export { default as Tabs } from './Tabs';
+export type { TabsProps } from './Tabs';
