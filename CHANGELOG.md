@@ -4,6 +4,12 @@
 
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，项目遵循 [语义化版本](https://semver.org/lang/zh-CN/) 规范。
 
+## [2.6.0](https://github.com/HuiruDong/fluentui-plus/compare/v2.5.0...v2.6.0) (2026-01-14)
+
+### Added
+
+- **tabs:** add Tabs component with overflow menu support ([12c306e](https://github.com/HuiruDong/fluentui-plus/commit/12c306e67bb8a3443a52967c1b64ac6b08d58d74))
+
 ## [2.5.0](https://github.com/HuiruDong/fluentui-plus/compare/v2.4.6...v2.5.0) (2026-01-08)
 
 ### Added
