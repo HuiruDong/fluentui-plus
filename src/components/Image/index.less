@@ -1,0 +1,208 @@
+@image-prefix-cls: ~"fluentui-plus-image"; // 基础图片组件前缀
+@image-preview-prefix-cls: ~"fluentui-plus-image-preview-modal"; // 预览弹窗前缀
+@image-group-prefix-cls: ~"fluentui-plus-image-group"; // 图片组前缀
+
+.@{image-prefix-cls} {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  vertical-align: top;
+  background-color: @color-neutral-background-3;
+  border-radius: @border-radius-medium;
+
+  &-img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  &-loading {
+    .@{image-prefix-cls}-img {
+      position: absolute;
+      opacity: 0;
+    }
+  }
+
+  &--previewable {
+    cursor: pointer;
+
+    &:hover {
+      &::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-color: rgba(0, 0, 0, 0.1);
+        pointer-events: none;
+      }
+    }
+  }
+
+  &-placeholder,
+  &-fallback {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: @color-neutral-foreground-3;
+    background-color: @color-neutral-background-3;
+  }
+
+  &-placeholder-icon,
+  &-fallback-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: @spacing-vertical-s;
+
+    svg {
+      opacity: 0.5;
+    }
+  }
+
+  &-fallback-text {
+    font-size: @font-size-200;
+    color: @color-neutral-foreground-3;
+  }
+}
+
+.@{image-group-prefix-cls} {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: @spacing-horizontal-m;
+}
+
+.@{image-preview-prefix-cls} {
+  position: fixed;
+  inset: 0;
+  z-index: 1000010;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.85);
+
+  // 工具栏 - 包含缩放、旋转、关闭等按钮
+  &-toolbar {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    z-index: 1;
+    display: flex;
+    gap: 8px;
+    padding: 8px 16px;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: @border-radius-large;
+    transform: translateX(-50%);
+  }
+
+  &-toolbar-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    color: #fff;
+    background: transparent;
+    border: none;
+    border-radius: @border-radius-medium;
+    cursor: pointer;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.15);
+    }
+
+    &:focus {
+      outline: none;
+    }
+
+    &:disabled {
+      color: rgba(255, 255, 255, 0.3);
+      cursor: not-allowed;
+
+      &:hover {
+        background: transparent;
+      }
+    }
+  }
+
+  // 图片容器 - 包裹预览图片
+  &-img-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 100%;
+    max-height: 100%;
+    padding: 60px 100px;
+    box-sizing: border-box;
+  }
+
+  // 预览图片样式
+  &-img {
+    max-width: 100%;
+    max-height: calc(100vh - 120px);
+    object-fit: contain;
+    user-select: none;
+    -webkit-user-drag: none;
+  }
+
+  // 左右导航 - 上一张/下一张按钮
+  &-nav {
+    position: absolute;
+    top: 50%;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    color: #fff;
+    background-color: rgba(0, 0, 0, 0.3);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transform: translateY(-50%);
+
+    &:hover:not(:disabled) {
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    &:focus {
+      outline: none;
+    }
+
+    &:disabled {
+      color: rgba(255, 255, 255, 0.3);
+      cursor: not-allowed;
+    }
+
+    // 上一张按钮位置
+    &-prev {
+      left: 20px;
+    }
+
+    // 下一张按钮位置
+    &-next {
+      right: 20px;
+    }
+  }
+
+  // 分页指示器 - 显示“第 X / Y 张”
+  &-counter {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    z-index: 1;
+    padding: 6px 16px;
+    font-size: @font-size-300;
+    color: #fff;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: @border-radius-medium;
+    transform: translateX(-50%);
+  }
+}

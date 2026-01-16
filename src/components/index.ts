@@ -56,3 +56,7 @@ export type { UploadProps, UploadDraggerProps } from './Upload';
 // Tabs 组件
 export { default as Tabs } from './Tabs';
 export type { TabsProps } from './Tabs';
+
+// Image 组件
+export { default as Image, ImageGroup, ImagePreview } from './Image';
+export type { ImageProps, ImageGroupProps, ImagePreviewProps, PreviewImageInfo } from './Image';

@@ -112,25 +112,37 @@ const HomePage: React.FC = () => {
     {
       title: '通用组件',
       description: '通用组件提供基础的 UI 元素，用于构建应用的基本界面。',
-      components: ['Tag'],
+      components: ['Tag', 'Image'],
       path: '/tag',
+    },
+    {
+      title: '布局组件',
+      description: '布局组件帮助构建页面结构，提供灵活的布局方案。',
+      components: ['Layout'],
+      path: '/layout',
     },
     {
       title: '导航组件',
       description: '导航组件帮助用户在应用中快速定位和切换页面。',
-      components: ['Nav'],
+      components: ['Nav', 'Tabs', 'Pagination'],
       path: '/nav',
     },
     {
       title: '数据录入组件',
       description: '数据录入组件提供多种输入方式，提升用户体验。',
-      components: ['InputTag', 'Select', 'Cascader', 'Checkbox'],
+      components: ['InputTag', 'Select', 'Cascader', 'Checkbox', 'Upload'],
       path: '/inputtag',
+    },
+    {
+      title: '数据展示组件',
+      description: '数据展示组件用于展示和组织数据，提供丰富的交互能力。',
+      components: ['Table'],
+      path: '/table',
     },
     {
       title: '反馈组件',
       description: '反馈组件用于向用户展示操作结果和系统状态。',
-      components: ['Modal'],
+      components: ['Modal', 'Message', 'Spin'],
       path: '/modal',
     },
   ];
@@ -163,7 +175,7 @@ const HomePage: React.FC = () => {
       <div className={styles.statsSection}>
         <div className={styles.statsGrid}>
           <div className={styles.statItem}>
-            <div className={styles.statNumber}>7</div>
+            <div className={styles.statNumber}>15</div>
             <div className={styles.statLabel}>组件</div>
           </div>
           <div className={styles.statItem}>
@@ -171,7 +183,7 @@ const HomePage: React.FC = () => {
             <div className={styles.statLabel}>TypeScript</div>
           </div>
           <div className={styles.statItem}>
-            <div className={styles.statNumber}>20+</div>
+            <div className={styles.statNumber}>50+</div>
             <div className={styles.statLabel}>示例</div>
           </div>
         </div>

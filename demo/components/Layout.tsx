@@ -126,6 +126,7 @@ const Layout: React.FC = () => {
       items: [
         { path: '/table', label: 'Table 表格' },
         { path: '/pagination', label: 'Pagination 分页' },
+        { path: '/image', label: 'Image 图片' },
       ],
     },
     {

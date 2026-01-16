@@ -16,6 +16,7 @@ import SpinPage from './pages/SpinPage';
 import PaginationPage from './pages/PaginationPage';
 import LayoutPage from './pages/LayoutPage';
 import UploadPage from './pages/UploadPage';
+import ImagePage from './pages/ImagePage';
 
 const router = createBrowserRouter([
   {
@@ -81,6 +82,10 @@ const router = createBrowserRouter([
       {
         path: '/upload',
         element: <UploadPage />,
+      },
+      {
+        path: '/image',
+        element: <ImagePage />,
       },
     ],
   },
