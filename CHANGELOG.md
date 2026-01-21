@@ -4,6 +4,20 @@
 
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，项目遵循 [语义化版本](https://semver.org/lang/zh-CN/) 规范。
 
+### [2.6.2](https://github.com/HuiruDong/fluentui-plus/compare/v2.6.1...v2.6.2) (2026-01-21)
+
+### Added
+
+- **Image:** add Image component with preview and gallery support ([b83d82b](https://github.com/HuiruDong/fluentui-plus/commit/b83d82ba27c35469ae7284d33c0947dee1725216))
+
+### Changed
+
+- **hooks:** move useFloatingPosition to shared hooks directory ([6ec6e16](https://github.com/HuiruDong/fluentui-plus/commit/6ec6e1624156a70738bad403e5da9d08c6491622))
+
+### Fixed
+
+- **image:** prevent race condition during ImagePreview unmount ([828fe4a](https://github.com/HuiruDong/fluentui-plus/commit/828fe4a16aaa1a1659cc4cb5a166ed728f590116))
+
 ### [2.6.1](https://github.com/HuiruDong/fluentui-plus/compare/v2.6.0...v2.6.1) (2026-01-14)
 
 ### Added
