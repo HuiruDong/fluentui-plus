@@ -1,7 +1,6 @@
 import { useSelectState } from './useSelectState';
 import { useOptionSelection } from './useOptionSelection';
 import { useSelectSearch } from './useSelectSearch';
-import { useFloatingPosition } from './useFloatingPosition';
 import { useSelect } from './useSelect';
 
 export {
@@ -9,9 +8,6 @@ export {
   useSelectState,
   useOptionSelection,
   useSelectSearch,
-
-  // 工具 Hook
-  useFloatingPosition,
 
   // 组合 Hook
   useSelect,

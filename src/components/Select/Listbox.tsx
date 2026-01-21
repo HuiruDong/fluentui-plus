@@ -3,7 +3,8 @@ import clsx from 'clsx';
 import type { ListboxProps } from './types';
 import OptionItem from './OptionItem';
 import OptionGroup from './OptionGroup';
-import { useFloatingPosition, useOptionSelection } from './hooks';
+import { useOptionSelection } from './hooks';
+import { useFloatingPosition } from '@/hooks';
 import { isOptionGroup } from './utils';
 import { useSelectContext } from './context';
 

@@ -1,5 +1,5 @@
 import { renderHook, act } from '@testing-library/react';
-import { useFloatingPosition } from '../../hooks/useFloatingPosition';
+import { useFloatingPosition } from '../useFloatingPosition';
 
 // Mock @floating-ui/react
 jest.mock('@floating-ui/react', () => ({

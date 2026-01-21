@@ -5,6 +5,7 @@
 
 import { useTagManager } from './useTagManager';
 import { useInputValue } from './useInputValue';
+import { useFloatingPosition } from './useFloatingPosition';
 
 export {
   // 标签管理 Hook
@@ -12,4 +13,7 @@ export {
 
   // 输入值管理 Hook
   useInputValue,
+
+  // 浮动定位 Hook
+  useFloatingPosition,
 };

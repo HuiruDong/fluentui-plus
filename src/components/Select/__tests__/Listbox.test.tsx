@@ -37,12 +37,15 @@ jest.mock('../OptionItem', () => {
 });
 
 // Mock hooks
-jest.mock('../hooks', () => ({
+jest.mock('../../../hooks', () => ({
   useFloatingPosition: jest.fn(() => ({
     floatingRef: { current: null },
     floatingStyles: {},
     getFloatingProps: jest.fn(() => ({})),
   })),
+}));
+
+jest.mock('../hooks', () => ({
   useOptionSelection: jest.fn(() => ({
     isOptionSelected: jest.fn(() => false),
   })),
@@ -84,7 +87,8 @@ describe('Listbox', () => {
 
     // 引入 hooks 模块
     const hooksModule = jest.requireMock('../hooks');
-    mockUseFloatingPosition = hooksModule.useFloatingPosition;
+    const floatingModule = jest.requireMock('../../../hooks');
+    mockUseFloatingPosition = floatingModule.useFloatingPosition;
     mockUseOptionSelection = hooksModule.useOptionSelection;
 
     mockUseFloatingPosition.mockReturnValue({

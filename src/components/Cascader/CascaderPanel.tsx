@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import type { CascaderPanelProps, CascaderOption as CascaderOptionType } from './types';
 import CascaderColumn from './CascaderColumn';
 import CascaderEmpty from './CascaderEmpty';
-import { useFloatingPosition } from '../Select/hooks';
+import { useFloatingPosition } from '@/hooks';
 import { hasChildren, getChildren, getValueFromPath } from './utils';
 
 const CascaderPanel: React.FC<CascaderPanelProps> = ({
