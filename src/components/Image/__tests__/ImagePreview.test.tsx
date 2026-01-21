@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, waitFor } from '@testing-library/react';
+import { render, waitFor, act } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import ImagePreview from '../ImagePreview';
 import type { ImagePreviewProps } from '../types';
@@ -63,7 +63,11 @@ describe('ImagePreview Component', () => {
     jest.clearAllMocks();
   });
 
-  afterEach(() => {
+  afterEach(async () => {
+    // 等待所有异步操作完成，避免竞态条件
+    await act(async () => {
+      await new Promise(resolve => setTimeout(resolve, 0));
+    });
     // 清理 Portal 容器
     const portals = document.querySelectorAll('.fluentui-plus-image-preview-modal-root');
     portals.forEach(portal => portal.remove());
@@ -106,7 +110,11 @@ describe('ImagePreview Component', () => {
         expect(document.querySelector('.fluentui-plus-image-preview-modal-root')).toBeInTheDocument();
       });
 
-      unmount();
+      await act(async () => {
+        unmount();
+        // 等待清理操作完成
+        await new Promise(resolve => setTimeout(resolve, 0));
+      });
 
       await waitFor(() => {
         expect(document.querySelector('.fluentui-plus-image-preview-modal-root')).not.toBeInTheDocument();
