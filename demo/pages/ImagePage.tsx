@@ -158,6 +158,71 @@ const ImagePage: React.FC = () => {
         </div>
       </section>
 
+      {/* 图片适应方式 */}
+      <section className={styles.section}>
+        <h2 className={styles.sectionTitle}>图片适应方式</h2>
+        <p className={styles.sectionDescription}>
+          通过 fit 属性设置图片如何适应容器，支持 none、contain、cover、fill、scale-down 五种模式。
+        </p>
+        <div className={styles.demoContainer} style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
+          <div>
+            <p style={{ marginBottom: 8, color: '#666' }}>none（默认）</p>
+            <Image
+              src='https://images.unsplash.com/photo-1766498019113-133d6eb646b7?q=80&w=300&auto=format&fit=crop'
+              alt='none'
+              width={150}
+              height={150}
+              fit='none'
+              preview={false}
+            />
+          </div>
+          <div>
+            <p style={{ marginBottom: 8, color: '#666' }}>contain</p>
+            <Image
+              src='https://images.unsplash.com/photo-1766498019113-133d6eb646b7?q=80&w=300&auto=format&fit=crop'
+              alt='contain'
+              width={150}
+              height={150}
+              fit='contain'
+              preview={false}
+            />
+          </div>
+          <div>
+            <p style={{ marginBottom: 8, color: '#666' }}>cover</p>
+            <Image
+              src='https://images.unsplash.com/photo-1766498019113-133d6eb646b7?q=80&w=300&auto=format&fit=crop'
+              alt='cover'
+              width={150}
+              height={150}
+              fit='cover'
+              preview={false}
+            />
+          </div>
+          <div>
+            <p style={{ marginBottom: 8, color: '#666' }}>fill</p>
+            <Image
+              src='https://images.unsplash.com/photo-1766498019113-133d6eb646b7?q=80&w=300&auto=format&fit=crop'
+              alt='fill'
+              width={150}
+              height={150}
+              fit='fill'
+              preview={false}
+            />
+          </div>
+          <div>
+            <p style={{ marginBottom: 8, color: '#666' }}>scale-down</p>
+            <Image
+              src='https://images.unsplash.com/photo-1766498019113-133d6eb646b7?q=80&w=300&auto=format&fit=crop'
+              alt='scale-down'
+              width={150}
+              height={150}
+              fit='scale-down'
+              preview={false}
+            />
+          </div>
+        </div>
+      </section>
+
       {/* 相册模式 */}
       <section className={styles.section}>
         <h2 className={styles.sectionTitle}>相册模式</h2>
@@ -318,6 +383,12 @@ const ImagePage: React.FC = () => {
               <td style={apiTableStyles.tdStyle}>自定义预览图地址</td>
               <td style={apiTableStyles.tdStyle}>string</td>
               <td style={apiTableStyles.tdStyle}>-</td>
+            </tr>
+            <tr>
+              <td style={apiTableStyles.tdStyle}>fit</td>
+              <td style={apiTableStyles.tdStyle}>图片适应容器的方式</td>
+              <td style={apiTableStyles.tdStyle}>'none' | 'contain' | 'cover' | 'fill' | 'scale-down'</td>
+              <td style={apiTableStyles.tdStyle}>'none'</td>
             </tr>
             <tr>
               <td style={apiTableStyles.tdStyle}>onLoad</td>

@@ -304,4 +304,51 @@ describe('Image Component', () => {
       expect(img).toHaveAttribute('crossOrigin', 'anonymous');
     });
   });
+
+  describe('fit 属性', () => {
+    it('默认应使用 none 作为 object-fit', () => {
+      const { container } = render(<Image {...defaultProps} />);
+      const img = container.querySelector('.fluentui-plus-image-img');
+
+      fireEvent.load(img!);
+
+      expect(img).toHaveStyle({ objectFit: 'none' });
+    });
+
+    it('应正确应用 fit="contain"', () => {
+      const { container } = render(<Image {...defaultProps} fit='contain' />);
+      const img = container.querySelector('.fluentui-plus-image-img');
+
+      fireEvent.load(img!);
+
+      expect(img).toHaveStyle({ objectFit: 'contain' });
+    });
+
+    it('应正确应用 fit="cover"', () => {
+      const { container } = render(<Image {...defaultProps} fit='cover' />);
+      const img = container.querySelector('.fluentui-plus-image-img');
+
+      fireEvent.load(img!);
+
+      expect(img).toHaveStyle({ objectFit: 'cover' });
+    });
+
+    it('应正确应用 fit="fill"', () => {
+      const { container } = render(<Image {...defaultProps} fit='fill' />);
+      const img = container.querySelector('.fluentui-plus-image-img');
+
+      fireEvent.load(img!);
+
+      expect(img).toHaveStyle({ objectFit: 'fill' });
+    });
+
+    it('应正确应用 fit="scale-down"', () => {
+      const { container } = render(<Image {...defaultProps} fit='scale-down' />);
+      const img = container.querySelector('.fluentui-plus-image-img');
+
+      fireEvent.load(img!);
+
+      expect(img).toHaveStyle({ objectFit: 'scale-down' });
+    });
+  });
 });

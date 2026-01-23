@@ -56,6 +56,11 @@ export interface ImageProps extends Omit<React.ImgHTMLAttributes<HTMLImageElemen
    */
   previewSrc?: string;
   /**
+   * 图片适应容器的方式
+   * @default 'none'
+   */
+  fit?: 'contain' | 'cover' | 'fill' | 'none' | 'scale-down';
+  /**
    * 图片加载完成回调
    */
   onLoad?: (e: React.SyntheticEvent<HTMLImageElement>) => void;

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback, useId } from 'react';
 import clsx from 'clsx';
-import { useImageContext } from './context/ImageContext';
+import { useImageContext } from './context';
 import ImagePreview from './ImagePreview';
 import Placeholder from './Placeholder';
 import Fallback from './Fallback';
@@ -21,6 +21,7 @@ const Image: React.FC<ImageProps> = ({
   fallback,
   preview = true,
   previewSrc,
+  fit = 'none',
   onLoad,
   onError,
   ...restProps
@@ -150,6 +151,7 @@ const Image: React.FC<ImageProps> = ({
             src={src}
             alt={alt}
             className={`${prefixCls}-img`}
+            style={{ objectFit: fit }}
             onLoad={handleLoad}
             onError={handleError}
             {...restProps}
@@ -162,6 +164,7 @@ const Image: React.FC<ImageProps> = ({
                 src={src}
                 alt={alt}
                 className={`${prefixCls}-img`}
+                style={{ objectFit: fit }}
                 onLoad={handleLoad}
                 onError={handleError}
                 {...restProps}

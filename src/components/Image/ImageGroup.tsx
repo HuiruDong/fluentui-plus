@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useRef } from 'react';
 import clsx from 'clsx';
-import { ImageProvider } from './context/ImageContext';
+import { ImageProvider } from './context';
 import ImagePreview from './ImagePreview';
 import type { ImageGroupProps, ImageContextValue, PreviewImageInfo } from './types';
 import './index.less';
