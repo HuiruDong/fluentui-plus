@@ -4,6 +4,12 @@
 
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，项目遵循 [语义化版本](https://semver.org/lang/zh-CN/) 规范。
 
+## [2.7.0](https://github.com/HuiruDong/fluentui-plus/compare/v2.6.2...v2.7.0) (2026-02-02)
+
+### Added
+
+- **Image:** add fit prop for object-fit control ([86ca640](https://github.com/HuiruDong/fluentui-plus/commit/86ca6407a61a2529dad34df6422c930e1cf0b129))
+
 ### [2.6.2](https://github.com/HuiruDong/fluentui-plus/compare/v2.6.1...v2.6.2) (2026-01-21)
 
 ### Added
