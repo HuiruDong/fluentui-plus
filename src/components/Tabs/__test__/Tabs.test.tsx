@@ -21,14 +21,14 @@ jest.mock('@fluentui/react-components', () => ({
   }: {
     children: React.ReactNode;
     selectedValue: string;
-    onTabSelect: (e: Event, data: { value: string }) => void;
+    onTabSelect: (e: React.MouseEvent<HTMLDivElement>, data: { value: string }) => void;
     vertical?: boolean;
   }) => (
     <div
       data-testid='tab-list'
       data-selected={selectedValue}
       data-vertical={vertical?.toString()}
-      onClick={(e: any) => {
+      onClick={(e: React.MouseEvent<HTMLDivElement>) => {
         const target = e.target as HTMLElement;
         const value = target.getAttribute('data-value');
         if (value) {
