@@ -21,7 +21,7 @@ jest.mock('@fluentui/react-components', () => ({
   }: {
     children: React.ReactNode;
     selectedValue: string;
-    onTabSelect: (e: any, data: { value: string }) => void;
+    onTabSelect: (e: Event, data: { value: string }) => void;
     vertical?: boolean;
   }) => (
     <div
