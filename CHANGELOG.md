@@ -4,6 +4,8 @@
 
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，项目遵循 [语义化版本](https://semver.org/lang/zh-CN/) 规范。
 
+### [2.7.2](https://github.com/HuiruDong/fluentui-plus/compare/v2.7.1...v2.7.2) (2026-02-09)
+
 ### [2.7.1](https://github.com/HuiruDong/fluentui-plus/compare/v2.7.0...v2.7.1) (2026-02-06)
 
 ## [2.7.0](https://github.com/HuiruDong/fluentui-plus/compare/v2.6.2...v2.7.0) (2026-02-02)
