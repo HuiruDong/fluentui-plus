@@ -22,6 +22,7 @@ jobs:
           node-version: '20.x'
           cache: 'yarn'
           registry-url: 'https://registry.npmjs.org'
+          scope: '@luoluoyu'
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
