@@ -23,6 +23,10 @@ jobs:
           cache: 'yarn'
           registry-url: 'https://registry.npmjs.org'
           scope: '@luoluoyu'
+          always-auth: true
+
+      - name: Upgrade npm
+        run: npm install -g npm@latest
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
