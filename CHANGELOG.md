@@ -4,6 +4,12 @@
 
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，项目遵循 [语义化版本](https://semver.org/lang/zh-CN/) 规范。
 
+### [2.7.5](https://github.com/HuiruDong/fluentui-plus/compare/v2.7.4...v2.7.5) (2026-03-02)
+
+### Fixed
+
+- **tabs:** ensure icon prop defaults to null when undefined ([a7d6e10](https://github.com/HuiruDong/fluentui-plus/commit/a7d6e1096aac1d38aee07a7676af8ef0e21a4af3))
+
 ### [2.7.4](https://github.com/HuiruDong/fluentui-plus/compare/v2.7.3...v2.7.4) (2026-02-09)
 
 ### [2.7.3](https://github.com/HuiruDong/fluentui-plus/compare/v2.7.2...v2.7.3) (2026-02-09)
