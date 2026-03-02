@@ -11,7 +11,7 @@ const OverflowMenuItem: React.FC<OverflowMenuItemProps> = props => {
   }
 
   return (
-    <MenuItem key={tab.key} icon={tab.icon} onClick={onClick}>
+    <MenuItem key={tab.key} icon={tab.icon ?? null} onClick={onClick}>
       <div>{tab.label}</div>
     </MenuItem>
   );

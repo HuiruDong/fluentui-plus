@@ -30,7 +30,7 @@ const Tabs: React.FC<TabsProps> = ({
         {items?.map(tab => {
           return (
             <OverflowItem key={tab.key} id={tab.key} priority={tab.key === selectedTabId ? 2 : 1}>
-              <Tab value={tab.key} icon={tab.icon}>
+              <Tab value={tab.key} icon={tab.icon ?? null}>
                 {tab.label}
               </Tab>
             </OverflowItem>
