@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button, Field, Input, makeStyles, tokens } from '@fluentui/react-components';
 import { message } from '../../src';
+import { useCommonDemoStyles, useApiTableStyles } from '../hooks';
 
 const useStyles = makeStyles({
   container: {
@@ -35,6 +36,7 @@ const useStyles = makeStyles({
 
 const MessagePage: React.FC = () => {
   const styles = useStyles();
+  const apiTableStyles = useApiTableStyles();
   const [customContent, setCustomContent] = React.useState('这是一条自定义消息');
 
   const showInfo = () => {
@@ -214,6 +216,133 @@ const MessagePage: React.FC = () => {
             销毁所有消息
           </Button>
         </div>
+      </div>
+
+      <div className={styles.section}>
+        <h2 className={styles.title}>API 参数</h2>
+
+        <table style={apiTableStyles.tableStyle}>
+          <thead>
+            <tr style={{ backgroundColor: '#f9fafb' }}>
+              <th style={apiTableStyles.thStyle}>方法</th>
+              <th style={apiTableStyles.thStyle}>说明</th>
+              <th style={apiTableStyles.thStyle}>参数类型</th>
+              <th style={apiTableStyles.thStyle}>返回值</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style={apiTableStyles.tdStyle}>message.info</td>
+              <td style={apiTableStyles.tdStyle}>显示信息提示</td>
+              <td style={apiTableStyles.tdStyle}>(title: ReactNode, options?: MessageOptions) =&gt; MessageInstance</td>
+              <td style={apiTableStyles.tdStyle}>MessageInstance</td>
+            </tr>
+            <tr>
+              <td style={apiTableStyles.tdStyle}>message.success</td>
+              <td style={apiTableStyles.tdStyle}>显示成功提示</td>
+              <td style={apiTableStyles.tdStyle}>(title: ReactNode, options?: MessageOptions) =&gt; MessageInstance</td>
+              <td style={apiTableStyles.tdStyle}>MessageInstance</td>
+            </tr>
+            <tr>
+              <td style={apiTableStyles.tdStyle}>message.warning</td>
+              <td style={apiTableStyles.tdStyle}>显示警告提示</td>
+              <td style={apiTableStyles.tdStyle}>(title: ReactNode, options?: MessageOptions) =&gt; MessageInstance</td>
+              <td style={apiTableStyles.tdStyle}>MessageInstance</td>
+            </tr>
+            <tr>
+              <td style={apiTableStyles.tdStyle}>message.error</td>
+              <td style={apiTableStyles.tdStyle}>显示错误提示</td>
+              <td style={apiTableStyles.tdStyle}>(title: ReactNode, options?: MessageOptions) =&gt; MessageInstance</td>
+              <td style={apiTableStyles.tdStyle}>MessageInstance</td>
+            </tr>
+            <tr>
+              <td style={apiTableStyles.tdStyle}>message.open</td>
+              <td style={apiTableStyles.tdStyle}>显示自定义消息</td>
+              <td style={apiTableStyles.tdStyle}>(options: MessageOptions) =&gt; MessageInstance</td>
+              <td style={apiTableStyles.tdStyle}>MessageInstance</td>
+            </tr>
+            <tr>
+              <td style={apiTableStyles.tdStyle}>message.destroy</td>
+              <td style={apiTableStyles.tdStyle}>销毁所有消息</td>
+              <td style={apiTableStyles.tdStyle}>() =&gt; void</td>
+              <td style={apiTableStyles.tdStyle}>void</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <table style={{ ...apiTableStyles.tableStyle, marginTop: '24px' }}>
+          <caption style={{ textAlign: 'left', fontWeight: 600, marginBottom: '8px' }}>MessageOptions 参数</caption>
+          <thead>
+            <tr style={{ backgroundColor: '#f9fafb' }}>
+              <th style={apiTableStyles.thStyle}>参数</th>
+              <th style={apiTableStyles.thStyle}>说明</th>
+              <th style={apiTableStyles.thStyle}>类型</th>
+              <th style={apiTableStyles.thStyle}>默认值</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style={apiTableStyles.tdStyle}>title</td>
+              <td style={apiTableStyles.tdStyle}>消息标题（主要内容）</td>
+              <td style={apiTableStyles.tdStyle}>ReactNode</td>
+              <td style={apiTableStyles.tdStyle}>-</td>
+            </tr>
+            <tr>
+              <td style={apiTableStyles.tdStyle}>content</td>
+              <td style={apiTableStyles.tdStyle}>消息内容（详细描述）</td>
+              <td style={apiTableStyles.tdStyle}>ReactNode</td>
+              <td style={apiTableStyles.tdStyle}>-</td>
+            </tr>
+            <tr>
+              <td style={apiTableStyles.tdStyle}>intent</td>
+              <td style={apiTableStyles.tdStyle}>消息类型</td>
+              <td style={apiTableStyles.tdStyle}>'info' | 'success' | 'warning' | 'error'</td>
+              <td style={apiTableStyles.tdStyle}>'info'</td>
+            </tr>
+            <tr>
+              <td style={apiTableStyles.tdStyle}>duration</td>
+              <td style={apiTableStyles.tdStyle}>自动关闭延迟时间（毫秒），设为 0 则不自动关闭</td>
+              <td style={apiTableStyles.tdStyle}>number</td>
+              <td style={apiTableStyles.tdStyle}>3000</td>
+            </tr>
+            <tr>
+              <td style={apiTableStyles.tdStyle}>closable</td>
+              <td style={apiTableStyles.tdStyle}>是否显示关闭按钮</td>
+              <td style={apiTableStyles.tdStyle}>boolean</td>
+              <td style={apiTableStyles.tdStyle}>true</td>
+            </tr>
+            <tr>
+              <td style={apiTableStyles.tdStyle}>onClose</td>
+              <td style={apiTableStyles.tdStyle}>关闭时的回调函数</td>
+              <td style={apiTableStyles.tdStyle}>() =&gt; void</td>
+              <td style={apiTableStyles.tdStyle}>-</td>
+            </tr>
+            <tr>
+              <td style={apiTableStyles.tdStyle}>action</td>
+              <td style={apiTableStyles.tdStyle}>自定义操作按钮</td>
+              <td style={apiTableStyles.tdStyle}>ReactNode</td>
+              <td style={apiTableStyles.tdStyle}>-</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <table style={{ ...apiTableStyles.tableStyle, marginTop: '24px' }}>
+          <caption style={{ textAlign: 'left', fontWeight: 600, marginBottom: '8px' }}>MessageInstance 方法</caption>
+          <thead>
+            <tr style={{ backgroundColor: '#f9fafb' }}>
+              <th style={apiTableStyles.thStyle}>方法</th>
+              <th style={apiTableStyles.thStyle}>说明</th>
+              <th style={apiTableStyles.thStyle}>类型</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style={apiTableStyles.tdStyle}>close</td>
+              <td style={apiTableStyles.tdStyle}>关闭当前消息</td>
+              <td style={apiTableStyles.tdStyle}>() =&gt; void</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   );
